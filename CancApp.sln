@@ -3,9 +3,56 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35825.156 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Peresntation", "Peresntation", "{BF30F6BA-20FE-4006-B55B-79F37F8F002F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{492AB23B-D835-444F-A7DB-36ABE3206056}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{FAE573CA-4634-40CF-B032-8B5D68C3A87F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanaApp.Domain", "CanaApp.Domain\CanaApp.Domain.csproj", "{C20A41D0-7792-45C8-9976-348C870C868A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanaApp.Application", "CanaApp.Application\CanaApp.Application.csproj", "{B3B883D4-039B-478B-9000-C32A103E7A0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanaApp.Persistance", "CanaApp.Persistance\CanaApp.Persistance.csproj", "{6A811659-4959-45B7-9585-F66A44D20430}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanaApp.Apis", "CanaApp.Apis\CanaApp.Apis.csproj", "{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C20A41D0-7792-45C8-9976-348C870C868A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C20A41D0-7792-45C8-9976-348C870C868A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C20A41D0-7792-45C8-9976-348C870C868A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C20A41D0-7792-45C8-9976-348C870C868A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3B883D4-039B-478B-9000-C32A103E7A0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3B883D4-039B-478B-9000-C32A103E7A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3B883D4-039B-478B-9000-C32A103E7A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3B883D4-039B-478B-9000-C32A103E7A0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A811659-4959-45B7-9585-F66A44D20430}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A811659-4959-45B7-9585-F66A44D20430}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A811659-4959-45B7-9585-F66A44D20430}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A811659-4959-45B7-9585-F66A44D20430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BF30F6BA-20FE-4006-B55B-79F37F8F002F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{492AB23B-D835-444F-A7DB-36ABE3206056} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{FAE573CA-4634-40CF-B032-8B5D68C3A87F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C20A41D0-7792-45C8-9976-348C870C868A} = {492AB23B-D835-444F-A7DB-36ABE3206056}
+		{B3B883D4-039B-478B-9000-C32A103E7A0C} = {492AB23B-D835-444F-A7DB-36ABE3206056}
+		{6A811659-4959-45B7-9585-F66A44D20430} = {FAE573CA-4634-40CF-B032-8B5D68C3A87F}
+		{9E1AC0D2-37DB-421B-B58E-D2CFA69ABEFB} = {BF30F6BA-20FE-4006-B55B-79F37F8F002F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E54DBD6-BAF8-4D87-ACFE-257F5691568B}

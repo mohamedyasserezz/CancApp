@@ -1,0 +1,6 @@
+@CanaApp.Apis_HostAddress = http://localhost:5024
+
+GET {{CanaApp.Apis_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
