@@ -6,13 +6,13 @@ namespace CanaApp.Domain.Entities.Comunity
     {
         public int Id { get; set; }
         public DateTime Time { get; set; }
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         // Foreign keys and navigation properties
         public int PostId { get; set; }
-        public Post Post { get; set; }
+        public Post Post { get; set; } = default!;
         public int CommentId { get; set; }
-        public Comment Comment { get; set; }
+        public Comment Comment { get; set; } = default!;
 
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;

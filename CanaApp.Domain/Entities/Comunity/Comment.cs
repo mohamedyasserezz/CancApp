@@ -6,19 +6,19 @@ namespace CanaApp.Domain.Entities.Comunity
     {
         public int Id { get; set; }
         public DateTime Time { get; set; }
-        public string Content { get; set; }
+        public string Content { get; set; } = default!;
 
         // Foreign keys and navigation properties
         public int PostId { get; set; }
-        public Post Post { get; set; }
+        public Post Post { get; set; } = default!;
 
-        public ApplicationUser User { get; set; }
-        public string UserId { get; set; }
+        public ApplicationUser User { get; set; } = default!;
+        public string UserId { get; set; } = default!;
 
         
         public ICollection<Reaction>? Reactions = new List<Reaction>();
         public int? ParentCommentId { get; set; }
-        public Comment ParentComment { get; set; }
+        public Comment ParentComment { get; set; } = default!;
         public ICollection<Comment> ChildComments = new List<Comment>();
     }
 }
