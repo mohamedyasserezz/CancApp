@@ -2,7 +2,7 @@
 using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Entities.Roles;
-using CanaApp.Persistance;
+using CanaApp.Persistance.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

@@ -6,9 +6,8 @@ using CanaApp.Domain.Entities.Reminders;
 using CanaApp.Domain.Entities.Roles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 using System.Reflection;
-namespace CanaApp.Persistance
+namespace CanaApp.Persistance.Data
 {
     public class ApplicationDbContext(DbContextOptions options) :
         IdentityDbContext<ApplicationUser, ApplicationRole, string>(options)

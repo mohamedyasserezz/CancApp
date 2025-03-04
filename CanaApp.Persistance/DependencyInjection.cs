@@ -1,5 +1,6 @@
-﻿using CanaApp.Domain.Entities.Models;
-using CanaApp.Domain.Entities.Roles;
+﻿using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Persistance.Data;
+using CanaApp.Persistance.UninOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,8 @@ namespace CanaApp.Persistance
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            
+
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
 
             return services;

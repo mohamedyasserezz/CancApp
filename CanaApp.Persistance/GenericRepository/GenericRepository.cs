@@ -1,4 +1,5 @@
 ﻿using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace CanaApp.Persistance.GenericRepository
