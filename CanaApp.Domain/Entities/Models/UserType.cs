@@ -1,6 +1,6 @@
 ﻿namespace CanaApp.Domain.Entities.Models
 {
-    enum UserType
+    public enum UserType
     {
         Patient,
         Doctor,

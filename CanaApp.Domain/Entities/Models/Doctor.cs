@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Models
 {
-    class Doctor
+    public class Doctor
     {
         public string MedicalAssociationId { get; set; } = default!;
         public ApplicationUser ApplicationUser { get; set; } = default!;

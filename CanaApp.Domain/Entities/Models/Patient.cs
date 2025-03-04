@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Models
 {
-    class Patient
+    public class Patient
     {
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;

@@ -1,6 +1,6 @@
 ﻿namespace CanaApp.Domain.Entities.Reminders
 {
-    enum MedsReminderTypes
+    public enum MedsReminderTypes
     {
         Pill,
         Liquid,

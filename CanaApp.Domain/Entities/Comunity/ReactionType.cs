@@ -1,6 +1,6 @@
 ﻿namespace CanaApp.Domain.Entities.Comunity
 {
-    enum ReactionType
+    public enum ReactionType
     {
         Like,
         Love,

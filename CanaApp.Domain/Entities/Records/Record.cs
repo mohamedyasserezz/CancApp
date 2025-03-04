@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Records
 {
-    class Record
+    public class Record
     {
         public int Id { get; set; }
         public RecordType RecordType { get; set; }

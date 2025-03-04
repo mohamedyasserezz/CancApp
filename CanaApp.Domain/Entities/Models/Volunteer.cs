@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Models
 {
-    class Volunteer
+    public class Volunteer
     {
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;

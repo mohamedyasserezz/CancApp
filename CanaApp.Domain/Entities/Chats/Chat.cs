@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CanaApp.Domain.Entities.Chats
 {
-    class Chat
+    public class Chat
     {
         public int Id { get; set; }
         public string Participant1Id { get; set; } = default!; 

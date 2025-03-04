@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Reminders
 {
-    class MedsReminder
+    public class MedsReminder
     {
         public int Id { get; set; }
         public string Frequency { get; set; } = string.Empty;

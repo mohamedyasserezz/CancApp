@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Reminders
 {
-    class VisitReminder
+    public class VisitReminder
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }

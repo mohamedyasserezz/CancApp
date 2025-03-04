@@ -1,6 +1,6 @@
 ﻿namespace CanaApp.Domain.Entities.Records
 {
-    enum RecordType
+    public enum RecordType
     {
         Document,
         Scan,

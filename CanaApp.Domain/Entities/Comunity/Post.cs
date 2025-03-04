@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Entities.Comunity
 {
-    class Post
+    public class Post
     {
         public int Id { get; set; }
         public DateTime Time { get; set; }

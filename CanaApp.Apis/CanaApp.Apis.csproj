@@ -17,4 +17,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CanaApp.Persistance\CanaApp.Persistance.csproj" />
+  </ItemGroup>
+
 </Project>
