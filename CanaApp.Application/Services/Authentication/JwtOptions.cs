@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CanaApp.Application.Authentication
+namespace CanaApp.Application.Services.Authentication
 {
     public class JwtOptions
     {

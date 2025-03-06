@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
-namespace CanaApp.Application.Authentication
+namespace CanaApp.Application.Services.Authentication
 {
     public class JwtProvider : IJwtProvider
     {
@@ -23,6 +23,7 @@ namespace CanaApp.Application.Authentication
                 new(JwtRegisteredClaimNames.Sub,user.Id),
                 new(JwtRegisteredClaimNames.Email,user.Email!),
                 new(JwtRegisteredClaimNames.GivenName,user.Name),
+                new(JwtRegisteredClaimNames.Address,user.Address),
                 new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 new(nameof(roles),JsonSerializer.Serialize(roles),JsonClaimValueTypes.JsonArray)
             };

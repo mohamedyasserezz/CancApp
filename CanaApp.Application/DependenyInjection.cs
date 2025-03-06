@@ -1,10 +1,7 @@
-﻿using CanaApp.Application.Authentication;
+﻿using CanaApp.Application.Services.Authentication;
 using CanaApp.Domain.Contract.Service.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace CanaApp.Application
 {
@@ -12,10 +9,10 @@ namespace CanaApp.Application
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
-            
 
+            services.AddScoped<IJwtProvider, JwtProvider>();
+            services.AddScoped<IAuthService, AuthService>();
 
-            
 
             return services;
         }

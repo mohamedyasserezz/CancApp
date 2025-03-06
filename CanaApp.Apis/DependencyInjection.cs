@@ -1,4 +1,4 @@
-﻿using CanaApp.Application.Authentication;
+﻿using CanaApp.Application.Services.Authentication;
 using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Entities.Roles;

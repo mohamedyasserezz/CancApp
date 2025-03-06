@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CancApp.Shared._Common
+namespace CancApp.Shared.Common
 {
     public static class RegexPatterns
     {

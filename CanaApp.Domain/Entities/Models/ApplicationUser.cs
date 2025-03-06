@@ -8,6 +8,7 @@ namespace CanaApp.Domain.Entities.Models
         public string Address { get; set; } = default!;
         public string? Image { get; set; } = default!;
         public UserType UserType { get; set; }
+        public bool IsDisabled { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; } = [];
     }
 }
