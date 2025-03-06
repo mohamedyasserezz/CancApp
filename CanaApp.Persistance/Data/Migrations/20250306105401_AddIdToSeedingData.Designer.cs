@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306105401_AddIdToSeedingData")]
+    partial class AddIdToSeedingData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("Participant2Id");
 
-                    b.ToTable("Chats", (string)null);
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Chats.Message", b =>
@@ -78,7 +81,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Comment", b =>
@@ -115,7 +118,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Post", b =>
@@ -142,7 +145,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Reaction", b =>
@@ -178,7 +181,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reactions", (string)null);
+                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.ApplicationUser", b =>
@@ -335,7 +338,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Patient", b =>
@@ -345,7 +348,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Pharmacist", b =>
@@ -360,7 +363,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Pharmacists", (string)null);
+                    b.ToTable("Pharmacists");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Psychiatrist", b =>
@@ -375,7 +378,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Psychiatrists", (string)null);
+                    b.ToTable("Psychiatrists");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Volunteer", b =>
@@ -385,7 +388,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Volunteers", (string)null);
+                    b.ToTable("Volunteers");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Records.Record", b =>
@@ -414,7 +417,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("Records", (string)null);
+                    b.ToTable("Records");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.MedsReminder", b =>
@@ -445,7 +448,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("MedsReminders", (string)null);
+                    b.ToTable("MedsReminders");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.VisitReminder", b =>
@@ -474,7 +477,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("VisitReminders", (string)null);
+                    b.ToTable("VisitReminders");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Roles.ApplicationRole", b =>

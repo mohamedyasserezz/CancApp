@@ -39,39 +39,50 @@ namespace CanaApp.Persistance.Data.Configurations
                 .WithOwner()
                 .HasForeignKey("UserId");
 
+            var passwordHasher = new PasswordHasher<ApplicationUser>();
+
             builder.HasData([
                 new ApplicationUser{
+                    Id = DefaultUsers.AdminId,
                     Email = DefaultUsers.AdminEmail,
+                    NormalizedEmail = DefaultUsers.AdminEmail.ToUpper(),
                     UserName = DefaultUsers.AdminrUserName,
+                    NormalizedUserName = DefaultUsers.AdminrUserName.ToUpper(),
                     Address = DefaultUsers.AdminAddress,
                     Name = DefaultUsers.AdminName,
                     ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Admin,
                     SecurityStamp = DefaultUsers.AdminSecurityStamp,
-                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null!, DefaultUsers.AdminPassword)
+                    PasswordHash = passwordHasher.HashPassword(null!, DefaultUsers.AdminPassword)
                 },
                 new ApplicationUser{
+                    Id = DefaultUsers.DoctorId,
                     Email = DefaultUsers.DoctorEmail,
+                    NormalizedEmail = DefaultUsers.DoctorEmail.ToUpper(),
                     UserName = DefaultUsers.DoctorUserName,
+                    NormalizedUserName = DefaultUsers.DoctorUserName.ToUpper(),
                     Address = DefaultUsers.DoctorAddress,
                     Name = DefaultUsers.DoctorName,
                     ConcurrencyStamp = DefaultUsers.DoctorConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Doctor,
                     SecurityStamp = DefaultUsers.DoctorSecurityStamp,
-                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null!, DefaultUsers.DoctorPassword)
+                    PasswordHash = passwordHasher.HashPassword(null!, DefaultUsers.DoctorPassword)
                 },
                 new ApplicationUser{
+                    Id = DefaultUsers.PatientId,
                     Email = DefaultUsers.PatientEmail,
+                    NormalizedEmail = DefaultUsers.PatientEmail.ToUpper(),
                     UserName = DefaultUsers.PatientUserName,
+                    NormalizedUserName = DefaultUsers.PatientUserName.ToUpper(),
                     Address = DefaultUsers.PatientAddress,
                     Name = DefaultUsers.PatientName,
                     ConcurrencyStamp = DefaultUsers.PatientConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Patient,
                     SecurityStamp = DefaultUsers.PatientSecurityStamp,
-                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null!, DefaultUsers.PatientPassword)
+                    PasswordHash = passwordHasher.HashPassword(null!, DefaultUsers.PatientPassword)
                 }
                 ]);
         }

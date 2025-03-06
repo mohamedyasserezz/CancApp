@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306104928_NormalizedCoiums to seeding data")]
+    partial class NormalizedCoiumstoseedingdata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("Participant2Id");
 
-                    b.ToTable("Chats", (string)null);
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Chats.Message", b =>
@@ -78,7 +81,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Comment", b =>
@@ -115,7 +118,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Post", b =>
@@ -142,7 +145,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Reaction", b =>
@@ -178,7 +181,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reactions", (string)null);
+                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.ApplicationUser", b =>
@@ -266,7 +269,7 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6dc6528a-b280-4770-9eae-82671ee81ef7",
+                            Id = "60ccd7ad-0ad8-4093-856d-9e0e5bbc8517",
                             AccessFailedCount = 0,
                             Address = "Egypt, fayoum",
                             ConcurrencyStamp = "99d2bbc6-bc54-4248-a172-a77de3ae4430",
@@ -276,7 +279,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             Name = "Mohamed Yasser",
                             NormalizedEmail = "ADMIN@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_YASSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAENb1rFSTXNwqK3luss66RiCZB1PZxAEXzpnh+mFV/clgdokmnyEzi8gmZ2fLp7r7Iw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECFKkvOi8pCyYpeePUxlKPxB8FfOpSLDcbafh+7iM5DfRqHPagT+hu0y/jtOdZ9huA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "55BF92C9EF0249CDA210D85D1A851BC9",
                             TwoFactorEnabled = false,
@@ -285,7 +288,7 @@ namespace CanaApp.Persistance.Data.Migrations
                         },
                         new
                         {
-                            Id = "8dbabc2f-4dd1-4ef6-acb4-7feb3fe5ed13",
+                            Id = "fdcea14c-5c46-41fc-b3cd-c305d46b3984",
                             AccessFailedCount = 0,
                             Address = "Egypt, fayoum",
                             ConcurrencyStamp = "c97edf97-9d17-41f0-ae2c-04ff10d11c19",
@@ -295,7 +298,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             Name = "Zyad Mahmoud",
                             NormalizedEmail = "DOCTOR@CANC-APP.COM",
                             NormalizedUserName = "ZYAD_MAHMOUD",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGD8LFyILYpwMSqmzV4KpUy5K8KvLUym/NX3IPFNAWoyzqdWTlxZXVWGdVoTuk+zlg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAPD9yWLFqG+rsY6H+y7pPgWOpdEOiDv6sUlb/MspUrHRgarSRoaGxwob6Hzuq4awg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "85a5af679fe14a24a17a7b9af212c4dc",
                             TwoFactorEnabled = false,
@@ -304,7 +307,7 @@ namespace CanaApp.Persistance.Data.Migrations
                         },
                         new
                         {
-                            Id = "18f2bb15-c5c3-4161-b3d5-ad8eab609da5",
+                            Id = "cd1aaf29-6373-4509-91cd-18631b772e41",
                             AccessFailedCount = 0,
                             Address = "Egypt, fayoum",
                             ConcurrencyStamp = "d0831003-9587-495a-8e7d-d350e009366e",
@@ -314,7 +317,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             Name = "Mohamed Soliman",
                             NormalizedEmail = "PATIENT@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_SOLIMAN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHE0DBT0NjWYFhPq9YZ+vvqMxtnnu6TJhDPJkR+b4kmd2XsQVzGNsVyXKnec9tlaDw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEN3BUx8EVOHkOLzwtn6c3h6ZkuG2nutD7hs8x98xxOzm2hq/IVu+eREQQz0NLGG03A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "b9d50bbf5e87434fa03edc01413ca904",
                             TwoFactorEnabled = false,
@@ -335,7 +338,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Patient", b =>
@@ -345,7 +348,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Patients", (string)null);
+                    b.ToTable("Patients");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Pharmacist", b =>
@@ -360,7 +363,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Pharmacists", (string)null);
+                    b.ToTable("Pharmacists");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Psychiatrist", b =>
@@ -375,7 +378,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Psychiatrists", (string)null);
+                    b.ToTable("Psychiatrists");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Volunteer", b =>
@@ -385,7 +388,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Volunteers", (string)null);
+                    b.ToTable("Volunteers");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Records.Record", b =>
@@ -414,7 +417,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("Records", (string)null);
+                    b.ToTable("Records");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.MedsReminder", b =>
@@ -445,7 +448,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("MedsReminders", (string)null);
+                    b.ToTable("MedsReminders");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.VisitReminder", b =>
@@ -474,7 +477,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("VisitReminders", (string)null);
+                    b.ToTable("VisitReminders");
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Roles.ApplicationRole", b =>
