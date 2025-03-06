@@ -5,7 +5,7 @@ namespace CanaApp.Domain.Entities.Comunity
     public class Comment
     {
         public int Id { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime Time { get; set; } = DateTime.UtcNow;       
         public string Content { get; set; } = default!;
 
         // Foreign keys and navigation properties

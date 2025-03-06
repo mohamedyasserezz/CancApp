@@ -5,8 +5,7 @@ namespace CanaApp.Domain.Entities.Comunity
     public class Reaction
     {
         public int Id { get; set; }
-        public DateTime Time { get; set; }
-        public string Type { get; set; } = string.Empty;
+        public DateTime Time { get; set; } = DateTime.UtcNow;
 
         // Foreign keys and navigation properties
         public int PostId { get; set; }

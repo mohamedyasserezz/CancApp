@@ -10,7 +10,6 @@ namespace CanaApp.Domain.Entities.Reminders
         public TimeSpan Alarm { get; set; }
 
         // Foreign key and navigation property
-        public int PatientId { get; set; }
         public Patient Patient { get; set; } = default!;
     }
 }
