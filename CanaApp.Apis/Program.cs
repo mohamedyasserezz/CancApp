@@ -1,3 +1,4 @@
+using CanaApp.Apis;
 using CanaApp.Application;
 using CanaApp.Persistance;
 using CancApp.Shared;
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddShared();
 builder.Services.AddServices(builder.Configuration);
+builder.Services.AddApis(builder.Configuration);
 
 var app = builder.Build();
 
