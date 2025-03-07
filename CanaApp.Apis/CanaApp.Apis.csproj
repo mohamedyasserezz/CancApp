@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CanaApp.Application\CanaApp.Application.csproj" />
     <ProjectReference Include="..\CanaApp.Domain\CanaApp.Domain.csproj" />
     <ProjectReference Include="..\CanaApp.Persistance\CanaApp.Persistance.csproj" />
