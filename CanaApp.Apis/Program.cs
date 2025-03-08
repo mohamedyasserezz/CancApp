@@ -2,6 +2,8 @@ using CanaApp.Apis;
 using CanaApp.Application;
 using CanaApp.Persistance;
 using CancApp.Shared;
+using Hangfire;
+using HangfireBasicAuthenticationFilter;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,19 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+app.UseHangfireDashboard("/jobs", new DashboardOptions
+{
+    Authorization = [
+        new HangfireCustomBasicAuthenticationFilter{
+            User = app.Configuration.GetValue<string>("HangfireSettings:UserName"),
+            Pass = app.Configuration.GetValue<string>("HangfireSettings:Password")
+        }
+        ],
+    DashboardTitle = "CANC App Jobs",
+    //IsReadOnlyFunc = (DashboardContext context) => true
+
+}
+    );
 
 app.UseAuthorization();
 

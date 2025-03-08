@@ -1,21 +1,41 @@
 ﻿using CanaApp.Domain.Contract.Service.Authentication;
+using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Models;
+using CancApp.Shared.Common.Consts;
+using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.Register;
+using Hangfire;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace CanaApp.Application.Services.Authentication
 {
     public class AuthService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IJwtProvider jwtProvider) : IAuthService
+        IJwtProvider jwtProvider,
+        IFileService fileService,
+        IHttpContextAccessor httpContextAccessor,
+        IEmailSender emailSender,
+        ILogger<AuthService> logger) : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
+        private readonly IFileService _fileService = fileService;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IEmailSender _emailSender = emailSender;
+        private readonly ILogger<AuthService> _logger = logger;
+
 
         private readonly int _refreshTokenExpiryDays = 14;
 
@@ -146,6 +166,61 @@ namespace CanaApp.Application.Services.Authentication
             return Result.Success();
         }
 
+        public async Task<Result> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
+        {
+            var emailIsExists = await _userManager.Users.AnyAsync(x => x.Email == request.Email, cancellationToken);
+
+            if (emailIsExists)
+                return Result.Failure(UserErrors.DuplicatedEmail);
+
+            var user = new ApplicationUser
+            {
+                Address = request.Address,
+                Email = request.Email,
+                Name = request.Name,
+                UserName = request.UserName,
+
+            };
+            if (request.Image is not null)
+            {
+                string createdImageName = await _fileService.SaveFileAsync(request.Image!, ImageSubFolder.Patients);
+
+                user.Image = createdImageName;
+            }
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded)
+            {
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                _logger.LogInformation("Confirmation code: {code}", code);
+
+                await SendConfirmationEmail(user, code);
+
+                return Result.Success();
+            }
+
+            var error = result.Errors.First();
+
+            return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+        }
+        private async Task SendConfirmationEmail(ApplicationUser user, string code)
+        {
+            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+            var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
+                templateModel: new Dictionary<string, string>
+                {
+                { "{{name}}", user.Name },
+                    { "{{action_url}}", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}" }
+                }
+            );
+
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CANC App: Email Confirmation", emailBody));
+
+            await Task.CompletedTask;
+        }
         private static string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
