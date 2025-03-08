@@ -9,6 +9,6 @@ namespace CancApp.Shared.Models.Authentication.Register
     string UserName,
     string? Address,
 
-    IFormFile Image
+    IFormFile? Image
 );
 }

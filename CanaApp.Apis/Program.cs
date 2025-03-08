@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddPersistance(builder.Configuration);
-builder.Services.AddShared();
+builder.Services.AddShared(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
 builder.Services.AddApis(builder.Configuration);
 

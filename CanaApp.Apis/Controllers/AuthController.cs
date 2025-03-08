@@ -3,6 +3,7 @@ using CanaApp.Domain.Contract.Service.Authentication;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Authentication.Login;
 using CancApp.Shared.Models.Authentication.RefreshToken;
+using CancApp.Shared.Models.Authentication.Register;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace CanaApp.Apis.Controllers
         private readonly IAuthService _authService = authService;
         private readonly ILogger<AuthController> _logger = logger;
 
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Logging with email: {email} and password: {password}", loginRequest.Email, loginRequest.Password);
@@ -43,6 +44,13 @@ namespace CanaApp.Apis.Controllers
 
             return response.IsSuccess ? Ok() : response.ToProblem();
 
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.RegisterAsync(request);
+            return result.IsSuccess ? Ok() : result.ToProblem();
         }
     }
 }

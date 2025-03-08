@@ -179,7 +179,7 @@ namespace CanaApp.Application.Services.Authentication
                 Email = request.Email,
                 Name = request.Name,
                 UserName = request.UserName,
-
+                UserType = UserType.Patient
             };
             if (request.Image is not null)
             {
