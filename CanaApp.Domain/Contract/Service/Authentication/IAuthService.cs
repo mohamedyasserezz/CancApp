@@ -15,6 +15,7 @@ namespace CanaApp.Domain.Contract.Service.Authentication
          Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request);
          Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request);
         Task<Result> SendResetPasswordCodeAsync(string email);
+        // Task<Result> ResetPasswordAsync(ResetPasswordRequest request);
 
     }
 }
