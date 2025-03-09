@@ -1,11 +1,10 @@
-﻿using CanaApp.Application.Services.Authentication;
-using CanaApp.Domain.Contract.Service.Authentication;
+﻿using CanaApp.Domain.Contract.Service.Authentication;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Login;
 using CancApp.Shared.Models.Authentication.RefreshToken;
 using CancApp.Shared.Models.Authentication.Register;
-using Microsoft.AspNetCore.Http;
+using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CanaApp.Apis.Controllers
@@ -60,6 +59,15 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
+        [HttpPost("resend-Confirm-email")]
+        public async Task<IActionResult> ResendConfirmEmail([FromBody] ResendConfirmationEmailRequest request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("try to resend email for the user with Email: {Email}", request.Email);
 
+            var response = await _authService.ResendConfirmationEmailAsync(request);
+
+            return response.IsSuccess ? Ok() : response.ToProblem();
+
+        }
     }
 }

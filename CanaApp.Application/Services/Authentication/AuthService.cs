@@ -238,7 +238,6 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
-
         public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request)
         {
             if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
