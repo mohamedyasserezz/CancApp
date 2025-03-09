@@ -18,4 +18,8 @@
     <ProjectReference Include="..\CanaApp.Domain\CanaApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Seed\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,5 @@
 ﻿using CanaApp.Domain.Entities.Roles;
-using CanaApp.Persistance.Data.Seed;
+using CancApp.Shared.Common.Consts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

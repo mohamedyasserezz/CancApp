@@ -1,4 +1,4 @@
-﻿namespace CanaApp.Persistance.Data.Seed
+﻿namespace CancApp.Shared.Common.Consts
 {
     public static class DefaultRoles
     {
