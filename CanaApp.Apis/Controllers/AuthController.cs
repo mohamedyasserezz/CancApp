@@ -1,6 +1,7 @@
 ﻿using CanaApp.Application.Services.Authentication;
 using CanaApp.Domain.Contract.Service.Authentication;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Login;
 using CancApp.Shared.Models.Authentication.RefreshToken;
 using CancApp.Shared.Models.Authentication.Register;
@@ -52,5 +53,13 @@ namespace CanaApp.Apis.Controllers
             var result = await _authService.RegisterAsync(request);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.ConfirmEmailAsync(request);
+
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+
     }
 }
