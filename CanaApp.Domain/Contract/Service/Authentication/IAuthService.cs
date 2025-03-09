@@ -14,5 +14,7 @@ namespace CanaApp.Domain.Contract.Service.Authentication
         Task<Result> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
          Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request);
          Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request);
+        Task<Result> SendResetPasswordCodeAsync(string email);
+
     }
 }

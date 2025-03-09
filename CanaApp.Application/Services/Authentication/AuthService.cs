@@ -255,6 +255,23 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Success();
         }
+        public async Task<Result> SendResetPasswordCodeAsync(string email)
+        {
+            if (await _userManager.FindByEmailAsync(email) is not { } user)
+                return Result.Success();
+
+            if (!user.EmailConfirmed)
+                return Result.Failure(UserErrors.EmailNotConfirmed);
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            _logger.LogInformation("Reset code: {code}", code);
+
+            await SendResetPasswordEmail(user, code);
+
+            return Result.Success();
+        }
         private async Task SendConfirmationEmail(ApplicationUser user, string code)
         {
             var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
@@ -268,6 +285,22 @@ namespace CanaApp.Application.Services.Authentication
             );
 
             BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CANC App: Email Confirmation", emailBody));
+
+            await Task.CompletedTask;
+        }
+        private async Task SendResetPasswordEmail(ApplicationUser user, string code)
+        {
+            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
+
+            var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
+                templateModel: new Dictionary<string, string>
+                {
+                { "{{name}}", user.Name },
+                { "{{action_url}}", $"{origin}/auth/forgetPassword?email={user.Email}&code={code}" }
+                }
+            );
+
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CancApp: Change Password", emailBody));
 
             await Task.CompletedTask;
         }
