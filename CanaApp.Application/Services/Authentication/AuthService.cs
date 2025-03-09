@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
+using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
 
 namespace CanaApp.Application.Services.Authentication
 {
@@ -236,6 +237,24 @@ namespace CanaApp.Application.Services.Authentication
             var error = result.Errors.First();
 
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+        }
+
+        public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request)
+        {
+            if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
+                return Result.Success();
+
+            if (user.EmailConfirmed)
+                return Result.Failure(UserErrors.DuplicatedConfirmation);
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            _logger.LogInformation("Confirmation code: {code}", code);
+
+            await SendConfirmationEmail(user, code);
+
+            return Result.Success();
         }
         private async Task SendConfirmationEmail(ApplicationUser user, string code)
         {

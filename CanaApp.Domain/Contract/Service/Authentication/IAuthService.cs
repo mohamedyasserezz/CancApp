@@ -2,6 +2,7 @@
 using CancApp.Shared.Models.Authentication;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Register;
+using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
 
 namespace CanaApp.Domain.Contract.Service.Authentication
 {
@@ -12,6 +13,6 @@ namespace CanaApp.Domain.Contract.Service.Authentication
         Task<Result> RevokeRefreshTokenAsync(string token, string refreshToken, CancellationToken cancellationToken = default);
         Task<Result> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
          Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request);
-        // Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request);
+         Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request);
     }
 }

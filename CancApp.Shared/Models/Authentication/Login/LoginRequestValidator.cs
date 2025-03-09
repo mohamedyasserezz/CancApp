@@ -9,7 +9,8 @@ namespace CancApp.Shared.Models.Authentication.Login
             RuleFor(X => X.Email)
                 .NotEmpty()
                 .WithMessage("Plz Add a {PropertyName}")
-                .EmailAddress();
+                .EmailAddress()
+                .WithMessage("Plz Add a Valid {PropertyName}");
 
             RuleFor(X => X.Password)
                .NotEmpty()

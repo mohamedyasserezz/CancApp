@@ -6,11 +6,13 @@ namespace CancApp.Shared.Models.Authentication.ConfirmationEmail
     {
         public ConfirmEmailRequestValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty();
+            RuleFor(X => X.UserId)
+                .NotEmpty()
+                .WithMessage("Plz Add a {PropertyName}");
 
-            RuleFor(x => x.Code)
-                .NotEmpty();
+            RuleFor(X => X.Code)
+               .NotEmpty()
+               .WithMessage("Plz Add a {PropertyName}");
         }
     }
 }
