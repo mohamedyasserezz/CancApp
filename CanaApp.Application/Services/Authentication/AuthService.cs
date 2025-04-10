@@ -1,12 +1,15 @@
 ﻿using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Models;
-using CancApp.Shared.Common.Consts;
-using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
+using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Register;
+using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
+using CancApp.Shared.Models.Authentication.ResetPassword;
 using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,8 +19,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
-using CancApp.Shared.Models.Authentication.ConfirmationEmail;
-using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
 
 namespace CanaApp.Application.Services.Authentication
 {
@@ -271,6 +272,32 @@ namespace CanaApp.Application.Services.Authentication
             await SendResetPasswordEmail(user, code);
 
             return Result.Success();
+        }
+        public async Task<Result> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user is null || !user.EmailConfirmed)
+                return Result.Failure(UserErrors.InvalidCode);
+
+            IdentityResult result;
+
+            try
+            {
+                var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+                result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+            }
+            catch (FormatException)
+            {
+                result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
+            }
+
+            if (result.Succeeded)
+                return Result.Success();
+
+            var error = result.Errors.First();
+
+            return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
         }
         private async Task SendConfirmationEmail(ApplicationUser user, string code)
         {

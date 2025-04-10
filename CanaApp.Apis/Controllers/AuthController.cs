@@ -5,8 +5,9 @@ using CancApp.Shared.Models.Authentication.ForgetPassword;
 using CancApp.Shared.Models.Authentication.Login;
 using CancApp.Shared.Models.Authentication.RefreshToken;
 using CancApp.Shared.Models.Authentication.Register;
-using Microsoft.AspNetCore.Mvc;
 using  CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
+using CancApp.Shared.Models.Authentication.ResetPassword;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CanaApp.Apis.Controllers
 {
@@ -74,6 +75,13 @@ namespace CanaApp.Apis.Controllers
         public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordRequest request)
         {
             var result = await _authService.SendResetPasswordCodeAsync(request.Email);
+
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.ResetPasswordAsync(request);
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
