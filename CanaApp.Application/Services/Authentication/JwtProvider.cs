@@ -23,7 +23,7 @@ namespace CanaApp.Application.Services.Authentication
                 new(JwtRegisteredClaimNames.Sub,user.Id),
                 new(JwtRegisteredClaimNames.Email,user.Email!),
                 new(JwtRegisteredClaimNames.GivenName,user.Name),
-                new(JwtRegisteredClaimNames.Address,user.Address),
+                new(JwtRegisteredClaimNames.Address,user.Address!),
                 new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 new(nameof(roles),JsonSerializer.Serialize(roles),JsonClaimValueTypes.JsonArray)
             };

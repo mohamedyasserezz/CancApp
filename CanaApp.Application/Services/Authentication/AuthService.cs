@@ -186,9 +186,13 @@ namespace CanaApp.Application.Services.Authentication
             };
             if (request.Image is not null)
             {
-                string createdImageName = await _fileService.SaveFileAsync(request.Image!, ImageSubFolder.Patients);
+                string createdImageName = await _fileService.SaveFileAsync(request.Image, ImageSubFolder.Patients);
 
                 user.Image = createdImageName;
+            }
+            else
+            {
+                user.Image = "default.png";
             }
             var result = await _userManager.CreateAsync(user, request.Password);
 

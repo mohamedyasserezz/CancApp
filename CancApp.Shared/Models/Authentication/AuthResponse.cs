@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CancApp.Shared.Models.Authentication
+﻿namespace CancApp.Shared.Models.Authentication
 {
     public record AuthResponse(
     string Id,

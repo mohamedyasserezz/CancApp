@@ -7,5 +7,7 @@
         public const string Pharmacists = nameof(Pharmacists);
         public const string Psychiatrists = nameof(Psychiatrists);
         public const string Volunteers = nameof(Volunteers);
+        public const string Default = nameof(Default);
+
     }
 }

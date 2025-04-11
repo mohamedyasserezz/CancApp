@@ -7,13 +7,11 @@ namespace CanaApp.Application.Services.Files
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly string _uploadsPath;
         private readonly string _imagesPath;
 
         public FileService(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
-            _uploadsPath = $"{_webHostEnvironment.WebRootPath}/uploads";
             _imagesPath = $"{_webHostEnvironment.WebRootPath}/images";
         }
         public async Task<string> SaveFileAsync(IFormFile imageFile, string subfolder)

@@ -14,4 +14,8 @@
     <ProjectReference Include="..\CancApp.Shared\CancApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contract\Service\Community\" />
+  </ItemGroup>
+
 </Project>
