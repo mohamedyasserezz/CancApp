@@ -1,11 +1,13 @@
-﻿using CanaApp.Domain.Contract.Infrastructure;
+﻿using CanaApp.Domain.Contract;
+using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace CanaApp.Persistance.GenericRepository
 {
-    public class GenericRepository<TEntity>(ApplicationDbContext _dbContext) : IGenricRepository<TEntity>
+    internal class GenericRepository<TEntity, TKey>(ApplicationDbContext _dbContext) : IGenricRepository<TEntity, TKey>
         where TEntity : class
+        where TKey : IEquatable<TKey>
     {
         #region Fields
 
@@ -36,5 +38,19 @@ namespace CanaApp.Persistance.GenericRepository
             _dbContext.Remove(entity);
         }
 
+        public Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetCountWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TEntity?> GetWithSpecAsync(ISpecification<TEntity, TKey> specifications)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

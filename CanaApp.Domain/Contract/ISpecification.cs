@@ -2,7 +2,7 @@
 
 namespace CanaApp.Domain.Contract
 {
-    public interface ISpecifications<TEntity, TKey>
+    public interface ISpecification<TEntity, TKey>
         where TKey : IEquatable<TKey>
     {
         public Expression<Func<TEntity, bool>>? Criteria { get; set; }
