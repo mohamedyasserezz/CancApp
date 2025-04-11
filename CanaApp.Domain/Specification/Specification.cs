@@ -27,11 +27,11 @@ namespace CanaApp.Domain.Specification
         {
 
         }
-        private protected virtual void AddOrderBy(Expression<Func<TEntity, object>>? orderBy)
+         protected virtual void AddOrderBy(Expression<Func<TEntity, object>>? orderBy)
         {
             OrderBy = orderBy;
         }
-        private protected virtual void AddOrderByDesc(Expression<Func<TEntity, object>>? orderByDesc)
+         protected virtual void AddOrderByDesc(Expression<Func<TEntity, object>>? orderByDesc)
         {
             OrderByDesc = orderByDesc;
         }
