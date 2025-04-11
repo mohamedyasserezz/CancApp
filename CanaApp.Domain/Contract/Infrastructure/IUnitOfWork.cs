@@ -2,8 +2,9 @@
 {
     public interface IUnitOfWork : IAsyncDisposable
     {
-        IGenricRepository<TEntity> GetRepository<TEntity>()
-            where TEntity : class;
+        IGenricRepository<TEntity, Tkey> GetRepository<TEntity, Tkey>()
+            where TEntity : class
+            where Tkey : IEquatable<Tkey>;
         Task<int> CompleteAsync();
     }
 }
