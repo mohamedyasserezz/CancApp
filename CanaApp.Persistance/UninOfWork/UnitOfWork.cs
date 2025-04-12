@@ -18,9 +18,11 @@ namespace CanaApp.Persistance.UninOfWork
         public async Task<int> CompleteAsync() => await _dbContext.SaveChangesAsync();
         public ValueTask DisposeAsync() => _dbContext.DisposeAsync();
 
-        public IGenricRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        public IGenricRepository<TEntity, Tkey> GetRepository<TEntity, Tkey>() 
+            where TEntity : class
+            where Tkey : IEquatable<Tkey>
         {
-            return (IGenricRepository<TEntity>)_repositories.GetOrAdd(typeof(TEntity).Name, new GenericRepository<TEntity>(_dbContext));
+            return (IGenricRepository<TEntity, Tkey>)_repositories.GetOrAdd(typeof(TEntity).Name, new GenericRepository<TEntity, Tkey>(_dbContext));
         }
         #endregion
     }

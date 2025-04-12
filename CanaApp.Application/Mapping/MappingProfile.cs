@@ -15,7 +15,8 @@ namespace CanaApp.Application.Mapping
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.ApplicationUser.UserName))
                 .ForMember(dest => dest.UserProfilePictureUrl, opt => opt.MapFrom(src => GetProfilePictureUrl(httpContextAccessor, src.ApplicationUser.Image!, src.ApplicationUser.UserType)))
                 .ForMember(dest => dest.ReactionType, opt => opt.MapFrom(src => src.ReactionType.ToString()))
-                .ForMember(dest => dest.IsComment, opt => opt.MapFrom(src => src.CommentId.HasValue));
+                .ForMember(dest => dest.IsComment, opt => opt.MapFrom(src => src.CommentId.HasValue))
+                .ReverseMap();
 
             // Add other mappings as needed
         }
