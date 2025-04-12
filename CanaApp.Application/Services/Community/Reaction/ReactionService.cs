@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CanaApp.Domain.Contract.Infrastructure;
-using CanaApp.Domain.Contract.Service.Community;
+using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
@@ -11,7 +11,7 @@ using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Reactions;
 using Microsoft.Extensions.Logging;
 
-namespace CanaApp.Application.Services.Community
+namespace CanaApp.Application.Services.Community.Reaction
 {
     class ReactionService(
         IUnitOfWork unitOfWork,

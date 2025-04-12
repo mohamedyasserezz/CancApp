@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CancApp.Shared.Abstractions;
+using Microsoft.AspNetCore.Http;
 
 namespace CancApp.Shared._Common.Errors
 {
-    class ReactionErrors
+    public static class ReactionErrors
     {
+        public static readonly Error ReactionNotFound =
+            new("Reaction.ReactionNotFound", "Reaction is not found", StatusCodes.Status404NotFound);
+        public static readonly Error ReactionAlreadyExists =
+            new("Reaction.ReactionAlreadyExists", "Reaction already exists", StatusCodes.Status409Conflict);
+        public static readonly Error InvalidReactionType =
+            new("Reaction.InvalidReactionType", "Invalid reaction type", StatusCodes.Status400BadRequest);
     }
 }

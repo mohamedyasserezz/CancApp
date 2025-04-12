@@ -1,7 +1,7 @@
 ﻿using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Community.Reactions;
 
-namespace CanaApp.Domain.Contract.Service.Community
+namespace CanaApp.Domain.Contract.Service.Community.Reaction
 {
     public interface IReactionService
     {
