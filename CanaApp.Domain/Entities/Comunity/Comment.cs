@@ -15,7 +15,6 @@ namespace CanaApp.Domain.Entities.Comunity
         public ApplicationUser User { get; set; } = default!;
         public string UserId { get; set; } = default!;
 
-        
         public ICollection<Reaction>? Reactions = new List<Reaction>();
         public int? ParentCommentId { get; set; }
         public Comment ParentComment { get; set; } = default!;

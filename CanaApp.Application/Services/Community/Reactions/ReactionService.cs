@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Entities.Comunity;
@@ -11,7 +12,7 @@ using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Reactions;
 using Microsoft.Extensions.Logging;
 
-namespace CanaApp.Application.Services.Community.Reaction
+namespace CanaApp.Application.Services.Community.Reactions
 {
     class ReactionService(
         IUnitOfWork unitOfWork,
@@ -67,7 +68,14 @@ namespace CanaApp.Application.Services.Community.Reaction
                 }
                 
             }
-            var reaction = _mapper.Map<Reaction>(request);
+
+            var reaction = new Reaction
+            {
+                PostId = request.PostId,
+                CommentId = request.CommentId,
+                UserId = request.UserId,
+                ReactionType = Enum.Parse<ReactionType>(request.ReactionType)
+            };
 
             await _unitOfWork.GetRepository<Reaction, int>().AddAsync(reaction);
 
@@ -101,6 +109,7 @@ namespace CanaApp.Application.Services.Community.Reaction
 
             var reactionSpec = new ReactionSpecification(
                 r => r.PostId == request.PostId && r.UserId == request.UserId && (request.IsComment ? r.CommentId == request.CommentId : !r.CommentId.HasValue));
+
             var reaction = await _unitOfWork.GetRepository<Reaction, int>().GetWithSpecAsync(reactionSpec);
 
             if (reaction is null)

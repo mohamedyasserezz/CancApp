@@ -1,7 +1,14 @@
-﻿namespace CanaApp.Domain.Contract.Service.Community.Comment
+﻿using CancApp.Shared.Abstractions;
+using CancApp.Shared.Models.Community.Comments;
+
+namespace CanaApp.Domain.Contract.Service.Community.Comment
 {
     public interface ICommentService
     {
-
+        public Task<Result<CommentResponse>> GetCommentAsync(int commentId);
+        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(Guid postId, int page, int pageSize);
+        public Task<Result> AddCommentAsync(CommentRequest request);
+        public Task<Result> UpdateCommentAsync(CommentRequest request);
+        public Task<Result> DeleteCommentAsync(Guid commentId);
     }
 }

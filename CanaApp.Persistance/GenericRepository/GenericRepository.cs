@@ -1,5 +1,6 @@
 ﻿using CanaApp.Domain.Contract;
 using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Domain.Specification;
 using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,19 +39,16 @@ namespace CanaApp.Persistance.GenericRepository
             _dbContext.Remove(entity);
         }
 
-        public Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<TEntity>> GetAllWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
+        => await ApplySpecification(specifications).ToListAsync();
 
-        public Task<int> GetCountWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<int> GetCountWithSpecAsync(ISpecification<TEntity, TKey> specifications, bool withTracking = false)
+        => await ApplySpecification(specifications).CountAsync();
 
-        public Task<TEntity?> GetWithSpecAsync(ISpecification<TEntity, TKey> specifications)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<TEntity?> GetWithSpecAsync(ISpecification<TEntity, TKey> specifications)
+        => await ApplySpecification(specifications).FirstOrDefaultAsync();
+
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity, TKey> specifications)
+          => SpecificationEvaluator<TEntity, TKey>.GetQuery(_dbContext.Set<TEntity>(), specifications);
     }
 }
