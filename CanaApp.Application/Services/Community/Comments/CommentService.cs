@@ -93,9 +93,19 @@ namespace CanaApp.Application.Services.Community.Comments
 
         }
 
-        public Task<Result> UpdateCommentAsync(CommentRequest request)
+        public async Task<Result> UpdateCommentAsync(UpdateCommentRequest request)
         {
-            throw new NotImplementedException();
+            var spec = new CommentSpecification(c => c.Id == request.CommentId);
+            var comment = await _unitOfWork.GetRepository<Comment, int>().GetWithSpecAsync(spec);
+            if (comment is null)
+            {
+                return Result.Failure(CommentErrors.CommentNotFound);
+            }
+            comment.Content = request.Content;
+            comment.Time = DateTime.UtcNow;
+            _unitOfWork.GetRepository<Comment, int>().Update(comment);
+            await _unitOfWork.CompleteAsync();
+            return Result.Success();
         }
     }
 }
