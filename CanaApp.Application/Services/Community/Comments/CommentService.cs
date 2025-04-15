@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using CanaApp.Domain.Entities.Comunity;
 using CancApp.Shared._Common.Errors;
 using AutoMapper;
+using CanaApp.Domain.Specification;
+using CanaApp.Domain.Specification.Posts;
 namespace CanaApp.Application.Services.Community.Comments
 {
     internal class CommentService(
@@ -18,6 +20,7 @@ namespace CanaApp.Application.Services.Community.Comments
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<CommentService> _logger = logger;
+
 
         public async Task<Result<CommentResponse>> GetCommentAsync(int commentId)
         {
@@ -35,9 +38,22 @@ namespace CanaApp.Application.Services.Community.Comments
             return Result.Success(responsr);
         }
 
-        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId)
+        public async Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Getting comments for post {PostId}", postId);
+            var postSpec = new PostSpecification(p => p.Id == postId);
+            var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
+            if (post is null)
+            {
+                return Result.Failure<IEnumerable<CommentResponse>>(PostErrors.PostNotFound);
+            }
+            var comments = post.Comments;
+            if (comments is null || !comments.Any())
+            {
+                return Result.Failure<IEnumerable<CommentResponse>>(CommentErrors.CommentNotFound);
+            }
+            var response = _mapper.Map<IEnumerable<CommentResponse>>(comments);
+            return Result.Success(response);
         }
         public Task<Result> AddCommentAsync(CommentRequest request)
         {
@@ -48,9 +64,7 @@ namespace CanaApp.Application.Services.Community.Comments
         {
             throw new NotImplementedException();
         }
-
         
-
         public Task<Result> UpdateCommentAsync(CommentRequest request)
         {
             throw new NotImplementedException();
