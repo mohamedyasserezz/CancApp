@@ -20,8 +20,7 @@ namespace CanaApp.Application.Mapping
 
             CreateMap<Comment, CommentResponse>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
-                .ForMember(dest => dest.UserImage, opt => opt.MapFrom(src => GetProfilePictureUrl(httpContextAccessor, src.User.Image!, src.User.UserType)))
-                .ForMember(dest => dest.ChildComments, opt => opt.MapFrom(src => src.ChildComments));
+                .ForMember(dest => dest.UserImage, opt => opt.MapFrom(src => GetProfilePictureUrl(httpContextAccessor, src.User.Image!, src.User.UserType)));
         }
 
         private static string? GetProfilePictureUrl(IHttpContextAccessor httpContextAccessor, string fileName, UserType userType)

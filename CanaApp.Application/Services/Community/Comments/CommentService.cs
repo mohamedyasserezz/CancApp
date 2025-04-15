@@ -55,9 +55,26 @@ namespace CanaApp.Application.Services.Community.Comments
             var response = _mapper.Map<IEnumerable<CommentResponse>>(comments);
             return Result.Success(response);
         }
-        public Task<Result> AddCommentAsync(CommentRequest request)
+        public async Task<Result> AddCommentAsync(CommentRequest request)
         {
-            throw new NotImplementedException();
+
+            _logger.LogInformation("Adding comment for post {PostId}", request.PostId);
+            var postSpec = new PostSpecification(p => p.Id == request.PostId);
+            var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
+
+            if (post is null)
+                return Result.Failure(PostErrors.PostNotFound);
+
+            var comment = new Comment
+            {
+                Content = request.Content,
+                PostId = request.PostId,
+                UserId = request.UserId,
+            };
+            await _unitOfWork.GetRepository<Comment, int>().AddAsync(comment);
+            await _unitOfWork.CompleteAsync();
+
+            return Result.Success();
         }
 
         public Task<Result> DeleteCommentAsync(int commentId)
