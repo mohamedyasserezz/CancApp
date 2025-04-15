@@ -6,9 +6,9 @@ namespace CanaApp.Domain.Contract.Service.Community.Comment
     public interface ICommentService
     {
         public Task<Result<CommentResponse>> GetCommentAsync(int commentId);
-        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(Guid postId, int page, int pageSize);
+        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId);
         public Task<Result> AddCommentAsync(CommentRequest request);
         public Task<Result> UpdateCommentAsync(CommentRequest request);
-        public Task<Result> DeleteCommentAsync(Guid commentId);
+        public Task<Result> DeleteCommentAsync(int commentId);
     }
 }

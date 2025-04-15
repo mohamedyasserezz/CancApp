@@ -22,8 +22,4 @@
     <ProjectReference Include="..\CanaApp.Domain\CanaApp.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Community\Comment\" />
-  </ItemGroup>
-
 </Project>

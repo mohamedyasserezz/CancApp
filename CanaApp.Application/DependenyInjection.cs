@@ -1,8 +1,12 @@
 ﻿using CanaApp.Application.Mapping;
 using CanaApp.Application.Services.Authentication;
+using CanaApp.Application.Services.Community.Comment;
+using CanaApp.Application.Services.Community.Reactions;
 using CanaApp.Application.Services.Email;
 using CanaApp.Application.Services.Files;
 using CanaApp.Domain.Contract.Service.Authentication;
+using CanaApp.Domain.Contract.Service.Community.Comment;
+using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Contract.Service.File;
 using Hangfire;
 using Microsoft.AspNetCore.Http;
@@ -46,6 +50,8 @@ namespace CanaApp.Application
 
             #endregion
 
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IReactionService, ReactionService>();
             return services;
         }
     }
