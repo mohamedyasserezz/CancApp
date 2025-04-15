@@ -77,11 +77,22 @@ namespace CanaApp.Application.Services.Community.Comments
             return Result.Success();
         }
 
-        public Task<Result> DeleteCommentAsync(int commentId)
+        public async Task<Result> DeleteCommentAsync(int commentId)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Deleting comment {CommentId}", commentId);
+            var spec = new CommentSpecification(c => c.Id == commentId);
+            var comment = await _unitOfWork.GetRepository<Comment, int>().GetWithSpecAsync(spec);
+            if (comment is null)
+            {
+                return Result.Failure(CommentErrors.CommentNotFound);
+            }
+            _unitOfWork.GetRepository<Comment, int>().Delete(comment);
+            await _unitOfWork.CompleteAsync();
+
+            return Result.Success();
+
         }
-        
+
         public Task<Result> UpdateCommentAsync(CommentRequest request)
         {
             throw new NotImplementedException();
