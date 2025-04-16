@@ -24,11 +24,7 @@ namespace CanaApp.Persistance.Data.Configurations
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(c => c.ParentComment)
-                .WithMany(pc => pc.ChildComments)
-                .HasForeignKey(c => c.ParentCommentId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

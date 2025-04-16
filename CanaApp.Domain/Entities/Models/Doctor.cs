@@ -8,7 +8,7 @@ namespace CanaApp.Domain.Entities.Models
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;
         public bool IsConfirmedByAdmin { get; set; }
-
+        
         // Community
         public ICollection<Post> Posts = new List<Post>();
         public ICollection<Reaction> Reactions = new List<Reaction>();

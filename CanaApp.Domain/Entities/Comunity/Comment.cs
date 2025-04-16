@@ -14,6 +14,7 @@ namespace CanaApp.Domain.Entities.Comunity
 
         public ApplicationUser User { get; set; } = default!;
         public string UserId { get; set; } = default!;
+        public bool IsReported { get; set; }
 
         public ICollection<Reaction>? Reactions = new List<Reaction>();
     }
