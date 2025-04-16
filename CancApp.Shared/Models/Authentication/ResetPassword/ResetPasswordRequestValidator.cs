@@ -11,7 +11,7 @@ namespace CancApp.Shared.Models.Authentication.ResetPassword
                 .NotEmpty()
                 .EmailAddress();
 
-            RuleFor(x => x.Code)
+            RuleFor(x => x.Otp)
                .NotEmpty();
 
             RuleFor(x => x.NewPassword)

@@ -74,7 +74,7 @@ namespace CanaApp.Apis.Controllers
         [HttpPost("forget-password")]
         public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordRequest request)
         {
-            var result = await _authService.SendResetPasswordCodeAsync(request.Email);
+            var result = await _authService.SendResetPasswordOtpAsync(request.Email);
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }

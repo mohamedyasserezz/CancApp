@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace CanaApp.Application.Services.Authentication
 {
@@ -40,6 +41,8 @@ namespace CanaApp.Application.Services.Authentication
         private readonly ILogger<AuthService> _logger = logger;
 
 
+        private static readonly Dictionary<string, (string Otp, DateTime Expiry)> _otpStore = new();
+        private readonly int _otpExpiryMinutes = 15;
         private readonly int _refreshTokenExpiryDays = 14;
 
         public async Task<Result<AuthResponse>> GetTokenAsync(string email, string password, CancellationToken cancellationToken = default)
@@ -198,12 +201,15 @@ namespace CanaApp.Application.Services.Authentication
 
             if (result.Succeeded)
             {
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                string otp = GenerateOTP();
+                
+                var key = $"EMAIL_CONFIRM_{user.Id}";
 
-                _logger.LogInformation("Confirmation code: {code}", code);
+                _otpStore[key] = (otp, DateTime.UtcNow.AddMinutes(_otpExpiryMinutes));
 
-                await SendConfirmationEmail(user, code);
+                _logger.LogInformation("Confirmation otp: {otp}", otp);
+
+                await SendConfirmationEmail(user, otp);
 
                 return Result.Success();
             }
@@ -220,22 +226,38 @@ namespace CanaApp.Application.Services.Authentication
             if (user.EmailConfirmed)
                 return Result.Failure(UserErrors.DuplicatedConfirmation);
 
-            var code = request.Code;
+            var key = $"EMAIL_CONFIRM_{user.Id}";
 
-            try
-            {
-                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            }
-            catch (FormatException)
+            // Check if OTP exists and is valid
+            if (!_otpStore.TryGetValue(key, out var otpInfo) ||
+                otpInfo.Otp != request.Code ||
+                otpInfo.Expiry < DateTime.UtcNow)
             {
                 return Result.Failure(UserErrors.InvalidCode);
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            // Remove the OTP from store after usage
+            _otpStore.Remove(key);
+
+            // Generate a token for internal use with Identity
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, DefaultRoles.Patient);
+                if(user.UserType == UserType.Patient)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Patient);
+                else if (user.UserType == UserType.Doctor)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Doctor);
+                else if (user.UserType == UserType.Admin)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Admin);
+                else if (user.UserType == UserType.Psychiatrist)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Psychiatrist);
+                else if (user.UserType == UserType.Pharmacist)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Pharmacist);
+                else if (user.UserType == UserType.Volunteer)
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Volunteer);
+
                 return Result.Success();
             }
 
@@ -251,16 +273,19 @@ namespace CanaApp.Application.Services.Authentication
             if (user.EmailConfirmed)
                 return Result.Failure(UserErrors.DuplicatedConfirmation);
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            string otp = GenerateOTP();
 
-            _logger.LogInformation("Confirmation code: {code}", code);
+            // Store OTP with expiry time
+            var key = $"EMAIL_CONFIRM_{user.Id}";
+            _otpStore[key] = (otp, DateTime.UtcNow.AddMinutes(_otpExpiryMinutes));
 
-            await SendConfirmationEmail(user, code);
+            _logger.LogInformation("New confirmation OTP for {email}: {otp}", user.Email, otp);
+
+            await SendConfirmationEmail(user, otp);
 
             return Result.Success();
         }
-        public async Task<Result> SendResetPasswordCodeAsync(string email)
+        public async Task<Result> SendResetPasswordOtpAsync(string email)
         {
             if (await _userManager.FindByEmailAsync(email) is not { } user)
                 return Result.Success();
@@ -268,12 +293,15 @@ namespace CanaApp.Application.Services.Authentication
             if (!user.EmailConfirmed)
                 return Result.Failure(UserErrors.EmailNotConfirmed);
 
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            string otp = GenerateOTP();
 
-            _logger.LogInformation("Reset code: {code}", code);
+            // Store OTP with expiry time
+            var key = $"PWD_RESET_{user.Id}";
+            _otpStore[key] = (otp, DateTime.UtcNow.AddMinutes(_otpExpiryMinutes));
 
-            await SendResetPasswordEmail(user, code);
+            _logger.LogInformation("Password reset OTP for {email}: {otp}", user.Email, otp);
+
+            await SendResetPasswordEmail(user, otp);
 
             return Result.Success();
         }
@@ -284,17 +312,24 @@ namespace CanaApp.Application.Services.Authentication
             if (user is null || !user.EmailConfirmed)
                 return Result.Failure(UserErrors.InvalidCode);
 
-            IdentityResult result;
+            var key = $"PWD_RESET_{user.Id}";
 
-            try
+            _logger.LogInformation("Password reset OTP for {email}: {otp}", user.Email, request.Otp);
+            // Check if OTP exists and is valid
+            if (!_otpStore.TryGetValue(key, out var otpInfo) ||
+                otpInfo.Otp != request.Otp ||
+                otpInfo.Expiry < DateTime.UtcNow)
             {
-                var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
-                result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+                return Result.Failure(UserErrors.InvalidCode);
             }
-            catch (FormatException)
-            {
-                result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
-            }
+
+            // Remove the OTP from store after usage
+            _otpStore.Remove(key);
+
+            // Generate a token for internal use with Identity
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+
 
             if (result.Succeeded)
                 return Result.Success();
@@ -303,15 +338,13 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
         }
-        private async Task SendConfirmationEmail(ApplicationUser user, string code)
+        private async Task SendConfirmationEmail(ApplicationUser user, string otp)
         {
-            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
-
             var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
                 templateModel: new Dictionary<string, string>
                 {
-                { "{{name}}", user.Name },
-                    { "{{action_url}}", $"{origin}/auth/emailConfirmation?userId={user.Id}&code={code}" }
+                    { "{{name}}", user.Name },
+                    { "{{otp_code}}", otp }
                 }
             );
 
@@ -319,25 +352,31 @@ namespace CanaApp.Application.Services.Authentication
 
             await Task.CompletedTask;
         }
-        private async Task SendResetPasswordEmail(ApplicationUser user, string code)
+        private async Task SendResetPasswordEmail(ApplicationUser user, string otp)
         {
-            var origin = _httpContextAccessor.HttpContext?.Request.Headers.Origin;
-
             var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
                 templateModel: new Dictionary<string, string>
                 {
-                { "{{name}}", user.Name },
-                { "{{action_url}}", $"{origin}/auth/forgetPassword?email={user.Email}&code={code}" }
+                    { "{{name}}", user.Name },
+                    { "{{otp_code}}", otp }
                 }
             );
 
-            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CancApp: Change Password", emailBody));
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CancApp: Password Reset", emailBody));
 
             await Task.CompletedTask;
         }
         private static string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+        private static string GenerateOTP(int length = 4)
+        {
+            // Generate a numeric OTP of specified length
+            Random random = new Random();
+            return new string(Enumerable.Repeat(0, length)
+                .Select(_ => random.Next(0, 10).ToString()[0])
+                .ToArray());
         }
     }
 }
