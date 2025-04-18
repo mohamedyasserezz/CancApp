@@ -1,14 +1,13 @@
-﻿using CanaApp.Domain.Contract.Infrastructure;
+﻿using AutoMapper;
+using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Comment;
-using CanaApp.Domain.Specification.Comments;
+using CanaApp.Domain.Entities.Comunity;
+using CanaApp.Domain.Specification.Community.Comments;
+using CanaApp.Domain.Specification.Community.Posts;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Comments;
 using Microsoft.Extensions.Logging;
-using CanaApp.Domain.Entities.Comunity;
-using CancApp.Shared.Common.Errors;
-using AutoMapper;
-using CanaApp.Domain.Specification;
-using CanaApp.Domain.Specification.Posts;
 namespace CanaApp.Application.Services.Community.Comments
 {
     internal class CommentService(

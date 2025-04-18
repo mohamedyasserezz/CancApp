@@ -14,6 +14,5 @@ namespace CanaApp.Domain.Specification.Models
             Includes.Add(x => x.ApplicationUser);
         }
     }
-    {
-    }
+ 
 }
