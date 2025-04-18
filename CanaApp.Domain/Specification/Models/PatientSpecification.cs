@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace CanaApp.Domain.Specification.Models
 {
-    public class PatientSpec : Specification<Patient, int>
+    public class PatientSpecification : Specification<Patient, int>
     {
-        public PatientSpec(Expression<Func<Patient, bool>>? expression) : base(expression)
+        public PatientSpecification(Expression<Func<Patient, bool>>? expression) : base(expression)
         {
-
+            AddIncludes();
         }
         private protected override void AddIncludes()
         {
