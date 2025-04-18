@@ -1,5 +1,6 @@
 ﻿using CanaApp.Domain.Contract.Service.Authentication;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.ForgetPassword;
 using CancApp.Shared.Models.Authentication.Login;
@@ -86,5 +87,11 @@ namespace CanaApp.Apis.Controllers
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
 
+        [HttpPost("complete-pharmacy-registration")]
+        public async Task<IActionResult> CompletePharmacyRegistration([FromBody] CompleteProfilePharmacy request, CancellationToken cancellationToken)
+        {
+            var result = await _authService.CompletePharmacyRegistration(request, cancellationToken);
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
     }
 }
