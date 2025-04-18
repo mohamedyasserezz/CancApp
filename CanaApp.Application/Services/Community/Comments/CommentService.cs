@@ -5,7 +5,7 @@ using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Community.Comments;
 using Microsoft.Extensions.Logging;
 using CanaApp.Domain.Entities.Comunity;
-using CancApp.Shared._Common.Errors;
+using CancApp.Shared.Common.Errors;
 using AutoMapper;
 using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Posts;

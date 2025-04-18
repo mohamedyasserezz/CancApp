@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CancApp.Shared._Common.Consts
+namespace CancApp.Shared.Common.Consts
 {
     public static class Users
     {

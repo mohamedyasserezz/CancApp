@@ -6,7 +6,7 @@ using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Reactions;
-using CancApp.Shared._Common.Errors;
+using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Reactions;

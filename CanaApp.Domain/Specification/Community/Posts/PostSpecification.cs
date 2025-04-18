@@ -1,7 +1,7 @@
 ﻿using CanaApp.Domain.Entities.Comunity;
 using System.Linq.Expressions;
 
-namespace CanaApp.Domain.Specification.Posts
+namespace CanaApp.Domain.Specification.Community.Posts
 {
     public class PostSpecification : Specification<Post, int>
     {

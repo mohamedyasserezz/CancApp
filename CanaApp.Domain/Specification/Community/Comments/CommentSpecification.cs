@@ -1,7 +1,7 @@
 ﻿using CanaApp.Domain.Entities.Comunity;
 using System.Linq.Expressions;
 
-namespace CanaApp.Domain.Specification.Comments
+namespace CanaApp.Domain.Specification.Community.Comments
 {
     public class CommentSpecification : Specification<Comment, int>
     {

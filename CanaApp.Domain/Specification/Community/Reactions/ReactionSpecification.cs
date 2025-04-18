@@ -1,6 +1,6 @@
 ﻿using CanaApp.Domain.Entities.Comunity;
 using System.Linq.Expressions;
-namespace CanaApp.Domain.Specification.Reactions
+namespace CanaApp.Domain.Specification.Community.Reactions
 {
     public class ReactionSpecification : Specification<Reaction, int>
     {
