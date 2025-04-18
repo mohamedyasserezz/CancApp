@@ -533,6 +533,43 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Success();
         }
+        public async Task<Result> CompleteDoctorRegistration(CompleteProfileDoctor completeProfileDoctor, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(completeProfileDoctor.UserId);
+            if (user is null ||(user.UserType != UserType.Doctor && user.UserType != UserType.Psychiatrist))
+                return Result.Failure(UserErrors.UserNotFound);
+
+            if(user.UserType == UserType.Doctor)
+            {
+                var doctorSpec = new DoctorSpecification(x => x.UserId == completeProfileDoctor.UserId);
+
+                var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(doctorSpec);
+
+                if (doctor is null)
+                    return Result.Failure(UserErrors.UserNotFound);
+
+                doctor.MedicalSyndicatePhoto = await _fileService.SaveFileAsync(completeProfileDoctor.MedicalSyndicatePhoto, "doctors");
+
+                doctor.ImageId = await _fileService.SaveFileAsync(completeProfileDoctor.ImageId, "doctors");
+
+                _unitOfWork.GetRepository<Doctor, string>().Update(doctor);
+
+                await _unitOfWork.CompleteAsync();
+
+            }
+            var psychiatristSpec = new PsychiatristSpecification(x => x.UserId == completeProfileDoctor.UserId);
+
+            var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(psychiatristSpec);
+            if (psychiatrist is null)
+                return Result.Failure(UserErrors.UserNotFound);
+
+            psychiatrist.MedicalSyndicatePhoto = await _fileService.SaveFileAsync(completeProfileDoctor.MedicalSyndicatePhoto, "doctors");
+            psychiatrist.ImageId = await _fileService.SaveFileAsync(completeProfileDoctor.ImageId, "doctors");
+
+            _unitOfWork.GetRepository<Psychiatrist, string>().Update(psychiatrist);
+            await _unitOfWork.CompleteAsync();
+            return Result.Success();
+        }
         private static string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -546,6 +583,6 @@ namespace CanaApp.Application.Services.Authentication
                 .ToArray());
         }
 
-        
+       
     }
 }

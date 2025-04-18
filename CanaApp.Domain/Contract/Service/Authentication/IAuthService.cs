@@ -20,6 +20,7 @@ namespace CanaApp.Domain.Contract.Service.Authentication
          Task<Result> ResetPasswordAsync(ResetPasswordRequest request);
 
         Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default);
+        Task<Result> CompleteDoctorRegistration(CompleteProfileDoctor completeProfileDoctor, CancellationToken cancellationToken = default);
 
     }
 }
