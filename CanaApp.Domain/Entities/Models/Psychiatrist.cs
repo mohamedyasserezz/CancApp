@@ -7,8 +7,9 @@ namespace CanaApp.Domain.Entities.Models
         public string MedicalSyndicatePhoto { get; set; } = default!;
         public string ImageId { get; set; } = default!;
         public ApplicationUser ApplicationUser { get; set; } = default!;
-        public string UserId { get; set; }
+        public string UserId { get; set; } = default!;
         public bool IsDisabled { get; set; }
+        public bool IsCompletedProfileFailed { get; set; }
         public int NumberOfWarrings { get; set; }
         public bool IsConfirmedByAdmin { get; set; }
 

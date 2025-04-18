@@ -346,7 +346,7 @@ namespace CanaApp.Application.Services.Authentication
                     await _unitOfWork.GetRepository<Volunteer, string>().AddAsync(volunteer);
                     await _unitOfWork.CompleteAsync();
                 }
-                string otp = GenerateOTP();
+                    string otp = GenerateOTP();
                 
                 var key = $"EMAIL_CONFIRM_{user.Id}";
 
@@ -512,9 +512,26 @@ namespace CanaApp.Application.Services.Authentication
             await Task.CompletedTask;
         }
 
-        public  Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
+        public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var pharmacistSpec = new PharmacistSpecification(x => x.UserId == completeProfilePharmacy.UserId);
+            var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmacistSpec);
+
+            if (pharmacist is null)
+                return Result.Failure(UserErrors.UserNotFound);
+
+            pharmacist.ImageId = await _fileService.SaveFileAsync(completeProfilePharmacy.ImageId, "pharmacies");
+
+            pharmacist.ImagePharmacyLicense = await _fileService.SaveFileAsync(completeProfilePharmacy.ImagePharmacyLicense, "pharmacies");
+
+            pharmacist.NumberOfWorkingHours = completeProfilePharmacy.NumberOfWorkingHours;
+
+            pharmacist.IsDeliveryEnabled = completeProfilePharmacy.IsDeliveryEnabled;
+
+              _unitOfWork.GetRepository<Pharmacist, string>().Update(pharmacist);
+            await _unitOfWork.CompleteAsync();
+
+            return Result.Success();
         }
         private static string GenerateRefreshToken()
         {

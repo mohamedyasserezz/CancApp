@@ -9,6 +9,7 @@ namespace CanaApp.Domain.Entities.Models
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;
         public bool IsDisabled { get; set; }
+        public bool IsCompletedProfileFailed { get; set; }
         public int NumberOfWarrings { get; set; }
         public int NumberOfWorkingHours { get; set; }
         public bool IsDeliveryEnabled { get; set; }

@@ -10,7 +10,8 @@ namespace CanaApp.Domain.Entities.Models
         public bool IsConfirmedByAdmin { get; set; }
         public bool IsDisabled { get; set; }
         public int NumberOfWarrings { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = default!;
+        public bool IsCompletedProfileFailed { get; set; }
 
         // Community
         public ICollection<Post> Posts = new List<Post>();
