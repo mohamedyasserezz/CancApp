@@ -255,6 +255,7 @@ namespace CanaApp.Application.Services.Authentication
                 Address = request.Address,
                 Email = request.Email,
                 FullName = request.FullName,
+                UserName = request.Email,
             };
             user.UserType = (UserType)Enum.Parse(typeof(UserType), request.UserType);
 
