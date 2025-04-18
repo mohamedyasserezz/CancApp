@@ -2,6 +2,7 @@
 using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Models;
+using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
@@ -51,21 +52,77 @@ namespace CanaApp.Application.Services.Authentication
             if (await _userManager.FindByEmailAsync(email) is not { } user)
                 return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
-            
 
-            //if(user.UserType == UserType.Volunteer)
-            //{ 
-            //    var spec = new Spe
-            //    var volunteer = await _unitOfWork.GetRepository<Volunteer>().GetWithSpecAsync
-            //    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
-            //}
 
-            //if(user.IsDisabled || user.NumberOfWarrings >= 5)
-            //{
-            //    user.IsDisabled = true;
-            //    await _userManager.UpdateAsync(user);
-            //    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
-            //}
+            if (user.UserType == UserType.Volunteer)
+            {
+                var spec = new VolunteerSpecification(x => x.UserId == user.Id);
+                var volunteer = await _unitOfWork.GetRepository<Volunteer, string>().GetWithSpecAsync(spec);
+                if (volunteer is null)
+                    return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+                if (volunteer.IsDisabled || volunteer.NumberOfWarrings >= 5)
+                {
+                    if (volunteer.IsDisabled == false)
+                    {
+                        volunteer.IsDisabled = true;
+                        _unitOfWork.GetRepository<Volunteer, string>().Update(volunteer);
+                        await _unitOfWork.CompleteAsync();
+                    }
+                    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+                }
+            }
+            else if (user.UserType == UserType.Patient)
+            {
+                var spec = new PatientSpecification(x => x.UserId == user.Id);
+                var patient = await _unitOfWork.GetRepository<Patient, string>().GetWithSpecAsync(spec);
+                if (patient is null)
+                    return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+                if (patient.IsDisabled || patient.NumberOfWarrings >= 5)
+                {
+                    if (patient.IsDisabled == false)
+                    {
+                        patient.IsDisabled = true;
+                        _unitOfWork.GetRepository<Patient, string>().Update(patient);
+                        await _unitOfWork.CompleteAsync();
+                    }
+                    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+                }
+            }
+            else if (user.UserType == UserType.Doctor)
+            {
+                var spec = new DoctorSpecification(x => x.UserId == user.Id);
+                var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(spec);
+                if (doctor is null)
+                    return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+                if (doctor.IsDisabled || doctor.NumberOfWarrings >= 5)
+                {
+                    if (doctor.IsDisabled == false)
+                    {
+                        doctor.IsDisabled = true;
+                        _unitOfWork.GetRepository<Doctor, string>().Update(doctor);
+                        await _unitOfWork.CompleteAsync();
+                    }
+                    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+                }
+            }
+            else if (user.UserType == UserType.Psychiatrist)
+            {
+                var spec = new PsychiatristSpecification(x => x.UserId == user.Id);
+                var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(spec);
+                if (psychiatrist is null)
+                    return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+                if (psychiatrist.IsDisabled || psychiatrist.NumberOfWarrings >= 5)
+                {
+                    if (psychiatrist.IsDisabled == false)
+                    {
+                        psychiatrist.IsDisabled = true;
+                        _unitOfWork.GetRepository<Psychiatrist, string>().Update(psychiatrist);
+                        await _unitOfWork.CompleteAsync();
+                    }
+                    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+                }
+            }
+
 
             var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
 
@@ -200,6 +257,7 @@ namespace CanaApp.Application.Services.Authentication
                 FullName = request.FullName,
             };
             user.UserType = (UserType)Enum.Parse(typeof(UserType), request.UserType);
+
             if (request.Image is not null)
             {
                     user.Image = await _fileService.SaveFileAsync(request.Image, "profiles");
@@ -212,6 +270,82 @@ namespace CanaApp.Application.Services.Authentication
 
             if (result.Succeeded)
             {
+                if(user.UserType == UserType.Patient)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Patient);
+                    var patient = new Patient
+                    {
+                        UserId = user.Id,
+                        NumberOfWarrings = 0,
+                        IsDisabled = false,
+                        ApplicationUser = user,
+                    };
+                    await _unitOfWork.GetRepository<Patient, string>().AddAsync(patient);
+                    await _unitOfWork.CompleteAsync();
+                }
+                else if (user.UserType == UserType.Doctor)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Doctor);
+
+                    var doctor = new Doctor
+                    {
+                        UserId = user.Id,
+                        NumberOfWarrings = 0,
+                        IsDisabled = false,
+                        ApplicationUser = user,
+                        IsConfirmedByAdmin = false,
+                        
+                    };
+                    await _unitOfWork.GetRepository<Doctor, string>().AddAsync(doctor);
+                    await _unitOfWork.CompleteAsync();
+                }
+                else if (user.UserType == UserType.Admin)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Admin);
+                }
+                else if (user.UserType == UserType.Psychiatrist)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Psychiatrist);
+                    var psychiatrist = new Psychiatrist
+                    {
+                        UserId = user.Id,
+                        NumberOfWarrings = 0,
+                        IsDisabled = false,
+                        ApplicationUser = user,
+                        IsConfirmedByAdmin = false,                       
+                    };
+                    await _unitOfWork.GetRepository<Psychiatrist, string>().AddAsync(psychiatrist);
+                    await _unitOfWork.CompleteAsync();
+                }
+                else if (user.UserType == UserType.Pharmacist)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Pharmacist);
+                    var pharmacist = new Pharmacist
+                    {
+                        UserId = user.Id,
+                        NumberOfWarrings = 0,
+                        IsDisabled = false,
+                        ApplicationUser = user,
+                        IsConfirmedByAdmin=false,
+                    };
+                    await _unitOfWork.GetRepository<Pharmacist, string>().AddAsync(pharmacist);
+                    await _unitOfWork.CompleteAsync();
+
+                }
+                else if (user.UserType == UserType.Volunteer)
+                {
+                    await _userManager.AddToRoleAsync(user, DefaultRoles.Volunteer);
+                    var volunteer = new Volunteer
+                    {
+                        UserId = user.Id,
+                        NumberOfWarrings = 0,
+                        IsDisabled = false,
+                        ApplicationUser = user,
+                        
+                    };
+                    await _unitOfWork.GetRepository<Volunteer, string>().AddAsync(volunteer);
+                    await _unitOfWork.CompleteAsync();
+                }
                 string otp = GenerateOTP();
                 
                 var key = $"EMAIL_CONFIRM_{user.Id}";
