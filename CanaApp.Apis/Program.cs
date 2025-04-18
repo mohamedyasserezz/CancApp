@@ -52,6 +52,7 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
 
 }
     );
+app.UseStaticFiles();
 
 app.UseAuthorization();
 

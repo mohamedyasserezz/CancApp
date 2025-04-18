@@ -32,17 +32,9 @@ namespace CanaApp.Application.Mapping
             if (request == null) return null;
 
             // Map UserType to the appropriate subfolder
-            string subfolder = userType switch
-            {
-                UserType.Patient => ImageSubFolder.Patients,
-                UserType.Doctor => ImageSubFolder.Doctors,
-                UserType.Pharmacist => ImageSubFolder.Pharmacists,
-                UserType.Psychiatrist => ImageSubFolder.Psychiatrists,
-                UserType.Volunteer => ImageSubFolder.Volunteers,
-                _ => ImageSubFolder.Default
-            };
 
-            return $"{request.Scheme}://{request.Host}/images/{subfolder}/{fileName}";
+
+            return $"{request.Scheme}://{request.Host}/images/profiles/{fileName}";
         }
 
     }

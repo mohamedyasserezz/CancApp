@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using CanaApp.Domain.Entities.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace CanaApp.Domain.Contract.Service.File
 {

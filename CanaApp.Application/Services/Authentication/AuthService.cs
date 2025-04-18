@@ -14,12 +14,9 @@ using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
-using System.Text;
-using static System.Net.WebRequestMethods;
 
 namespace CanaApp.Application.Services.Authentication
 {
@@ -189,9 +186,7 @@ namespace CanaApp.Application.Services.Authentication
             };
             if (request.Image is not null)
             {
-                string createdImageName = await _fileService.SaveFileAsync(request.Image, ImageSubFolder.Patients);
-
-                user.Image = createdImageName;
+                    user.Image = await _fileService.SaveFileAsync(request.Image, "profiles");
             }
             else
             {

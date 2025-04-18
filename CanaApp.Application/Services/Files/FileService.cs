@@ -1,4 +1,5 @@
 ﻿using CanaApp.Domain.Contract.Service.File;
+using CanaApp.Domain.Entities.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -18,7 +19,6 @@ namespace CanaApp.Application.Services.Files
         {
             if (imageFile is null)
                 throw new ArgumentNullException(nameof(imageFile));
-
             var path = Path.Combine(_imagesPath, subfolder);
 
             // Ensure the directory exists
@@ -43,7 +43,7 @@ namespace CanaApp.Application.Services.Files
         public void DeleteFile(string file, string subfolder)
         {
             if (string.IsNullOrEmpty(file))
-                throw new ArgumentNullException(nameof(Files));
+                throw new ArgumentNullException(nameof(file));
 
 
             var path = Path.Combine(_imagesPath, subfolder, file);
