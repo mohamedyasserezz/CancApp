@@ -6,6 +6,8 @@ namespace CanaApp.Domain.Entities.Models
     {
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;
+        public bool IsDisabled { get; set; }
+        public int NumberOfWarrings { get; set; }
 
         // Community
         public ICollection<Post> Posts = new List<Post>();

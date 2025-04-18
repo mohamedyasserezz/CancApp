@@ -1,4 +1,5 @@
-﻿using CanaApp.Domain.Contract.Service.Authentication;
+﻿using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Models;
 using CancApp.Shared.Abstractions;
@@ -6,6 +7,7 @@ using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Register;
 using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
@@ -23,6 +25,7 @@ namespace CanaApp.Application.Services.Authentication
     public class AuthService(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
+        IUnitOfWork unitOfWork,
         IJwtProvider jwtProvider,
         IFileService fileService,
         IHttpContextAccessor httpContextAccessor,
@@ -31,6 +34,7 @@ namespace CanaApp.Application.Services.Authentication
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
         private readonly IFileService _fileService = fileService;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
@@ -47,19 +51,21 @@ namespace CanaApp.Application.Services.Authentication
             if (await _userManager.FindByEmailAsync(email) is not { } user)
                 return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
-            if (user.IsDisabled)
-                return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+            
 
-            if ((user.UserType == UserType.Psychiatrist || user.UserType == UserType.Pharmacist
-                || user.UserType == UserType.Doctor) && !user.IsConfirmedByAdmin)
-                return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
+            //if(user.UserType == UserType.Volunteer)
+            //{ 
+            //    var spec = new Spe
+            //    var volunteer = await _unitOfWork.GetRepository<Volunteer>().GetWithSpecAsync
+            //    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+            //}
 
-            if(user.IsDisabled || user.NumberOfWarrings >= 5)
-            {
-                user.IsDisabled = true;
-                await _userManager.UpdateAsync(user);
-                return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
-            }
+            //if(user.IsDisabled || user.NumberOfWarrings >= 5)
+            //{
+            //    user.IsDisabled = true;
+            //    await _userManager.UpdateAsync(user);
+            //    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+            //}
 
             var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
 
@@ -113,9 +119,9 @@ namespace CanaApp.Application.Services.Authentication
 
             if (user is null)
                 return Result.Failure<AuthResponse>(UserErrors.InvalidJwtToken);
-
-            if (user.IsDisabled)
-                return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+            // TODO: check if user is disabled
+            //if (user.IsDisabled)
+            //    return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
 
             if (user.LockoutEnd > DateTime.UtcNow)
                 return Result.Failure<AuthResponse>(UserErrors.LockedUser);
@@ -371,6 +377,11 @@ namespace CanaApp.Application.Services.Authentication
 
             await Task.CompletedTask;
         }
+
+        public  Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
         private static string GenerateRefreshToken()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
@@ -383,5 +394,7 @@ namespace CanaApp.Application.Services.Authentication
                 .Select(_ => random.Next(0, 10).ToString()[0])
                 .ToArray());
         }
+
+        
     }
 }

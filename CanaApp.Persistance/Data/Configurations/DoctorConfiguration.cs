@@ -12,9 +12,6 @@ namespace CanaApp.Persistance.Data.Configurations
             builder.HasKey(d => d.UserId);
 
 
-            builder.Property(d => d.MedicalAssociationId)
-                .IsRequired()
-                .HasMaxLength(150);
 
             builder.HasOne(d => d.ApplicationUser)
                 .WithMany()

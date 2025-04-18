@@ -1,5 +1,6 @@
 ﻿using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.Register;
 using CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
@@ -17,6 +18,8 @@ namespace CanaApp.Domain.Contract.Service.Authentication
          Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request);
         Task<Result> SendResetPasswordOtpAsync(string email);
          Task<Result> ResetPasswordAsync(ResetPasswordRequest request);
+
+        Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default);
 
     }
 }

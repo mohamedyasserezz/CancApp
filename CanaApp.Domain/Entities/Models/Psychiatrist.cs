@@ -4,9 +4,10 @@ namespace CanaApp.Domain.Entities.Models
 {
     public class Psychiatrist
     {
-        public string MedicalAssociationId { get; set; } = default!;
+        public string MedicalSyndicatePhoto { get; set; } = default!;
+        public string ImageId { get; set; } = default!;
         public ApplicationUser ApplicationUser { get; set; } = default!;
-        public string UserId { get; set; } = default!;
+        public string UserId { get; set; }
         public bool IsConfirmedByAdmin { get; set; }
 
         // Community
