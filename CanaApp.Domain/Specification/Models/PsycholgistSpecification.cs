@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 
 namespace CanaApp.Domain.Specification.Models
 {
-    public class PharmacistSpecification : Specification<Pharmacist, string>
+    public class PsychiatristSpecification : Specification<Psychiatrist, string>
     {
-        public PharmacistSpecification(Expression<Func<Pharmacist, bool>>? expression) : base(expression)
+        public PsychiatristSpecification(Expression<Func<Psychiatrist, bool>>? expression) : base(expression)
         {
             AddIncludes();
         }

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace CanaApp.Domain.Specification.Models
 {
-    public class DoctorSpecification : Specification<Doctor, int>
+    public class DoctorSpecification : Specification<Doctor, string>
     {
         public DoctorSpecification(Expression<Func<Doctor, bool>>? expression) : base(expression)
         {
