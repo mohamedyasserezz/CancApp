@@ -182,7 +182,6 @@ namespace CanaApp.Application.Services.Authentication
                 Email = request.Email,
                 FullName = request.FullName,
             };
-
             user.UserType = (UserType)Enum.Parse(typeof(UserType), request.UserType);
             if (request.Image is not null)
             {

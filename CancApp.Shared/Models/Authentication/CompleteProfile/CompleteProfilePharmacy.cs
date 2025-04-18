@@ -4,6 +4,8 @@ namespace CancApp.Shared.Models.Authentication.CompleteProfile
 {
     public record CompleteProfilePharmacy(
         IFormFile ImageId,
-        IFormFile ImagePharmacyLicense
+        IFormFile ImagePharmacyLicense,
+        int NumberOfWorkingHours,
+        bool IsDeliveryEnabled
         );
 }
