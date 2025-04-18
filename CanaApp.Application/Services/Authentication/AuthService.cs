@@ -71,7 +71,7 @@ namespace CanaApp.Application.Services.Authentication
                 var response = new AuthResponse(user.Id,
                     user.Email,
                     user.UserName!,
-                    user.Name,
+                    user.FullName,
                     user.Address!,
                     user.Image,
                     token,
@@ -134,7 +134,7 @@ namespace CanaApp.Application.Services.Authentication
                 user.Id,
                 user.Email,
                 user.UserName!,
-                user.Name,
+                user.FullName,
                 user.Address!,
                 user.Image,
                 newToken,
@@ -180,10 +180,10 @@ namespace CanaApp.Application.Services.Authentication
             {
                 Address = request.Address,
                 Email = request.Email,
-                Name = request.Name,
-                UserName = request.UserName,
-                UserType = UserType.Patient
+                FullName = request.FullName,
             };
+
+            user.UserType = (UserType)Enum.Parse(typeof(UserType), request.UserType);
             if (request.Image is not null)
             {
                     user.Image = await _fileService.SaveFileAsync(request.Image, "profiles");
@@ -338,7 +338,7 @@ namespace CanaApp.Application.Services.Authentication
             var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailConfirmation",
                 templateModel: new Dictionary<string, string>
                 {
-                    { "{{name}}", user.Name },
+                    { "{{name}}", user.FullName },
                     { "{{otp_code}}", otp }
                 }
             );
@@ -352,7 +352,7 @@ namespace CanaApp.Application.Services.Authentication
             var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
                 templateModel: new Dictionary<string, string>
                 {
-                    { "{{name}}", user.Name },
+                    { "{{name}}", user.FullName },
                     { "{{otp_code}}", otp }
                 }
             );

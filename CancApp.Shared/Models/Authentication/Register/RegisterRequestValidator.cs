@@ -1,4 +1,5 @@
-﻿using CancApp.Shared.Common;
+﻿using CancApp.Shared._Common.Consts;
+using CancApp.Shared.Common;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,21 @@ namespace CancApp.Shared.Models.Authentication.Register
     {
         public RegisterRequestValidator()
         {
-            RuleFor(X => X.Name)
+            RuleFor(X => X.FullName)
                 .NotEmpty()
                 .WithMessage("Plz Add a {PropertyName}")
                 .Length(3, 100)
                 .WithMessage("{PropertyName} length should be between 3 and 100");
 
-            RuleFor(X => X.UserName)
+            RuleFor(X => X.FullName)
                 .NotEmpty()
                 .WithMessage("Plz Add a {PropertyName}")
                 .Length(3, 100)
                 .WithMessage("{PropertyName} length should be between 3 and 100");
 
             RuleFor(X => X.Address)
+                .NotEmpty()
+                .WithMessage("Plz Add a {PropertyName}")
                .Length(3, 100)
                .WithMessage("{PropertyName} length should be between 3 and 100")
                .When(X => !string.IsNullOrEmpty(X.Address));
@@ -40,7 +43,12 @@ namespace CancApp.Shared.Models.Authentication.Register
                 .WithMessage("Plz Add a {PropertyName}")
                 .Matches(RegexPatterns.Password)
                 .WithMessage("Password should be atleast 8 digits and contains LowerCase, UpperCase, NonAlphanumeric");
-
+            RuleFor(X => X.UserType)
+                .NotEmpty()
+                .WithMessage("Plz Add a {PropertyName}")
+                .Must(x => x == Users.Admin || x == Users.Patient
+                || x == Users.Volunteer || x == Users.Pharmacist || x == Users.Doctor || x == Users.Psychiatrist)
+                .WithMessage("UserType should be either User or Admin");
 
         }
     }

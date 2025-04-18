@@ -12,7 +12,7 @@ namespace CanaApp.Persistance.Data.Configurations
         {
             builder.ToTable("Users");
 
-            builder.Property(x => x.Name)
+            builder.Property(x => x.FullName)
                 .HasMaxLength(100);
 
             builder.Property(u => u.Address)
@@ -44,7 +44,7 @@ namespace CanaApp.Persistance.Data.Configurations
                     UserName = DefaultUsers.AdminrUserName,
                     NormalizedUserName = DefaultUsers.AdminrUserName.ToUpper(),
                     Address = DefaultUsers.AdminAddress,
-                    Name = DefaultUsers.AdminName,
+                    FullName = DefaultUsers.AdminName,
                     ConcurrencyStamp = DefaultUsers.AdminConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Admin,
@@ -58,7 +58,7 @@ namespace CanaApp.Persistance.Data.Configurations
                     UserName = DefaultUsers.DoctorUserName,
                     NormalizedUserName = DefaultUsers.DoctorUserName.ToUpper(),
                     Address = DefaultUsers.DoctorAddress,
-                    Name = DefaultUsers.DoctorName,
+                    FullName = DefaultUsers.DoctorName,
                     ConcurrencyStamp = DefaultUsers.DoctorConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Doctor,
@@ -72,7 +72,7 @@ namespace CanaApp.Persistance.Data.Configurations
                     UserName = DefaultUsers.PatientUserName,
                     NormalizedUserName = DefaultUsers.PatientUserName.ToUpper(),
                     Address = DefaultUsers.PatientAddress,
-                    Name = DefaultUsers.PatientName,
+                    FullName = DefaultUsers.PatientName,
                     ConcurrencyStamp = DefaultUsers.PatientConcurrencyStamp,
                     EmailConfirmed = true,
                     UserType = UserType.Patient,
