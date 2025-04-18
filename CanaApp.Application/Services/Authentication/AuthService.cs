@@ -50,6 +50,17 @@ namespace CanaApp.Application.Services.Authentication
             if (user.IsDisabled)
                 return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
 
+            if ((user.UserType == UserType.Psychiatrist || user.UserType == UserType.Pharmacist
+                || user.UserType == UserType.Doctor) && !user.IsConfirmedByAdmin)
+                return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
+
+            if(user.IsDisabled || user.NumberOfWarrings >= 5)
+            {
+                user.IsDisabled = true;
+                await _userManager.UpdateAsync(user);
+                return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
+            }
+
             var result = await _signInManager.PasswordSignInAsync(user, password, false, true);
 
             if (result.Succeeded)

@@ -37,5 +37,9 @@ namespace CancApp.Shared.Common.Errors
 
         public static readonly Error InvalidRoles =
             new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status400BadRequest);
+
+        public static readonly Error NotCompletedProfile =
+            new("User.NotCompletedProfile", "User profile is not completed", StatusCodes.Status400BadRequest);
+
     }
 }
