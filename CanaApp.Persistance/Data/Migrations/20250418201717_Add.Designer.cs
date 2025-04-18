@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418201717_Add")]
+    partial class Add
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,7 +280,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_YASSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDo9hXMT61phA8Hl1Q2dIu7Wi9iEF9illDm3dZuZnrd6J5uDFhczGAz0zN+eDMw+ZQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDkznKOktVq/ToFxBUvXQxj8+BLQNu3cIcUsHfAIStFEPEpvEp9Gqf9FpEO+TnZCxg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "55BF92C9EF0249CDA210D85D1A851BC9",
                             TwoFactorEnabled = false,
@@ -296,7 +299,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DOCTOR@CANC-APP.COM",
                             NormalizedUserName = "ZYAD_MAHMOUD",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGAwDnP7kXzBluvHc880B9y9TScafTohuqtZRzD/r56y4kuybYLJKlvMoPiNfJ+NBg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM/K0gpxHIqHc2L2eMog+t9pqvSBF468pobCERtq+BF66iYCKvXMd7v2ZZB1BQfrkQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "85a5af679fe14a24a17a7b9af212c4dc",
                             TwoFactorEnabled = false,
@@ -315,7 +318,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_SOLIMAN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHmkNEEXv5Sc0qhujBHReFlhZ5HoUVePV+gCLAK9ucPeIzlGDfr6Rg75Sx8tFK6Rug==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGXLUxxNXDwkPVMLood7ooGZJ4SrSog7kS3IqFY9CoMShbGkGcIqhjqE/EdkE4uExw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "b9d50bbf5e87434fa03edc01413ca904",
                             TwoFactorEnabled = false,
@@ -376,14 +379,6 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Patients");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "18f2bb15-c5c3-4161-b3d5-ad8eab609da5",
-                            IsDisabled = false,
-                            NumberOfWarrings = 0
-                        });
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Pharmacist", b =>

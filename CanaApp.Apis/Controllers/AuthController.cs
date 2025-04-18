@@ -88,13 +88,13 @@ namespace CanaApp.Apis.Controllers
         }
 
         [HttpPost("complete-pharmacy-registration")]
-        public async Task<IActionResult> CompletePharmacyRegistration([FromBody] CompleteProfilePharmacy request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CompletePharmacyRegistration([FromForm] CompleteProfilePharmacy request, CancellationToken cancellationToken)
         {
             var result = await _authService.CompletePharmacyRegistration(request, cancellationToken);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
         [HttpPost("complete-doctor-registration")]
-        public async Task<IActionResult> CompleteDoctorRegistration([FromBody] CompleteProfileDoctor request, CancellationToken cancellationToken)
+        public async Task<IActionResult> CompleteDoctorRegistration([FromForm] CompleteProfileDoctor request, CancellationToken cancellationToken)
         {
             var result = await _authService.CompleteDoctorRegistration(request, cancellationToken);
             return result.IsSuccess ? Ok() : result.ToProblem();

@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\images\profiles\default.png" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using CanaApp.Domain.Entities.Models;
+using CancApp.Shared.Common.Consts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,6 +29,15 @@ namespace CanaApp.Persistance.Data.Configurations
             builder.HasMany(p => p.Comments)
                 .WithOne()
                 .HasForeignKey(c => c.UserId);
+
+            builder.HasData(
+                new Patient
+                {
+                    UserId = DefaultUsers.PatientId,
+                    IsDisabled = false,
+                    NumberOfWarrings = 0,
+                }
+                );
         }
     }
 }

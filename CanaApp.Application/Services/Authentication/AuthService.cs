@@ -52,7 +52,7 @@ namespace CanaApp.Application.Services.Authentication
             if (await _userManager.FindByEmailAsync(email) is not { } user)
                 return Result.Failure<AuthResponse>(UserErrors.InvalidCredentials);
 
-
+            
 
             if (user.UserType == UserType.Volunteer)
             {
@@ -94,6 +94,12 @@ namespace CanaApp.Application.Services.Authentication
                 var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(spec);
                 if (doctor is null)
                     return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+
+                if(!doctor.IsConfirmedByAdmin)
+                {
+                    return Result.Failure<AuthResponse>(UserErrors.NotCompletedProfile);
+                }
+
                 if (doctor.IsDisabled || doctor.NumberOfWarrings >= 5)
                 {
                     if (doctor.IsDisabled == false)
@@ -111,6 +117,10 @@ namespace CanaApp.Application.Services.Authentication
                 var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(spec);
                 if (psychiatrist is null)
                     return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+
+                if (!psychiatrist.IsConfirmedByAdmin)
+                    return Result.Failure<AuthResponse>(UserErrors.NotCompletedProfile);
+
                 if (psychiatrist.IsDisabled || psychiatrist.NumberOfWarrings >= 5)
                 {
                     if (psychiatrist.IsDisabled == false)
@@ -121,6 +131,17 @@ namespace CanaApp.Application.Services.Authentication
                     }
                     return Result.Failure<AuthResponse>(UserErrors.DisabledUser);
                 }
+            }
+            else if (user.UserType == UserType.Pharmacist)
+            {
+                var spec = new PharmacistSpecification(x => x.UserId == user.Id);
+                var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(spec);
+               
+                if(pharmacist is null)
+                    return Result.Failure<AuthResponse>(UserErrors.UserNotFound);
+
+                if (!pharmacist.IsConfirmedByAdmin)
+                    return Result.Failure<AuthResponse>(UserErrors.NotCompletedProfile);
             }
 
 
@@ -558,7 +579,9 @@ namespace CanaApp.Application.Services.Authentication
                 await _unitOfWork.CompleteAsync();
 
             }
-            var psychiatristSpec = new PsychiatristSpecification(x => x.UserId == completeProfileDoctor.UserId);
+            else
+            {
+                var psychiatristSpec = new PsychiatristSpecification(x => x.UserId == completeProfileDoctor.UserId);
 
             var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(psychiatristSpec);
             if (psychiatrist is null)
@@ -569,6 +592,8 @@ namespace CanaApp.Application.Services.Authentication
 
             _unitOfWork.GetRepository<Psychiatrist, string>().Update(psychiatrist);
             await _unitOfWork.CompleteAsync();
+
+            }
             return Result.Success();
         }
         private static string GenerateRefreshToken()

@@ -78,8 +78,8 @@ namespace CanaApp.Persistance.Data.Configurations
                     UserType = UserType.Patient,
                     SecurityStamp = DefaultUsers.PatientSecurityStamp,
                     PasswordHash = passwordHasher.HashPassword(null!, DefaultUsers.PatientPassword)
-                }
-                ]);
+                }]
+                );
         }
     }
 }
