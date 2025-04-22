@@ -172,6 +172,7 @@ namespace CanaApp.Application.Services.Authentication
                     token,
                     expiresIn,
                     refreshToken,
+                    user.UserType.ToString(),
                     refreshTokenExpiration);
 
                 return Result.Success(response);
@@ -235,6 +236,7 @@ namespace CanaApp.Application.Services.Authentication
                 newToken,
                 expiresIn,
                 newRefreshToken,
+                user.UserType.ToString(),
                 refreshTokenExpiration);
 
             return Result.Success(response);

@@ -10,6 +10,7 @@
     string Token,
     int ExpiresIn,
     string RefreshToken,
+    string UserType,
     DateTime RefreshTokenExpiration
 );
 }
