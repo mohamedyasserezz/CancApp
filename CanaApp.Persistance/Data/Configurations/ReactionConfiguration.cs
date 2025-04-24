@@ -21,17 +21,17 @@ namespace CanaApp.Persistance.Data.Configurations
             builder.HasOne(r => r.Post)
                 .WithMany(p => p.Reactions)
                 .HasForeignKey(r => r.PostId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(r => r.Comment)
                 .WithMany(c => c.Reactions)
                 .HasForeignKey(r => r.CommentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(r => r.ApplicationUser)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

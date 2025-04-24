@@ -17,17 +17,17 @@ namespace CanaApp.Persistance.Data.Configurations
             builder.HasOne(c => c.Participant1)
                 .WithMany()
                 .HasForeignKey(c => c.Participant1Id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(c => c.Participant2)
                 .WithMany()
                 .HasForeignKey(c => c.Participant2Id)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(c => c.Messages)
                 .WithOne(m => m.Chat)
                 .HasForeignKey(m => m.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

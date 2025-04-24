@@ -18,7 +18,7 @@ namespace CanaApp.Persistance.Data.Configurations
                 .WithMany()
                 .HasForeignKey(d => d.UserId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(d => d.Posts)
                 .WithOne()
