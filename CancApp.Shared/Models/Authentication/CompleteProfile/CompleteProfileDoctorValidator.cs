@@ -6,9 +6,9 @@ namespace CancApp.Shared.Models.Authentication.CompleteProfile
     {
         public CompleteProfileDoctorValidator()
         {
-            RuleFor(x => x.UserId)
+            RuleFor(x => x.Email)
                 .NotEmpty()
-                .WithMessage("UserId is required.");
+                .WithMessage("Email is required.");
 
             RuleFor(x => x.MedicalSyndicatePhoto)
                 .NotEmpty()

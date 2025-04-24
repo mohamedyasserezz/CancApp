@@ -6,8 +6,6 @@
         string UserId,
         string UserName,
         string UserImage,
-        int PostId,
-        int? ParentCommentId = null,
-        List<CommentResponse>? ChildComments = null
+        int PostId
     );
 }

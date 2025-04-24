@@ -1,7 +1,7 @@
 ﻿namespace CancApp.Shared.Models.Authentication.ConfirmationEmail
 {
     public record ConfirmEmailRequest(
-    string UserId,
-    string Code
+    string Email,
+    string Otp
 );
 }

@@ -389,7 +389,7 @@ namespace CanaApp.Application.Services.Authentication
         }
         public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request)
         {
-            if (await _userManager.FindByIdAsync(request.UserId) is not { } user)
+            if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
                 return Result.Failure(UserErrors.InvalidCode);
 
             if (user.EmailConfirmed)
@@ -399,7 +399,7 @@ namespace CanaApp.Application.Services.Authentication
 
             // Check if OTP exists and is valid
             if (!_otpStore.TryGetValue(key, out var otpInfo) ||
-                otpInfo.Otp != request.Code ||
+                otpInfo.Otp != request.Otp ||
                 otpInfo.Expiry < DateTime.UtcNow)
             {
                 return Result.Failure(UserErrors.InvalidCode);
@@ -538,7 +538,7 @@ namespace CanaApp.Application.Services.Authentication
 
         public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
         {
-            var pharmacistSpec = new PharmacistSpecification(x => x.UserId == completeProfilePharmacy.UserId);
+            var pharmacistSpec = new PharmacistSpecification(x => x.ApplicationUser.Email == completeProfilePharmacy.Email);
             var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmacistSpec);
 
             if (pharmacist is null)
@@ -559,13 +559,13 @@ namespace CanaApp.Application.Services.Authentication
         }
         public async Task<Result> CompleteDoctorRegistration(CompleteProfileDoctor completeProfileDoctor, CancellationToken cancellationToken = default)
         {
-            var user = await _userManager.FindByIdAsync(completeProfileDoctor.UserId);
+            var user = await _userManager.FindByEmailAsync(completeProfileDoctor.Email);
             if (user is null ||(user.UserType != UserType.Doctor && user.UserType != UserType.Psychiatrist))
                 return Result.Failure(UserErrors.UserNotFound);
 
             if(user.UserType == UserType.Doctor)
             {
-                var doctorSpec = new DoctorSpecification(x => x.UserId == completeProfileDoctor.UserId);
+                var doctorSpec = new DoctorSpecification(x => x.ApplicationUser.Email == completeProfileDoctor.Email);
 
                 var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(doctorSpec);
 
@@ -583,7 +583,7 @@ namespace CanaApp.Application.Services.Authentication
             }
             else
             {
-                var psychiatristSpec = new PsychiatristSpecification(x => x.UserId == completeProfileDoctor.UserId);
+                var psychiatristSpec = new PsychiatristSpecification(x => x.ApplicationUser.Email == completeProfileDoctor.Email);
 
             var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(psychiatristSpec);
             if (psychiatrist is null)

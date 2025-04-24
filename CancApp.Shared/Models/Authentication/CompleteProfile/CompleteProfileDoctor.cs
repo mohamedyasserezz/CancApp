@@ -3,7 +3,7 @@
 namespace CancApp.Shared.Models.Authentication.CompleteProfile
 {
     public record CompleteProfileDoctor(
-        string UserId,
+        string Email,
         IFormFile MedicalSyndicatePhoto,
         IFormFile ImageId
         );

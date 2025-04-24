@@ -3,7 +3,6 @@
     public record class CommentRequest(
         int PostId,
         string UserId,
-        string Content,
-        int? ParentCommentId = null
-    );
+        string Content
+        );
 }
