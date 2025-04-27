@@ -79,8 +79,15 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
+        [HttpPost("register-otp-for-new-password")]
+        public async Task<IActionResult> AssignOtpForPassword([FromBody] ResetPasswordRequest request)
+        {
+            var result = await _authService.AssignOtpForPassword(request);
+
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword([FromBody] AssignNewPassword request)
         {
             var result = await _authService.ResetPasswordAsync(request);
 

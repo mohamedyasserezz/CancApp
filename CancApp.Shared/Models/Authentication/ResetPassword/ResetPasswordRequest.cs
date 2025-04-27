@@ -2,7 +2,6 @@
 {
     public record ResetPasswordRequest(
     string Email,
-    string Otp,
-    string NewPassword
+    string Otp
 );
 }

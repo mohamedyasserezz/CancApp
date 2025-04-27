@@ -387,13 +387,13 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
-        public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request)
+        public async Task<Result<AuthResponse>> ConfirmEmailAsync(ConfirmEmailRequest request)
         {
             if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
-                return Result.Failure(UserErrors.InvalidCode);
+                return Result.Failure<AuthResponse>(UserErrors.InvalidCode);
 
             if (user.EmailConfirmed)
-                return Result.Failure(UserErrors.DuplicatedConfirmation);
+                return Result.Failure<AuthResponse>(UserErrors.DuplicatedConfirmation);
 
             var key = $"EMAIL_CONFIRM_{user.Id}";
 
@@ -402,7 +402,7 @@ namespace CanaApp.Application.Services.Authentication
                 otpInfo.Otp != request.Otp ||
                 otpInfo.Expiry < DateTime.UtcNow)
             {
-                return Result.Failure(UserErrors.InvalidCode);
+                return Result.Failure<AuthResponse>(UserErrors.InvalidCode);
             }
 
             // Remove the OTP from store after usage
@@ -427,12 +427,29 @@ namespace CanaApp.Application.Services.Authentication
                 else if (user.UserType == UserType.Volunteer)
                     await _userManager.AddToRoleAsync(user, DefaultRoles.Volunteer);
 
-                return Result.Success();
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var (tokenn, expiresIn) = _jwtProvider.GenerateToken(user, userRoles);
+                var refreshToken = GenerateRefreshToken();
+                var refreshTokenExpiration = DateTime.UtcNow.AddDays(_refreshTokenExpiryDays);
+
+                var authResponse = new AuthResponse(user.Id,
+                    user.Email,
+                    user.UserName!,
+                    user.FullName,
+                    user.Address!,
+                    user.Image,
+                    tokenn,
+                    expiresIn,
+                    refreshToken,
+                    user.UserType.ToString(),
+                    refreshTokenExpiration);
+
+                return Result.Success(authResponse);
             }
 
             var error = result.Errors.First();
 
-            return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+            return Result.Failure<AuthResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
         public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmailRequest request)
         {
@@ -474,7 +491,8 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Success();
         }
-        public async Task<Result> ResetPasswordAsync(ResetPasswordRequest request)
+
+        public async Task<Result> AssignOtpForPassword(ResetPasswordRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 
@@ -494,14 +512,37 @@ namespace CanaApp.Application.Services.Authentication
 
             // Remove the OTP from store after usage
             _otpStore.Remove(key);
+            
+            user.IsForgetPasswordOtpConfirmed = true;
+
+            _unitOfWork.GetRepository<ApplicationUser, string>().Update(user);
+
+            await _unitOfWork.CompleteAsync();
+
+            return Result.Success();
+
+        }
+        public async Task<Result> ResetPasswordAsync(AssignNewPassword request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user is null || !user.EmailConfirmed || !user.IsForgetPasswordOtpConfirmed)
+                return Result.Failure(UserErrors.InvalidCode);
+
+            
 
             // Generate a token for internal use with Identity
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
 
-
             if (result.Succeeded)
+            {
+                user.IsForgetPasswordOtpConfirmed = false;
+                _unitOfWork.GetRepository<ApplicationUser, string>().Update(user);
+                await _unitOfWork.CompleteAsync();
                 return Result.Success();
+            }
+
 
             var error = result.Errors.First();
 
@@ -535,7 +576,6 @@ namespace CanaApp.Application.Services.Authentication
 
             await Task.CompletedTask;
         }
-
         public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
         {
             var pharmacistSpec = new PharmacistSpecification(x => x.ApplicationUser.Email == completeProfilePharmacy.Email);
@@ -610,6 +650,8 @@ namespace CanaApp.Application.Services.Authentication
                 .Select(_ => random.Next(0, 10).ToString()[0])
                 .ToArray());
         }
+
+  
 
        
     }
