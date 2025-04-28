@@ -26,14 +26,14 @@ namespace CancApp.Shared.Common.Errors
         public static readonly Error EmailNotConfirmed =
             new("User.EmailNotConfirmed", "Email is not confirmed", StatusCodes.Status401Unauthorized);
 
-        public static readonly Error InvalidCode =
-            new("User.InvalidCode", "Invalid code", StatusCodes.Status401Unauthorized);
+        public static readonly Error InvalidOtp =
+            new("User.InvalidOtp", "Invalid Otp", StatusCodes.Status401Unauthorized);
 
         public static readonly Error DuplicatedConfirmation =
             new("User.DuplicatedConfirmation", "Email already confirmed", StatusCodes.Status400BadRequest);
 
         public static readonly Error UserNotFound =
-        new("User.UserNotFound", "User is not found", StatusCodes.Status404NotFound);
+        new("User.UserNotFound", Description: "User is not found", StatusCodes.Status404NotFound);
 
         public static readonly Error InvalidRoles =
             new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status400BadRequest);
