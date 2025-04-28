@@ -5,10 +5,10 @@ namespace CanaApp.Domain.Contract.Service.Community.Comment
 {
     public interface ICommentService
     {
-        public Task<Result<CommentResponse>> GetCommentAsync(int commentId);
-        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId);
-        public Task<Result> AddCommentAsync(CommentRequest request);
-        public Task<Result> UpdateCommentAsync(UpdateCommentRequest request);
-        public Task<Result> DeleteCommentAsync(int commentId);
+        public Task<Result<CommentResponse>> GetCommentAsync(int commentId, CancellationToken cancellationToken = default);
+        public Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId, CancellationToken cancellationToken = default);
+        public Task<Result> AddCommentAsync(CommentRequest request, CancellationToken cancellationToken = default);
+        public Task<Result> UpdateCommentAsync(UpdateCommentRequest request, CancellationToken cancellationToken = default);
+        public Task<Result> DeleteCommentAsync(int commentId, CancellationToken cancellationToken = default);
     }
 }
