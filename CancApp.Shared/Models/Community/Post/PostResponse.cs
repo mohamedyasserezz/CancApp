@@ -9,6 +9,8 @@ namespace CancApp.Shared.Models.Community.Post
     string Content,
     string? Image,
     string UserId,
+    int CommentsCount,
+    int ReactionsCount,
     IEnumerable<ReactionResponse> Reactions,
     IEnumerable<CommentResponse> Comments
     );
