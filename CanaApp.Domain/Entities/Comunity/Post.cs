@@ -10,6 +10,8 @@ namespace CanaApp.Domain.Entities.Comunity
 
         // Foreign keys and navigation properties
         public ApplicationUser User { get; set; } = default!;
+
+        public string? Image { get; set; } = default!;
         public string UserId { get; set; } = default!;
         public bool IsReported { get; set; }
 

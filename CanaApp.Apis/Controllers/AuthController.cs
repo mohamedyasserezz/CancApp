@@ -1,5 +1,7 @@
 ﻿using CanaApp.Domain.Contract.Service.Authentication;
+using CanaApp.Domain.Entities.Models;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Authentication.ConfirmationEmail;
 using CancApp.Shared.Models.Authentication.ForgetPassword;
@@ -8,6 +10,7 @@ using CancApp.Shared.Models.Authentication.RefreshToken;
 using CancApp.Shared.Models.Authentication.Register;
 using  CancApp.Shared.Models.Authentication.ResendConfirmationEmail;
 using CancApp.Shared.Models.Authentication.ResetPassword;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CanaApp.Apis.Controllers
@@ -30,7 +33,14 @@ namespace CanaApp.Apis.Controllers
 
             return response.IsSuccess ? Ok(response.Value) : response.ToProblem();
         }
+        [HttpPost("login-for-dashboard")]
+        public async Task<IActionResult> LoginForDashboard([FromBody] LoginRequest loginRequest, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Logging with email: {email} and password: {password}", loginRequest.Email, loginRequest.Password);
 
+            var response = await _authService.GetTokenAsync(loginRequest.Email, loginRequest.Password, cancellationToken);
+            return (response.IsSuccess && response.Value.UserType == UserType.Admin.ToString()) ? Ok(response.Value) : response.ToProblem();
+        }
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenRequest refreshTokenRequest, CancellationToken cancellationToken)
         {
@@ -60,7 +70,7 @@ namespace CanaApp.Apis.Controllers
         {
             var result = await _authService.ConfirmEmailAsync(request);
 
-            return result.IsSuccess ? Ok() : result.ToProblem();
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
         [HttpPost("resend-Confirm-email")]
         public async Task<IActionResult> ResendConfirmEmail([FromBody] ResendConfirmationEmailRequest request, CancellationToken cancellationToken)

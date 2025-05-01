@@ -39,6 +39,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseHangfireDashboard("/jobs", new DashboardOptions
 {
     Authorization = [

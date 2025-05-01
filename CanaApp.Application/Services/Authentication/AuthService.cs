@@ -390,7 +390,7 @@ namespace CanaApp.Application.Services.Authentication
         public async Task<Result<AuthResponse>> ConfirmEmailAsync(ConfirmEmailRequest request)
         {
             if (await _userManager.FindByEmailAsync(request.Email) is not { } user)
-                return Result.Failure<AuthResponse>(UserErrors.InvalidCode);
+                return Result.Failure<AuthResponse>(UserErrors.InvalidOtp);
 
             if (user.EmailConfirmed)
                 return Result.Failure<AuthResponse>(UserErrors.DuplicatedConfirmation);
@@ -402,7 +402,7 @@ namespace CanaApp.Application.Services.Authentication
                 otpInfo.Otp != request.Otp ||
                 otpInfo.Expiry < DateTime.UtcNow)
             {
-                return Result.Failure<AuthResponse>(UserErrors.InvalidCode);
+                return Result.Failure<AuthResponse>(UserErrors.InvalidOtp);
             }
 
             // Remove the OTP from store after usage
@@ -497,7 +497,7 @@ namespace CanaApp.Application.Services.Authentication
             var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user is null || !user.EmailConfirmed)
-                return Result.Failure(UserErrors.InvalidCode);
+                return Result.Failure(UserErrors.InvalidOtp);
 
             var key = $"PWD_RESET_{user.Id}";
 
@@ -507,7 +507,7 @@ namespace CanaApp.Application.Services.Authentication
                 otpInfo.Otp != request.Otp ||
                 otpInfo.Expiry < DateTime.UtcNow)
             {
-                return Result.Failure(UserErrors.InvalidCode);
+                return Result.Failure(UserErrors.InvalidOtp);
             }
 
             // Remove the OTP from store after usage
@@ -527,7 +527,7 @@ namespace CanaApp.Application.Services.Authentication
             var user = await _userManager.FindByEmailAsync(request.Email);
 
             if (user is null || !user.EmailConfirmed || !user.IsForgetPasswordOtpConfirmed)
-                return Result.Failure(UserErrors.InvalidCode);
+                return Result.Failure(UserErrors.InvalidOtp);
 
             
 

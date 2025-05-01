@@ -5,7 +5,6 @@ using CanaApp.Domain.Entities.Roles;
 using CanaApp.Persistance.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -67,15 +66,18 @@ namespace CanaApp.Apis
             #endregion
 
             #region CORS
-            var allowedOrgins = configuration.GetSection("AllowedOrgins").Get<string[]>();
+            // var allowedOrgins = configuration.GetSection("AllowedOrgins").Get<string[]>();
 
             services.AddCors(options =>
-            options.AddDefaultPolicy(builder =>
-                builder
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .WithOrigins(allowedOrgins!)
-            ));
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()    // Allow requests from any origin
+                        .AllowAnyHeader()    // Allow any headers
+                        .AllowAnyMethod();   // Allow any HTTP methods (GET, POST, etc.)
+                });
+            });
 
             #endregion
 

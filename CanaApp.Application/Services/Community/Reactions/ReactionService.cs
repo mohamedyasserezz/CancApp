@@ -23,10 +23,10 @@ namespace CanaApp.Application.Services.Community.Reactions
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<ReactionService> _logger = logger;
 
-        public async Task<Result<IEnumerable<ReactionResponse>>> GetReactionsAsync(int postId, int? commentId)
+        public async Task<Result<IEnumerable<ReactionResponse>>> GetReactionsAsync(int postId, int? commentId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Getting reactions for post {PostId} and comment {CommentId}", postId, commentId);
-            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId) is null)
+            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId, cancellationToken) is null)
             {
                 return Result.Failure<IEnumerable<ReactionResponse>>(PostErrors.PostNotFound);
             }
@@ -44,10 +44,10 @@ namespace CanaApp.Application.Services.Community.Reactions
 
             return Result.Success(response);
         }
-        public async Task<Result> AddReactionAsync(ReactionRequest request)
+        public async Task<Result> AddReactionAsync(ReactionRequest request, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Adding reaction for post {PostId} and comment {CommentId}", request.PostId, request.CommentId);
-            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(request.PostId) is null)
+            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(request.PostId, cancellationToken) is null)
             {
                 return Result.Failure(PostErrors.PostNotFound);
             }
@@ -61,7 +61,7 @@ namespace CanaApp.Application.Services.Community.Reactions
 
             if (request.IsComment && request.CommentId.HasValue)
             {
-                if (await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value) is null)
+                if (await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value, cancellationToken) is null)
                 {
                     return Result.Failure(CommentErrors.CommentNotFound);
                 }
@@ -76,16 +76,16 @@ namespace CanaApp.Application.Services.Community.Reactions
                 ReactionType = Enum.Parse<ReactionType>(request.ReactionType)
             };
 
-            await _unitOfWork.GetRepository<Reaction, int>().AddAsync(reaction);
+            await _unitOfWork.GetRepository<Reaction, int>().AddAsync(reaction, cancellationToken);
 
             await _unitOfWork.CompleteAsync();
 
             return Result.Success();
         }
-        public async Task<Result> RemoveReactionAsync(ReactionRequest request)
+        public async Task<Result> RemoveReactionAsync(ReactionRequest request, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Removing reaction for post {PostId} and comment {CommentId}", request.PostId, request.CommentId);
-            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(request.PostId) is null)
+            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(request.PostId, cancellationToken) is null)
             {
                 return Result.Failure(PostErrors.PostNotFound);
             }
@@ -99,7 +99,7 @@ namespace CanaApp.Application.Services.Community.Reactions
 
             if (request.IsComment && request.CommentId.HasValue)
             {
-                if (await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value) is null)
+                if (await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value, cancellationToken) is null)
                 {
                     return Result.Failure(CommentErrors.CommentNotFound);
                 }

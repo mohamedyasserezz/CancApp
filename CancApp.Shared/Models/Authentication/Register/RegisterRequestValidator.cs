@@ -1,11 +1,11 @@
 ﻿using CancApp.Shared.Common.Consts;
-using CancApp.Shared.Common;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CancApp.Shared._Common.Consts;
 
 namespace CancApp.Shared.Models.Authentication.Register
 {

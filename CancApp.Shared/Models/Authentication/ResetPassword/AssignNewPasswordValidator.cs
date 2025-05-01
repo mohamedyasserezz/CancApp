@@ -1,5 +1,5 @@
 ﻿
-using CancApp.Shared.Common;
+using CancApp.Shared._Common.Consts;
 using FluentValidation;
 
 namespace CancApp.Shared.Models.Authentication.ResetPassword

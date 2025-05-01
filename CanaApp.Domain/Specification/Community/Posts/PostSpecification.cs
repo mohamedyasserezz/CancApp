@@ -12,6 +12,7 @@ namespace CanaApp.Domain.Specification.Community.Posts
         public PostSpecification(Expression<Func<Post, bool>>? expression) : base(expression)
         {
             AddOrderByDesc(p => p.Time);
+            AddIncludes();
         }
 
         private protected override void AddIncludes()

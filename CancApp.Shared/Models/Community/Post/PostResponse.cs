@@ -11,7 +11,6 @@ namespace CancApp.Shared.Models.Community.Post
     string UserId,
     int CommentsCount,
     int ReactionsCount,
-    IEnumerable<ReactionResponse> Reactions,
-    IEnumerable<CommentResponse> Comments
-    );
+    IEnumerable<ReactionResponse> Reactions
+        );
 }

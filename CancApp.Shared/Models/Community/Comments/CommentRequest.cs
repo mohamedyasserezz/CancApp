@@ -1,6 +1,6 @@
 ﻿namespace CancApp.Shared.Models.Community.Comments
 {
-    public record class CommentRequest(
+    public record CommentRequest(
         int PostId,
         string UserId,
         string Content

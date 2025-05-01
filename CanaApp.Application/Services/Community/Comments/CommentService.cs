@@ -21,7 +21,7 @@ namespace CanaApp.Application.Services.Community.Comments
         private readonly ILogger<CommentService> _logger = logger;
 
 
-        public async Task<Result<CommentResponse>> GetCommentAsync(int commentId)
+        public async Task<Result<CommentResponse>> GetCommentAsync(int commentId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Getting comment {CommentId}", commentId);
             var spec = new CommentSpecification(c => c.Id == commentId);
@@ -37,7 +37,7 @@ namespace CanaApp.Application.Services.Community.Comments
             return Result.Success(responsr);
         }
 
-        public async Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId)
+        public async Task<Result<IEnumerable<CommentResponse>>> GetCommentsAsync(int postId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Getting comments for post {PostId}", postId);
             var postSpec = new PostSpecification(p => p.Id == postId);
@@ -54,7 +54,7 @@ namespace CanaApp.Application.Services.Community.Comments
             var response = _mapper.Map<IEnumerable<CommentResponse>>(comments);
             return Result.Success(response);
         }
-        public async Task<Result> AddCommentAsync(CommentRequest request)
+        public async Task<Result> AddCommentAsync(CommentRequest request, CancellationToken cancellationToken = default)
         {
 
             _logger.LogInformation("Adding comment for post {PostId}", request.PostId);
@@ -70,13 +70,13 @@ namespace CanaApp.Application.Services.Community.Comments
                 PostId = request.PostId,
                 UserId = request.UserId,
             };
-            await _unitOfWork.GetRepository<Comment, int>().AddAsync(comment);
+            await _unitOfWork.GetRepository<Comment, int>().AddAsync(comment, cancellationToken);
             await _unitOfWork.CompleteAsync();
 
             return Result.Success();
         }
 
-        public async Task<Result> DeleteCommentAsync(int commentId)
+        public async Task<Result> DeleteCommentAsync(int commentId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Deleting comment {CommentId}", commentId);
             var spec = new CommentSpecification(c => c.Id == commentId);
@@ -92,7 +92,7 @@ namespace CanaApp.Application.Services.Community.Comments
 
         }
 
-        public async Task<Result> UpdateCommentAsync(UpdateCommentRequest request)
+        public async Task<Result> UpdateCommentAsync(UpdateCommentRequest request, CancellationToken cancellationToken = default)
         {
             var spec = new CommentSpecification(c => c.Id == request.CommentId);
             var comment = await _unitOfWork.GetRepository<Comment, int>().GetWithSpecAsync(spec);
