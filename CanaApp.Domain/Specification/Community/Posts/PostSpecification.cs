@@ -5,9 +5,11 @@ namespace CanaApp.Domain.Specification.Community.Posts
 {
     public class PostSpecification : Specification<Post, int>
     {
-        public PostSpecification() : base()
+        public PostSpecification(int pageNumber, int pageSize) : base()
         {
             AddOrderByDesc(p => p.Time);
+            AddIncludes();
+            ApplyPagination(pageSize * (pageNumber - 1), pageSize);
         }
         public PostSpecification(Expression<Func<Post, bool>>? expression) : base(expression)
         {

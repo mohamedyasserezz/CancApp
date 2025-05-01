@@ -7,7 +7,7 @@ namespace CanaApp.Domain.Contract.Service.Community.Post
     public interface IPostService
     {
         Task<Result<PostResponse>> GetPostAsync(int postId, CancellationToken cancellationToken = default);
-        Task<Result<IEnumerable<PaginatedList<PostResponse>>>> GetPostsAsync(RequestFilters requestFilters, CancellationToken cancellationToken = default);
+        Task<Result<PaginatedList<PostResponse>>> GetPostsAsync(RequestFilters requestFilters, CancellationToken cancellationToken = default);
         Task<Result> CreatePostAsync(PostRequest postRequest, CancellationToken cancellationToken = default);
 
         Task<Result> UpdatePostAsync(UpdatePostRequest postRequest, CancellationToken cancellationToken = default);

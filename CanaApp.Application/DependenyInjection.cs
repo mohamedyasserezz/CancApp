@@ -54,8 +54,10 @@ namespace CanaApp.Application
             services.AddScoped<IReactionService, ReactionService>();
             services.AddScoped<IPostService, PostService>();
 
+            #region Caching
+            services.AddHybridCache();
+            #endregion
 
-           
             return services;
         }
     }

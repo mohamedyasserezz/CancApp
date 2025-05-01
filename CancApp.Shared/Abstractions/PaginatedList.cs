@@ -2,20 +2,12 @@
 
 namespace CancApp.Shared.Abstractions
 {
-    public class PaginatedList<T>(List<T> items, int pageNumber, int count, int pageSize)
+    public class PaginatedList<T>(int pageIndex, int pageSize, int count, IEnumerable<T> data)
     {
-        public List<T> Items { get; private set; } = items;
-        public int PageNumber { get; private set; } = pageNumber;
-        public int TotalPages { get; private set; } = (int)Math.Ceiling(count / (double)pageSize);
-        public bool HasPerviousPage => PageNumber > 1;
-        public bool HasNextPage => PageNumber < TotalPages;
-
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
-        {
-            var count = await source.CountAsync(cancellationToken);
-            var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
-            return new PaginatedList<T>(items, pageNumber, count, pageSize);
-        }
+        public int PageIndex { get; set; } = pageIndex; 
+        public int PageSize { get; set; } = pageSize;
+        public int Count { get; set; } = count;
+        public IEnumerable<T> Data { get; set; } = data;
 
     }
 }

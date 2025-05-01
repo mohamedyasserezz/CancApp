@@ -10,6 +10,7 @@ using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Post;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 
 namespace CanaApp.Application.Services.Community.Posts
@@ -17,6 +18,7 @@ namespace CanaApp.Application.Services.Community.Posts
     class PostService(
         UserManager<ApplicationUser> userManager,
         IUnitOfWork unitOfWork,
+        HybridCache hybridCache,
         ILogger<PostService> logger,
         IMapper mapper,
         IFileService fileService
@@ -24,10 +26,12 @@ namespace CanaApp.Application.Services.Community.Posts
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly HybridCache _hybridCache = hybridCache;
         private readonly ILogger<PostService> _logger = logger;
         private readonly IMapper _mapper = mapper;
         private readonly IFileService _fileService = fileService;
 
+        private const string _cachePrefix = "availablePosts";
         public async Task<Result<PostResponse>> GetPostAsync(int postId, CancellationToken cancellationToken = default)
         {
 
@@ -49,9 +53,34 @@ namespace CanaApp.Application.Services.Community.Posts
             return Result.Success(postResponse);
         }
 
-        public Task<Result<IEnumerable<PaginatedList<PostResponse>>>> GetPostsAsync(RequestFilters requestFilters, CancellationToken cancellationToken = default)
+        public async Task<Result<PaginatedList<PostResponse>>> GetPostsAsync(RequestFilters requestFilters, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Getting posts with filters: {filters}", requestFilters);
+
+            var cacheKey = $"{_cachePrefix}_{requestFilters.PageNumber}_{requestFilters.PageSize}";
+
+            var posts = await _hybridCache.GetOrCreateAsync<IEnumerable<PostResponse>>(
+                cacheKey,
+                async cachEntry =>
+            {
+                var postSpec = new PostSpecification(requestFilters.PageNumber, requestFilters.PageSize);
+                var Posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
+                var postsResponse = _mapper.Map<IEnumerable<PostResponse>>(Posts);
+                return postsResponse;
+            });
+
+            if (posts is null)
+            {
+                _logger.LogWarning("Posts not found");
+                return Result.Failure<PaginatedList<PostResponse>>(PostErrors.PostNotFound);
+            }
+
+            var paginatedPosts = new PaginatedList<PostResponse>(requestFilters.PageNumber, requestFilters.PageSize, posts.Count(), posts);
+
+            _logger.LogInformation("Posts found with filters: {filters}", requestFilters);
+
+            return Result.Success(paginatedPosts);
+
         }
         public async Task<Result> CreatePostAsync(PostRequest postRequest, CancellationToken cancellationToken = default)
         {
