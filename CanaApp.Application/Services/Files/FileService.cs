@@ -13,7 +13,7 @@ namespace CanaApp.Application.Services.Files
         public FileService(IWebHostEnvironment webHostEnvironment)
         {
             _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}/images";
+            _imagesPath = Path.Combine(_webHostEnvironment.WebRootPath, "images");
         }
         public async Task<string> SaveFileAsync(IFormFile imageFile, string subfolder)
         {
