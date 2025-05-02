@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502144605_SeedAnotherTable")]
+    partial class SeedAnotherTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,7 +287,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_YASSER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPheInTTV5ubXlDZpHfyxulnV6bjifCJgSLdQQjmn0PJPBksCX472/hAfVdBzTyxbg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIxMD/rUFlEww+VqifGOTf0/HzKMIomFCIARSUfkDAQbru9SShydDZsEbzdAqvCeoA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "55BF92C9EF0249CDA210D85D1A851BC9",
                             TwoFactorEnabled = false,
@@ -304,7 +307,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "DOCTOR@CANC-APP.COM",
                             NormalizedUserName = "ZYAD_MAHMOUD",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFdEnT3JqKjErcZw9nA4EFNCDuz7fuKOYCw1i3B2EbeKS1uybm9WTz+NQoVqCPcB+w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH9wh9p/Sre/HP8rRO0/sl6iv2FbARnEC4iuKQZ0e1PYx07gk+RB/dgw2eB0QCu9Nw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "85a5af679fe14a24a17a7b9af212c4dc",
                             TwoFactorEnabled = false,
@@ -324,7 +327,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_SOLIMAN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA6nn3G8KwW6i2s4gYXZOtIEPsbrDSDFHrcG+IcEYlqiqjcE2uTPNxcjgr7HkbDqqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFZcOdOdmUm+e/o1dpXBY8iePGH4dqt0Ik5+1WloFlpW3sN6wwa7nAtsXbDqn14wRg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "b9d50bbf5e87434fa03edc01413ca904",
                             TwoFactorEnabled = false,
@@ -826,6 +829,30 @@ namespace CanaApp.Persistance.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("CanaApp.Domain.Entities.Models.Doctor", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Patient", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Psychiatrist", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Volunteer", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Post");
 
                     b.Navigation("User");
@@ -837,6 +864,30 @@ namespace CanaApp.Persistance.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Doctor", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Patient", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Psychiatrist", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Volunteer", null)
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -859,6 +910,30 @@ namespace CanaApp.Persistance.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Doctor", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Patient", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Psychiatrist", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CanaApp.Domain.Entities.Models.Volunteer", null)
+                        .WithMany("Reactions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
@@ -1065,6 +1140,42 @@ namespace CanaApp.Persistance.Data.Migrations
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Reactions");
+                });
+
+            modelBuilder.Entity("CanaApp.Domain.Entities.Models.Doctor", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Posts");
+
+                    b.Navigation("Reactions");
+                });
+
+            modelBuilder.Entity("CanaApp.Domain.Entities.Models.Patient", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Posts");
+
+                    b.Navigation("Reactions");
+                });
+
+            modelBuilder.Entity("CanaApp.Domain.Entities.Models.Psychiatrist", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Posts");
+
+                    b.Navigation("Reactions");
+                });
+
+            modelBuilder.Entity("CanaApp.Domain.Entities.Models.Volunteer", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Posts");
 
                     b.Navigation("Reactions");
                 });
