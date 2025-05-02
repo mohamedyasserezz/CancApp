@@ -16,18 +16,6 @@ namespace CanaApp.Persistance.Data.Configurations
                 .HasForeignKey(v => v.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasMany(v => v.Posts)
-                .WithOne()
-                .HasForeignKey(p => p.UserId);
-
-            builder.HasMany(v => v.Reactions)
-                .WithOne()
-                .HasForeignKey(r => r.UserId);
-
-            builder.HasMany(v => v.Comments)
-                .WithOne()
-                .HasForeignKey(c => c.UserId);
         }
     }
 }

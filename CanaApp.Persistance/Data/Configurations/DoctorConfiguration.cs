@@ -20,17 +20,7 @@ namespace CanaApp.Persistance.Data.Configurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasMany(d => d.Posts)
-                .WithOne()
-                .HasForeignKey(p => p.UserId);
-
-            builder.HasMany(d => d.Reactions)
-                .WithOne()
-                .HasForeignKey(r => r.UserId);
-
-            builder.HasMany(d => d.Comments)
-                .WithOne()
-                .HasForeignKey(c => c.UserId);
+         
 
             builder.HasData(
                 new Doctor
