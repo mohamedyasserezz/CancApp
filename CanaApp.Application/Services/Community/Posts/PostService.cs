@@ -86,7 +86,7 @@ namespace CanaApp.Application.Services.Community.Posts
         {
             _logger.LogInformation("Creating for user with id: {id}", postRequest.UserId);
 
-            if (_userManager.FindByIdAsync(postRequest.UserId) is null)
+            if (await _userManager.FindByIdAsync(postRequest.UserId) is null)
             {
                 _logger.LogWarning("User with id: {id} not found", postRequest.UserId);
                 return Result.Failure(UserErrors.UserNotFound);

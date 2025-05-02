@@ -43,9 +43,13 @@ namespace CanaApp.Application
 
             services.AddHttpContextAccessor();
 
-            services.AddTransient<MappingProfile>();
-
-            services.AddAutoMapper(typeof(AssemblyInformation).Assembly);
+            // Register AutoMapper with a custom configuration
+            services.AddAutoMapper(config =>
+            {
+                // Explicitly add the MappingProfile with dependency injection
+                config.ConstructServicesUsing(type => services.BuildServiceProvider().GetService(type));
+                config.AddProfile<MappingProfile>();
+            }, typeof(AssemblyInformation).Assembly);
 
 
             #endregion
