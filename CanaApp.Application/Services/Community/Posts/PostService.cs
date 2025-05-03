@@ -39,7 +39,7 @@ namespace CanaApp.Application.Services.Community.Posts
 
             var postSpec = new PostSpecification(p => p.Id == postId);
 
-            var post = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
+            var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
 
             if (post is null)
             {
@@ -67,7 +67,11 @@ namespace CanaApp.Application.Services.Community.Posts
                 var Posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
                 var postsResponse = _mapper.Map<IEnumerable<PostResponse>>(Posts);
                 return postsResponse;
-            });
+            }, new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromMinutes(5),     
+            }
+            );
 
             if (posts is null)
             {

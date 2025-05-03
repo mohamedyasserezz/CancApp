@@ -33,12 +33,25 @@ namespace CanaApp.Apis.Controllers
 
 
         [HttpGet("{postId:int}")]
-        public async Task<IActionResult> GetPost([FromRoute]int postId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPost([FromRoute] int postId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching post with id: {id}", postId);
             var response = await postService.GetPostAsync(postId, cancellationToken);
             return response.IsSuccess ? Ok(response) : response.ToProblem();
         }
-
+        [HttpPut]
+        public async Task<IActionResult> UpdatePost([FromForm] UpdatePostRequest postRequest, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Updating post with id: {id}", postRequest.Id);
+            var response = await postService.UpdatePostAsync(postRequest, cancellationToken);
+            return response.IsSuccess ? Ok() : response.ToProblem();
+        }
+        [HttpDelete("{postId:int}")]
+        public async Task<IActionResult> DeletePost([FromRoute] int postId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Deleting post with id: {id}", postId);
+            var response = await postService.DeletePostAsync(postId, cancellationToken);
+            return response.IsSuccess ? NoContent() : response.ToProblem();
+        }
     }
 }
