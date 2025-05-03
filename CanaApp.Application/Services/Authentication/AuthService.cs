@@ -414,18 +414,7 @@ namespace CanaApp.Application.Services.Authentication
 
             if (result.Succeeded)
             {
-                if(user.UserType == UserType.Patient)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Patient);
-                else if (user.UserType == UserType.Doctor)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Doctor);
-                else if (user.UserType == UserType.Admin)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Admin);
-                else if (user.UserType == UserType.Psychiatrist)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Psychiatrist);
-                else if (user.UserType == UserType.Pharmacist)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Pharmacist);
-                else if (user.UserType == UserType.Volunteer)
-                    await _userManager.AddToRoleAsync(user, DefaultRoles.Volunteer);
+                
 
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var (tokenn, expiresIn) = _jwtProvider.GenerateToken(user, userRoles);
