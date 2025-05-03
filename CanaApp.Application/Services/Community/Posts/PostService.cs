@@ -171,5 +171,34 @@ namespace CanaApp.Application.Services.Community.Posts
 
             return Result.Success();
         }
+
+        public async Task<Result<IEnumerable<PostResponse>>> GetReportedPosts(CancellationToken cancellationToken = default)
+        {
+            var postsSpec = new PostSpecification(p => p.IsReported == true);
+
+            var posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postsSpec);
+
+            return Result.Success(_mapper.Map<IEnumerable<PostResponse>>(posts));
+        }
+
+        public async Task<Result> ReportPostAsync(int postId, CancellationToken cancellationToken = default)
+        {
+            var post = await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId);
+
+            if (post is null)
+            {
+                _logger.LogWarning("Post with id: {id} not found", postId);
+                return Result.Failure(PostErrors.PostNotFound);
+            }
+
+            post.IsReported = true;
+            _unitOfWork.GetRepository<Post, int>().Update(post);
+
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("Post with id: {id} reported", postId);
+
+            return Result.Success();
+        }
     }
 }

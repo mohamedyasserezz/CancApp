@@ -14,5 +14,9 @@ namespace CanaApp.Domain.Contract.Service.Community.Post
 
         Task<Result> DeletePostAsync(int postId, CancellationToken cancellationToken = default);
 
+        Task<Result<IEnumerable<PostResponse>>> GetReportedPosts (CancellationToken cancellationToken = default);
+
+        Task<Result> ReportPostAsync(int postId, CancellationToken cancellationToken = default);
+
     }
 }
