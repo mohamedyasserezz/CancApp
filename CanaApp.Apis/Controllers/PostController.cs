@@ -53,5 +53,21 @@ namespace CanaApp.Apis.Controllers
             var response = await postService.DeletePostAsync(postId, cancellationToken);
             return response.IsSuccess ? NoContent() : response.ToProblem();
         }
+
+        [HttpGet("reported")]
+        public async Task<IActionResult> GetReportedPosts(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching reported posts");
+            var response = await postService.GetReportedPosts(cancellationToken);
+            return response.IsSuccess ? Ok(response) : response.ToProblem();
+        }
+
+        [HttpPost("{postId:int}/report")]
+        public async Task<IActionResult> ReportPost([FromRoute] int postId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Reporting post with id: {id}", postId);
+            var response = await postService.ReportPostAsync(postId, cancellationToken);
+            return response.IsSuccess ? Ok() : response.ToProblem();
+        }
     }
 }
