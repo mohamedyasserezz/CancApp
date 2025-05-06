@@ -57,7 +57,7 @@ namespace CanaApp.Application.Services.Community.Posts
         {
             _logger.LogInformation("Getting posts with filters: {filters}", requestFilters);
 
-            var cacheKey = $"{_cachePrefix}_{requestFilters.PageNumber}_{requestFilters.PageSize}";
+            var cacheKey = $"{_cachePrefix}";
 
             var posts = await _hybridCache.GetOrCreateAsync<IEnumerable<PostResponse>>(
                 cacheKey,
@@ -112,6 +112,7 @@ namespace CanaApp.Application.Services.Community.Posts
 
             _logger.LogInformation("Post created with id: {id}", post.Id);
 
+            await _hybridCache.RemoveAsync($"{_cachePrefix}");
             return Result.Success();
 
         }
@@ -148,6 +149,11 @@ namespace CanaApp.Application.Services.Community.Posts
 
             _logger.LogInformation("Post updated with id: {id}", post.Id);
 
+
+            await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
+
+            await _hybridCache.RemoveAsync($"{_cachePrefix}");
+
             return Result.Success();
 
         }
@@ -169,6 +175,10 @@ namespace CanaApp.Application.Services.Community.Posts
 
             _logger.LogInformation("Post deleted with id: {id}", postId);
 
+
+            await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
+
+            await _hybridCache.RemoveAsync($"{_cachePrefix}");
             return Result.Success();
         }
 
