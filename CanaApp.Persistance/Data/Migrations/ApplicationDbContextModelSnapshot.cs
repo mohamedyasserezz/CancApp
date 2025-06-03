@@ -47,7 +47,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("Participant2Id");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Chats.Message", b =>
@@ -78,7 +78,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Comment", b =>
@@ -113,7 +113,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Post", b =>
@@ -146,7 +146,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Comunity.Reaction", b =>
@@ -182,7 +182,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reactions");
+                    b.ToTable("Reactions", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.ApplicationUser", b =>
@@ -358,7 +358,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
 
                     b.HasData(
                         new
@@ -384,7 +384,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
 
                     b.HasData(
                         new
@@ -426,7 +426,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Pharmacists");
+                    b.ToTable("Pharmacists", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Psychiatrist", b =>
@@ -454,7 +454,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Psychiatrists");
+                    b.ToTable("Psychiatrists", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Models.Volunteer", b =>
@@ -470,7 +470,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Volunteers");
+                    b.ToTable("Volunteers", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Records.Record", b =>
@@ -499,7 +499,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("Records");
+                    b.ToTable("Records", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.MedsReminder", b =>
@@ -530,7 +530,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("MedsReminders");
+                    b.ToTable("MedsReminders", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Reminders.VisitReminder", b =>
@@ -559,7 +559,7 @@ namespace CanaApp.Persistance.Data.Migrations
 
                     b.HasIndex("PatientUserId");
 
-                    b.ToTable("VisitReminders");
+                    b.ToTable("VisitReminders", (string)null);
                 });
 
             modelBuilder.Entity("CanaApp.Domain.Entities.Roles.ApplicationRole", b =>
