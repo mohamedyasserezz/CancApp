@@ -14,7 +14,7 @@ namespace CanaApp.Persistance.Data.Configurations
                 .HasMaxLength(1000);
 
 
-            builder.HasOne(c => c.Post)
+            builder.HasOne<Post>()
                 .WithMany(p => p.Comments)
                 .HasForeignKey(c => c.PostId)
                 .OnDelete(DeleteBehavior.NoAction);

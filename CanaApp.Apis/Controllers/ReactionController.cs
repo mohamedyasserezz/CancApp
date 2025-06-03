@@ -12,8 +12,8 @@ namespace CanaApp.Apis.Controllers
         private readonly IReactionService _reactionService = reactionService;
         private readonly ILogger<ReactionController> _logger = logger;
 
-        [HttpGet]
-        public async Task<IActionResult> GetReactions([FromRoute] int postId, int commentId,CancellationToken cancellationToken)
+        [HttpGet("{postId}/{commentId?}")]
+        public async Task<IActionResult> GetReactions([FromRoute] int postId,[FromRoute] int? commentId,CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching reactions for post with id: {id}", postId);
             var response = await _reactionService.GetReactionsAsync(postId, commentId,cancellationToken);
