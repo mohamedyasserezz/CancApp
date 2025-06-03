@@ -8,11 +8,14 @@ namespace CanaApp.Application.Services.Files
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         private readonly string _imagesPath;
 
-        public FileService(IWebHostEnvironment webHostEnvironment)
+        public FileService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
             _imagesPath = Path.Combine(_webHostEnvironment.WebRootPath, "images");
         }
         public async Task<string> SaveFileAsync(IFormFile imageFile, string subfolder)
@@ -54,5 +57,18 @@ namespace CanaApp.Application.Services.Files
             File.Delete(path);
         }
 
+        public string GetFileUrl(ApplicationUser user)
+        {
+            var request = _httpContextAccessor.HttpContext?.Request;
+
+            if (request is null)
+                return null!;
+
+            if (user is null || string.IsNullOrEmpty(user.Image))
+                return $"{request!.Scheme}://{request.Host}/images/profiles/default.png";
+
+
+            return $"{request.Scheme}://{request.Host}/images/profiles/{user.Image}";
+        }
     }
 }
