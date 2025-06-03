@@ -24,11 +24,6 @@ namespace CancApp.Shared.Models.Community.Reactions
                .NotEmpty()
                .WithMessage("Plz Add a {PropertyName}");
 
-            RuleFor(X => X.ReactionType)
-                .NotEmpty()
-                .WithMessage("Plz Add a {PropertyName}")
-                .Must(BeValidReactionType).WithMessage($"Reaction type must be one of: {string.Join(", ", ValidReactionTypes)}");
-
             RuleFor(X => X.IsComment)
                 .NotNull()
                 .WithMessage("Identify if the reaction for post or comment");

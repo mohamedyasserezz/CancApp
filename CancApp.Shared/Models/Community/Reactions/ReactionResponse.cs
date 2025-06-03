@@ -5,7 +5,7 @@
     int PostId,
     int? CommentId,
     string UserId,
-    string UserName,
+    string FullName,
     string UserProfilePictureUrl,
     string ReactionType,
     bool IsComment

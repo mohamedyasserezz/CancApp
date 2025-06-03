@@ -4,7 +4,6 @@
         int PostId,
         bool IsComment,
         int? CommentId,
-        string UserId,
-        string ReactionType
+        string UserId
         );
 }
