@@ -1,5 +1,6 @@
 using CanaApp.Apis;
 using CanaApp.Application;
+using CanaApp.Application.Services.Hubs;
 using CanaApp.Persistance;
 using CancApp.Shared;
 using Hangfire;
@@ -21,6 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddPersistance(builder.Configuration);
 builder.Services.AddShared(builder.Configuration);
@@ -56,7 +58,7 @@ app.UseHangfireDashboard("/jobs", new DashboardOptions
 app.UseStaticFiles();
 
 app.UseAuthorization();
-
+app.MapHub<ChatHub>("/chat");
 app.MapControllers();
 
 app.Run();

@@ -1,4 +1,6 @@
-﻿using CanaApp.Application.Mapping;
+﻿using AutoMapper;
+using CanaApp.Application.Mapping;
+using CanaApp.Application.Mapping.Resolver;
 using CanaApp.Application.Services.Authentication;
 using CanaApp.Application.Services.Community.Comments;
 using CanaApp.Application.Services.Community.Posts;
@@ -41,17 +43,19 @@ namespace CanaApp.Application
 
             #region auto mapper
 
-            services.AddHttpContextAccessor();
 
-            // Register AutoMapper with a custom configuration
+            //services.AddAutoMapper(typeof(MappingProfile));
+
+            //var mapper = services.BuildServiceProvider().GetRequiredService<IMapper>();
+            //mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
             services.AddAutoMapper(config =>
             {
-                // Explicitly add the MappingProfile with dependency injection
-                config.ConstructServicesUsing(type => services.BuildServiceProvider().GetService(type));
                 config.AddProfile<MappingProfile>();
-            }, typeof(AssemblyInformation).Assembly);
+            }, typeof(MappingProfile).Assembly, typeof(CommentProfileResolver).Assembly);
 
-
+            // Validate AutoMapper configuration
+            
             #endregion
 
             services.AddScoped<ICommentService, CommentService>();
