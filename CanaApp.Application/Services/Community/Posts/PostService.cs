@@ -8,7 +8,9 @@ using CanaApp.Domain.Specification.Community.Posts;
 using CancApp.Shared._Common.Consts;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
+using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Community.Post;
+using CancApp.Shared.Models.Community.Reactions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
@@ -20,7 +22,6 @@ namespace CanaApp.Application.Services.Community.Posts
         IUnitOfWork unitOfWork,
         HybridCache hybridCache,
         ILogger<PostService> logger,
-        IMapper mapper,
         IFileService fileService
         ) : IPostService
     {
@@ -28,7 +29,6 @@ namespace CanaApp.Application.Services.Community.Posts
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly HybridCache _hybridCache = hybridCache;
         private readonly ILogger<PostService> _logger = logger;
-        private readonly IMapper _mapper = mapper;
         private readonly IFileService _fileService = fileService;
 
         private const string _cachePrefix = "availablePosts";
@@ -46,7 +46,25 @@ namespace CanaApp.Application.Services.Community.Posts
                 _logger.LogWarning("Post with id: {id} not found", postId);
                 return Result.Failure<PostResponse>(PostErrors.PostNotFound);
             }
-            var postResponse = _mapper.Map<PostResponse>(post);
+            var postResponse = new PostResponse(
+                postId,
+                post.Time,
+                post.Content,
+                _fileService.GetFileUrl(post.User),
+                post.UserId,
+                post.Comments.Count,
+                post.Reactions.Count,
+                post.Reactions.Select(r => new ReactionResponse(
+                       r.Time,
+                       r.PostId,
+                       r.CommentId,
+                       r.UserId,
+                       post.User.FullName,
+                       _fileService.GetFileUrl(post.User),
+                       r.ReactionType.ToString(),
+                       r.CommentId.HasValue ? true : false
+                        ))
+                );
 
             _logger.LogInformation("Post with id: {id} found", postId);
 
@@ -65,7 +83,26 @@ namespace CanaApp.Application.Services.Community.Posts
             {
                 var postSpec = new PostSpecification(requestFilters.PageNumber, requestFilters.PageSize);
                 var Posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
-                var postsResponse = _mapper.Map<IEnumerable<PostResponse>>(Posts);
+
+                var postsResponse = Posts.Select(p => new PostResponse(
+                    p.Id,
+                    p.Time,
+                    p.Content,
+                    _fileService.GetFileUrl(p.User),
+                    p.UserId,
+                    p.Comments.Count,
+                    p.Reactions.Count,
+                    p.Reactions.Select(r => new ReactionResponse(
+                       r.Time,
+                       r.PostId,
+                       r.CommentId,
+                       r.UserId,
+                       p.User.FullName,
+                       _fileService.GetFileUrl(p.User),
+                       r.ReactionType.ToString(),
+                       r.CommentId.HasValue ? true : false
+                        ))
+                    ));
                 return postsResponse;
             }, new HybridCacheEntryOptions
             {
@@ -188,7 +225,27 @@ namespace CanaApp.Application.Services.Community.Posts
 
             var posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postsSpec);
 
-            return Result.Success(_mapper.Map<IEnumerable<PostResponse>>(posts));
+            var postsResponse = posts.Select(p => new PostResponse(
+                    p.Id,
+                    p.Time,
+                    p.Content,
+                    _fileService.GetFileUrl(p.User),
+                    p.UserId,
+                    p.Comments.Count,
+                    p.Reactions.Count,
+                    p.Reactions.Select(r => new ReactionResponse(
+                       r.Time,
+                       r.PostId,
+                       r.CommentId,
+                       r.UserId,
+                       p.User.FullName,
+                       _fileService.GetFileUrl(p.User),
+                       r.ReactionType.ToString(),
+                       r.CommentId.HasValue ? true : false
+                        ))
+                    ));
+
+            return Result.Success(postsResponse);
         }
 
         public async Task<Result> ReportPostAsync(int postId, CancellationToken cancellationToken = default)

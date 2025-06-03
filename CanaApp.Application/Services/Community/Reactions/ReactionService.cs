@@ -2,9 +2,11 @@
 using AutoMapper;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Reaction;
+using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
+using CanaApp.Domain.Specification.Community.Posts;
 using CanaApp.Domain.Specification.Community.Reactions;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
@@ -15,32 +17,44 @@ namespace CanaApp.Application.Services.Community.Reactions
 {
     class ReactionService(
         IUnitOfWork unitOfWork,
-        IMapper mapper, 
+        IFileService fileService,
         ILogger<ReactionService> logger
         ) : IReactionService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper = mapper;
+        private readonly IFileService _fileService = fileService;
         private readonly ILogger<ReactionService> _logger = logger;
 
         public async Task<Result<IEnumerable<ReactionResponse>>> GetReactionsAsync(int postId, int? commentId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Getting reactions for post {PostId} and comment {CommentId}", postId, commentId);
-            if (await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId, cancellationToken) is null)
+
+            var postSpect = new PostSpecification(p => p.Id == postId);
+
+            if (await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpect) is not { } post)
             {
                 return Result.Failure<IEnumerable<ReactionResponse>>(PostErrors.PostNotFound);
             }
             var spec1 = new ReactionSpecification(
-                r => r.PostId == postId && (commentId == null || r.CommentId == commentId));
+                r => r.PostId == postId &&  r.CommentId.HasValue && r.CommentId == commentId);
 
-            var spec2 = new ReactionSpecification(r => r.PostId == postId);
+            var spec2 = new ReactionSpecification(r => r.PostId == postId && !r.CommentId.HasValue);
 
             var reactions = commentId.HasValue ?
                 await _unitOfWork.GetRepository<Reaction, int>().GetAllWithSpecAsync(spec1)
                 : await _unitOfWork.GetRepository<Reaction, int>().GetAllWithSpecAsync(spec2);
 
-            
-            var response = _mapper.Map<IEnumerable<ReactionResponse>>(reactions);
+
+            var response = reactions.Select(r => new ReactionResponse(
+                r.Time,
+                r.PostId,
+                r.CommentId,
+                r.UserId,
+                post.User.FullName,
+                _fileService.GetFileUrl(post.User),
+                r.ReactionType.ToString(),
+                r.CommentId.HasValue ? true : false
+                ));
 
             return Result.Success(response);
         }
@@ -73,7 +87,6 @@ namespace CanaApp.Application.Services.Community.Reactions
                 PostId = request.PostId,
                 CommentId = request.CommentId,
                 UserId = request.UserId,
-                ReactionType = Enum.Parse<ReactionType>(request.ReactionType)
             };
 
             await _unitOfWork.GetRepository<Reaction, int>().AddAsync(reaction, cancellationToken);
