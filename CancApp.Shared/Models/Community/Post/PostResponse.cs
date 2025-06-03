@@ -3,7 +3,7 @@
 namespace CancApp.Shared.Models.Community.Post
 {
     public record PostResponse(
-    string Id,
+    int Id,
     DateTime Time,
     string Content,
     string? Image,
