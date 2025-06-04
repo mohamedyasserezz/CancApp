@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using CanaApp.Application.Hups;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Contract.Service.File;
@@ -11,6 +10,7 @@ using CanaApp.Domain.Specification.Community.Reactions;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Reactions;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace CanaApp.Application.Services.Community.Reactions
@@ -18,11 +18,13 @@ namespace CanaApp.Application.Services.Community.Reactions
     class ReactionService(
         IUnitOfWork unitOfWork,
         IFileService fileService,
+        IHubContext<CommunityHub> hubContext,
         ILogger<ReactionService> logger
         ) : IReactionService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileService _fileService = fileService;
+        private readonly IHubContext<CommunityHub> _hubContext = hubContext;
         private readonly ILogger<ReactionService> _logger = logger;
 
         public async Task<Result<IEnumerable<ReactionResponse>>> GetReactionsAsync(int postId, int? commentId, CancellationToken cancellationToken = default)
@@ -73,6 +75,13 @@ namespace CanaApp.Application.Services.Community.Reactions
                 return Result.Failure(ReactionErrors.ReactionAlreadyExists);
             }
 
+            var reactionSpec = new ReactionSpecification(r => r.UserId == request.UserId && r.PostId == request.PostId && (!request.IsComment || request.CommentId == r.Id));
+
+            if(await _unitOfWork.GetRepository<Reaction, int>().GetWithSpecAsync(reactionSpec) is { } react)
+            {
+                 _unitOfWork.GetRepository<Reaction, int>().Delete(react);
+            }
+
             if (request.IsComment && request.CommentId.HasValue)
             {
                 if (await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value, cancellationToken) is null)
@@ -92,6 +101,19 @@ namespace CanaApp.Application.Services.Community.Reactions
             await _unitOfWork.GetRepository<Reaction, int>().AddAsync(reaction, cancellationToken);
 
             await _unitOfWork.CompleteAsync();
+
+            var reactionResponse = new ReactionResponse(
+                reaction.Time,
+                reaction.PostId,
+                reaction.CommentId,
+                reaction.UserId,
+                reaction.User.FullName,
+                _fileService.GetFileUrl(reaction.User),
+                reaction.ReactionType.ToString(),
+                reaction.CommentId.HasValue
+                );
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceiveReactionUpdate", reactionResponse);
 
             return Result.Success();
         }
@@ -130,6 +152,8 @@ namespace CanaApp.Application.Services.Community.Reactions
             _unitOfWork.GetRepository<Reaction, int>().Delete(reaction);
 
             await _unitOfWork.CompleteAsync();
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceiveReactionRemoved", reaction.Id);
 
             return Result.Success();
         }

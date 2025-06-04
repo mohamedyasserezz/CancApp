@@ -28,7 +28,7 @@ namespace CanaApp.Persistance.Data.Configurations
                 .HasForeignKey(r => r.CommentId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(r => r.ApplicationUser)
+            builder.HasOne(r => r.User)
                 .WithMany()
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.NoAction);

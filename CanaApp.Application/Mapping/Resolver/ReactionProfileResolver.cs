@@ -11,11 +11,11 @@ namespace CanaApp.Application.Mapping.Resolver
 
         public string Resolve(Reaction source, ReactionResponse destination, string destMember, ResolutionContext context)
         {
-            if (string.IsNullOrEmpty(source.ApplicationUser.Image))
+            if (string.IsNullOrEmpty(source.User.Image))
                 return null!;
             var request = _httpContextAccessor.HttpContext?.Request;
             if (request == null) return null!;
-            return $"{request.Scheme}://{request.Host}/images/profiles/{source.ApplicationUser.Image}";
+            return $"{request.Scheme}://{request.Host}/images/profiles/{source.User.Image}";
         }
     }
 }

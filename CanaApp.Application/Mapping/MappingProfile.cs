@@ -13,7 +13,7 @@ namespace CanaApp.Application.Mapping
         public MappingProfile()
         {
             CreateMap<Reaction, ReactionResponse>()
-                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.ApplicationUser.FullName))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
                 .ForMember(dest => dest.UserProfilePictureUrl, opt => opt.MapFrom<ReactionProfileResolver>())
                 .ForMember(dest => dest.ReactionType, opt => opt.MapFrom(src => src.ReactionType.ToString()))
                 .ForMember(dest => dest.IsComment, opt => opt.MapFrom(src => src.CommentId.HasValue));

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CanaApp.Application.Hups;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Post;
 using CanaApp.Domain.Contract.Service.File;
@@ -12,6 +13,7 @@ using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Community.Post;
 using CancApp.Shared.Models.Community.Reactions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +24,7 @@ namespace CanaApp.Application.Services.Community.Posts
         IUnitOfWork unitOfWork,
         HybridCache hybridCache,
         ILogger<PostService> logger,
+        IHubContext<CommunityHub> hubContext,
         IFileService fileService
         ) : IPostService
     {
@@ -29,6 +32,7 @@ namespace CanaApp.Application.Services.Community.Posts
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly HybridCache _hybridCache = hybridCache;
         private readonly ILogger<PostService> _logger = logger;
+        private readonly IHubContext<CommunityHub> _hubContext = hubContext;
         private readonly IFileService _fileService = fileService;
 
         private const string _cachePrefix = "availablePosts";
@@ -149,6 +153,29 @@ namespace CanaApp.Application.Services.Community.Posts
 
             _logger.LogInformation("Post created with id: {id}", post.Id);
 
+            // Broadcast new post
+            var postResponse = new PostResponse(
+                post.Id,
+                post.Time,
+                post.Content,
+                _fileService.GetFileUrl(post.User),
+                post.UserId,
+                post.Comments.Count,
+                post.Reactions.Count,
+                post.Reactions.Select(r => new ReactionResponse(
+                    r.Time,
+                    r.PostId,
+                    r.CommentId,
+                    r.UserId,
+                    r.User.FullName,
+                    _fileService.GetFileUrl(r.User),
+                    r.ReactionType.ToString(),
+                    r.CommentId.HasValue
+                ))
+            );
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceivePostUpdate", postResponse);
+
             await _hybridCache.RemoveAsync($"{_cachePrefix}");
             return Result.Success();
 
@@ -187,6 +214,29 @@ namespace CanaApp.Application.Services.Community.Posts
             _logger.LogInformation("Post updated with id: {id}", post.Id);
 
 
+            // Broadcast updated post
+            var postResponse = new PostResponse(
+                post.Id,
+                post.Time,
+                post.Content,
+                _fileService.GetFileUrl(post.User),
+                post.UserId,
+                post.Comments.Count,
+                post.Reactions.Count,
+                post.Reactions.Select(r => new ReactionResponse(
+                    r.Time,
+                    r.PostId,
+                    r.CommentId,
+                    r.UserId,
+                    r.User.FullName,
+                    _fileService.GetFileUrl(r.User),
+                    r.ReactionType.ToString(),
+                    r.CommentId.HasValue
+                ))
+            );
+            await _hubContext.Clients.Group("Community").SendAsync("ReceivePostUpdate", postResponse);
+
+
             await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
 
             await _hybridCache.RemoveAsync($"{_cachePrefix}");
@@ -212,6 +262,7 @@ namespace CanaApp.Application.Services.Community.Posts
 
             _logger.LogInformation("Post deleted with id: {id}", postId);
 
+            await _hubContext.Clients.Group("Community").SendAsync("ReceivePostDeleted", postId);
 
             await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
 
@@ -264,6 +315,30 @@ namespace CanaApp.Application.Services.Community.Posts
             await _unitOfWork.CompleteAsync();
 
             _logger.LogInformation("Post with id: {id} reported", postId);
+
+            var postResponse = new PostResponse(
+                post.Id,
+                post.Time,
+                post.Content,
+                _fileService.GetFileUrl(post.User),
+                post.UserId,
+                post.Comments.Count,
+                post.Reactions.Count,
+                post.Reactions.Select(r => new ReactionResponse(
+                    r.Time,
+                    r.PostId,
+                    r.CommentId,
+                    r.UserId,
+                    r.User.FullName,
+                    _fileService.GetFileUrl(r.User),
+                    r.ReactionType.ToString(),
+                    r.CommentId.HasValue
+                ))
+             );
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceivePostUpdate", postResponse);
+
+
 
             return Result.Success();
         }

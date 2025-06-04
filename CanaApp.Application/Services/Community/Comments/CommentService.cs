@@ -1,24 +1,30 @@
 ﻿using AutoMapper;
+using CanaApp.Application.Hups;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Comment;
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Comunity;
+using CanaApp.Domain.Entities.Models;
+using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Community.Comments;
 using CanaApp.Domain.Specification.Community.Posts;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Comments;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 namespace CanaApp.Application.Services.Community.Comments
 {
     internal class CommentService(
         IUnitOfWork unitOfWork,
         IFileService fileService,
+        IHubContext<CommunityHub> hubContext,
         ILogger<CommentService> logger
         ) : ICommentService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileService _fileService = fileService;
+        private readonly IHubContext<CommunityHub> _hubContext = hubContext;
         private readonly ILogger<CommentService> _logger = logger;
 
 
@@ -99,8 +105,10 @@ namespace CanaApp.Application.Services.Community.Comments
 
             
 
+
             if (post is null)
                 return Result.Failure(PostErrors.PostNotFound);
+
 
             var comment = new Comment
             {
@@ -110,7 +118,21 @@ namespace CanaApp.Application.Services.Community.Comments
             };
             post.Comments.Add(comment);
             await _unitOfWork.GetRepository<Comment, int>().AddAsync(comment, cancellationToken);
+
             await _unitOfWork.CompleteAsync();
+
+
+            var commentResponse = new CommentResponse(
+                comment.Id,
+                comment.Content,
+                request.PostId,
+                comment.Time,
+                comment.UserId,
+                _fileService.GetFileUrl(comment.User),
+                comment.User.FullName
+                );
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);
 
             return Result.Success();
         }
@@ -133,6 +155,8 @@ namespace CanaApp.Application.Services.Community.Comments
             _unitOfWork.GetRepository<Comment, int>().Delete(comment);
             await _unitOfWork.CompleteAsync();
 
+            await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentDeleted", commentId);
+
             return Result.Success();
 
         }
@@ -141,14 +165,29 @@ namespace CanaApp.Application.Services.Community.Comments
         {
             var spec = new CommentSpecification(c => c.Id == request.CommentId);
             var comment = await _unitOfWork.GetRepository<Comment, int>().GetWithSpecAsync(spec);
+
             if (comment is null)
             {
                 return Result.Failure(CommentErrors.CommentNotFound);
             }
             comment.Content = request.Content;
             comment.Time = DateTime.UtcNow;
+
+
             _unitOfWork.GetRepository<Comment, int>().Update(comment);
             await _unitOfWork.CompleteAsync();
+
+            var commentResponse = new CommentResponse(
+                comment.Id,
+                comment.Content,
+                comment.PostId,
+                comment.Time,
+                comment.UserId,
+                _fileService.GetFileUrl(comment.User),
+                comment.User.FullName
+                );
+
+            await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);
             return Result.Success();
         }
     }
