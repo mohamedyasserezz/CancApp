@@ -10,7 +10,7 @@ namespace CanaApp.Domain.Entities.Comunity
         // Foreign keys and navigation properties
         public int PostId { get; set; }
         public int? CommentId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; } = default!;
+        public ApplicationUser User { get; set; } = default!;
         public string UserId { get; set; } = default!;
 
         public ReactionType ReactionType { get; set; }
