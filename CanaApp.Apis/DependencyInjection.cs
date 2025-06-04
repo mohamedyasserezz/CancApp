@@ -81,7 +81,9 @@ namespace CanaApp.Apis
 
             #endregion
 
-
+            #region SignalR
+            services.AddSignalR();
+            #endregion
 
             return services;
         }

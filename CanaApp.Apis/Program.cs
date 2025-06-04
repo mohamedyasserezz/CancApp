@@ -1,5 +1,6 @@
 using CanaApp.Apis;
 using CanaApp.Application;
+using CanaApp.Application.Hups;
 using CanaApp.Persistance;
 using CancApp.Shared;
 using Hangfire;
@@ -58,5 +59,6 @@ app.UseStaticFiles();
 
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<CommunityHub>("/communityHub"); // Map SignalR hub
 
 app.Run();
