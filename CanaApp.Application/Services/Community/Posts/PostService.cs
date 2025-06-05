@@ -54,7 +54,8 @@ namespace CanaApp.Application.Services.Community.Posts
                 postId,
                 post.Time,
                 post.Content,
-                _fileService.GetFileUrl(post.User),
+                _fileService.GetProfileUrl(post.User),
+                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
                 post.UserId,
                 post.Comments.Count,
                 post.Reactions.Count,
@@ -64,8 +65,7 @@ namespace CanaApp.Application.Services.Community.Posts
                        r.CommentId,
                        r.UserId,
                        post.User.FullName,
-                       _fileService.GetFileUrl(post.User),
-                       r.ReactionType.ToString(),
+                       _fileService.GetProfileUrl(post.User),
                        r.CommentId.HasValue ? true : false
                         ))
                 );
@@ -92,7 +92,8 @@ namespace CanaApp.Application.Services.Community.Posts
                     p.Id,
                     p.Time,
                     p.Content,
-                    _fileService.GetFileUrl(p.User),
+                    _fileService.GetProfileUrl(p.User),
+                    p.Image is not null ? _fileService.GetImageUrl(p.Image) : null!,
                     p.UserId,
                     p.Comments.Count,
                     p.Reactions.Count,
@@ -102,8 +103,7 @@ namespace CanaApp.Application.Services.Community.Posts
                        r.CommentId,
                        r.UserId,
                        p.User.FullName,
-                       _fileService.GetFileUrl(p.User),
-                       r.ReactionType.ToString(),
+                       _fileService.GetProfileUrl(p.User),
                        r.CommentId.HasValue ? true : false
                         ))
                     ));
@@ -158,7 +158,8 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Id,
                 post.Time,
                 post.Content,
-                _fileService.GetFileUrl(post.User),
+                _fileService.GetProfileUrl(post.User),
+                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
                 post.UserId,
                 post.Comments.Count,
                 post.Reactions.Count,
@@ -168,8 +169,7 @@ namespace CanaApp.Application.Services.Community.Posts
                     r.CommentId,
                     r.UserId,
                     r.User.FullName,
-                    _fileService.GetFileUrl(r.User),
-                    r.ReactionType.ToString(),
+                    _fileService.GetProfileUrl(r.User),
                     r.CommentId.HasValue
                 ))
             );
@@ -219,7 +219,8 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Id,
                 post.Time,
                 post.Content,
-                _fileService.GetFileUrl(post.User),
+                _fileService.GetProfileUrl(post.User),
+                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
                 post.UserId,
                 post.Comments.Count,
                 post.Reactions.Count,
@@ -229,8 +230,7 @@ namespace CanaApp.Application.Services.Community.Posts
                     r.CommentId,
                     r.UserId,
                     r.User.FullName,
-                    _fileService.GetFileUrl(r.User),
-                    r.ReactionType.ToString(),
+                    _fileService.GetProfileUrl(r.User),
                     r.CommentId.HasValue
                 ))
             );
@@ -280,7 +280,8 @@ namespace CanaApp.Application.Services.Community.Posts
                     p.Id,
                     p.Time,
                     p.Content,
-                    _fileService.GetFileUrl(p.User),
+                    _fileService.GetProfileUrl(p.User),
+                    p.Image is not null ? _fileService.GetImageUrl(p.Image) : null!,
                     p.UserId,
                     p.Comments.Count,
                     p.Reactions.Count,
@@ -290,8 +291,7 @@ namespace CanaApp.Application.Services.Community.Posts
                        r.CommentId,
                        r.UserId,
                        p.User.FullName,
-                       _fileService.GetFileUrl(p.User),
-                       r.ReactionType.ToString(),
+                       _fileService.GetProfileUrl(p.User),
                        r.CommentId.HasValue ? true : false
                         ))
                     ));
@@ -320,7 +320,8 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Id,
                 post.Time,
                 post.Content,
-                _fileService.GetFileUrl(post.User),
+                _fileService.GetProfileUrl(post.User),
+                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
                 post.UserId,
                 post.Comments.Count,
                 post.Reactions.Count,
@@ -330,8 +331,7 @@ namespace CanaApp.Application.Services.Community.Posts
                     r.CommentId,
                     r.UserId,
                     r.User.FullName,
-                    _fileService.GetFileUrl(r.User),
-                    r.ReactionType.ToString(),
+                    _fileService.GetProfileUrl(r.User),
                     r.CommentId.HasValue
                 ))
              );

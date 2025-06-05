@@ -1,5 +1,6 @@
 ﻿using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Models;
+using CancApp.Shared.Common.Consts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -57,7 +58,7 @@ namespace CanaApp.Application.Services.Files
             File.Delete(path);
         }
 
-        public string GetFileUrl(ApplicationUser user)
+        public string GetProfileUrl(ApplicationUser user)
         {
             var request = _httpContextAccessor.HttpContext?.Request;
 
@@ -69,6 +70,29 @@ namespace CanaApp.Application.Services.Files
 
 
             return $"{request.Scheme}://{request.Host}/images/profiles/{user.Image}";
+        }
+        public string GetProfileUrl(string image)
+        {
+            var request = _httpContextAccessor.HttpContext?.Request;
+
+            if (request is null)
+                return null!;
+
+            if (string.IsNullOrEmpty(image))
+                return $"{request!.Scheme}://{request.Host}/images/profiles/default.png";
+
+
+            return $"{request.Scheme}://{request.Host}/images/profiles/{image}";
+        }
+        public string GetImageUrl(string Image)
+        {
+
+            var request = _httpContextAccessor.HttpContext?.Request;
+
+            if (request is null)
+                return null!;
+
+            return $"{request.Scheme}://{request.Host}/images/profiles/{Image}";
         }
     }
 }

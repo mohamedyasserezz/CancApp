@@ -58,26 +58,26 @@ namespace CanaApp.Persistance.Data.Migrations
                 name: "FK_Reactions_Volunteers_UserId",
                 table: "Reactions");
 
-            migrationBuilder.UpdateData(
-                table: "Users",
-                keyColumn: "Id",
-                keyValue: "18f2bb15-c5c3-4161-b3d5-ad8eab609da5",
-                column: "PasswordHash",
-                value: "AQAAAAIAAYagAAAAEA6nn3G8KwW6i2s4gYXZOtIEPsbrDSDFHrcG+IcEYlqiqjcE2uTPNxcjgr7HkbDqqQ==");
+            //migrationBuilder.UpdateData(
+            //    table: "Users",
+            //    keyColumn: "Id",
+            //    keyValue: "18f2bb15-c5c3-4161-b3d5-ad8eab609da5",
+            //    column: "PasswordHash",
+            //    value: "AQAAAAIAAYagAAAAEA6nn3G8KwW6i2s4gYXZOtIEPsbrDSDFHrcG+IcEYlqiqjcE2uTPNxcjgr7HkbDqqQ==");
 
-            migrationBuilder.UpdateData(
-                table: "Users",
-                keyColumn: "Id",
-                keyValue: "6dc6528a-b280-4770-9eae-82671ee81ef7",
-                column: "PasswordHash",
-                value: "AQAAAAIAAYagAAAAEPheInTTV5ubXlDZpHfyxulnV6bjifCJgSLdQQjmn0PJPBksCX472/hAfVdBzTyxbg==");
+            //migrationBuilder.UpdateData(
+            //    table: "Users",
+            //    keyColumn: "Id",
+            //    keyValue: "6dc6528a-b280-4770-9eae-82671ee81ef7",
+            //    column: "PasswordHash",
+            //    value: "AQAAAAIAAYagAAAAEPheInTTV5ubXlDZpHfyxulnV6bjifCJgSLdQQjmn0PJPBksCX472/hAfVdBzTyxbg==");
 
-            migrationBuilder.UpdateData(
-                table: "Users",
-                keyColumn: "Id",
-                keyValue: "8dbabc2f-4dd1-4ef6-acb4-7feb3fe5ed13",
-                column: "PasswordHash",
-                value: "AQAAAAIAAYagAAAAEFdEnT3JqKjErcZw9nA4EFNCDuz7fuKOYCw1i3B2EbeKS1uybm9WTz+NQoVqCPcB+w==");
+            //migrationBuilder.UpdateData(
+            //    table: "Users",
+            //    keyColumn: "Id",
+            //    keyValue: "8dbabc2f-4dd1-4ef6-acb4-7feb3fe5ed13",
+            //    column: "PasswordHash",
+            //    value: "AQAAAAIAAYagAAAAEFdEnT3JqKjErcZw9nA4EFNCDuz7fuKOYCw1i3B2EbeKS1uybm9WTz+NQoVqCPcB+w==");
         }
 
         /// <inheritdoc />

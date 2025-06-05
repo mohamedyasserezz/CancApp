@@ -7,7 +7,6 @@
     string UserId,
     string FullName,
     string UserProfilePictureUrl,
-    string ReactionType,
     bool IsComment
         );
 }

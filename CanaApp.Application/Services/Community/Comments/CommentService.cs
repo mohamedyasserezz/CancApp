@@ -45,7 +45,13 @@ namespace CanaApp.Application.Services.Community.Comments
             {
                 return Result.Failure<CommentResponse>(CommentErrors.CommentNotFound);
             }
-            var userImageUrl = _fileService.GetFileUrl(comment.User);
+
+            //var userSpec = new Specification<ApplicationUser, string>(u => u.Id == comment.UserId);
+
+            //var user = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec);
+
+            //if (user is null) 
+            //    return Result.Failure<CommentResponse>(UserErrors.UserNotFound);
 
             var response = new CommentResponse(
                 comment.Id,
@@ -53,8 +59,8 @@ namespace CanaApp.Application.Services.Community.Comments
                 postId,
                 comment.Time,
                 comment.UserId,
-                userImageUrl,
-                comment.User!.FullName
+                _fileService.GetProfileUrl(comment.User),
+                comment.User.FullName
                 );
 
 
@@ -74,14 +80,14 @@ namespace CanaApp.Application.Services.Community.Comments
             var commentSpec = new CommentSpecification(c => c.PostId == postId);
             var comments = await _unitOfWork.GetRepository<Comment, int>().GetAllWithSpecAsync(commentSpec);
 
+            //var userSpec = new Specification<ApplicationUser, string>(u => u.Id == comment.UserId);
 
-            // Debug: Log User data
-            foreach (var comment in comments)
-            {
-                _logger.LogInformation("Comment ID: {Id}, UserId: {UserId}, User: {User}, UserName: {UserName}",
-                    comment.Id, comment.UserId, comment.User != null ? "Loaded" : "Null",
-                    comment.User != null ? comment.User.UserName : "Null");
-            }
+            //var user = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec);
+
+            //if (user is null)
+            //    return Result.Failure<IEnumerable<CommentResponse>>(UserErrors.UserNotFound);
+
+          
 
 
             var response = comments.Select(c => new CommentResponse(
@@ -90,7 +96,7 @@ namespace CanaApp.Application.Services.Community.Comments
                 postId,
                 c.Time,
                 c.UserId,
-                _fileService.GetFileUrl(c.User),
+                _fileService.GetProfileUrl(c.User),
                 c.User.FullName
             ));
 
@@ -103,8 +109,12 @@ namespace CanaApp.Application.Services.Community.Comments
             var postSpec = new PostSpecification(p => p.Id == request.PostId);
             var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
 
-            
+            var userSpec = new Specification<ApplicationUser, string>(u => u.Id == request.UserId);
 
+            var user = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec);
+
+            if (user is null)
+                return Result.Failure(UserErrors.UserNotFound);
 
             if (post is null)
                 return Result.Failure(PostErrors.PostNotFound);
@@ -128,7 +138,7 @@ namespace CanaApp.Application.Services.Community.Comments
                 request.PostId,
                 comment.Time,
                 comment.UserId,
-                _fileService.GetFileUrl(comment.User),
+                _fileService.GetProfileUrl(user),
                 comment.User.FullName
                 );
 
@@ -183,7 +193,7 @@ namespace CanaApp.Application.Services.Community.Comments
                 comment.PostId,
                 comment.Time,
                 comment.UserId,
-                _fileService.GetFileUrl(comment.User),
+                _fileService.GetProfileUrl(comment.User),
                 comment.User.FullName
                 );
 

@@ -53,8 +53,7 @@ namespace CanaApp.Application.Services.Community.Reactions
                 r.CommentId,
                 r.UserId,
                 post.User.FullName,
-                _fileService.GetFileUrl(post.User),
-                r.ReactionType.ToString(),
+                _fileService.GetProfileUrl(post.User),
                 r.CommentId.HasValue ? true : false
                 ));
 
@@ -112,8 +111,7 @@ namespace CanaApp.Application.Services.Community.Reactions
                 reaction.CommentId,
                 reaction.UserId,
                 reaction.User.FullName,
-                _fileService.GetFileUrl(reaction.User),
-                reaction.ReactionType.ToString(),
+                _fileService.GetProfileUrl(reaction.User),
                 reaction.CommentId.HasValue
                 );
 

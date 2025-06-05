@@ -15,7 +15,6 @@ namespace CanaApp.Application.Mapping
             CreateMap<Reaction, ReactionResponse>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.User.FullName))
                 .ForMember(dest => dest.UserProfilePictureUrl, opt => opt.MapFrom<ReactionProfileResolver>())
-                .ForMember(dest => dest.ReactionType, opt => opt.MapFrom(src => src.ReactionType.ToString()))
                 .ForMember(dest => dest.IsComment, opt => opt.MapFrom(src => src.CommentId.HasValue));
 
             CreateMap<Comment, CommentResponse>()
@@ -25,7 +24,7 @@ namespace CanaApp.Application.Mapping
 
 
             CreateMap<Post, PostResponse>()
-                .ForMember(dest => dest.Image, opt => opt.MapFrom<PostPictureResolver>())
+                .ForMember(dest => dest.UserProgilePictureUrl, opt => opt.MapFrom<PostPictureResolver>())
                 .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count))
                 .ForMember(dest => dest.ReactionsCount, opt => opt.MapFrom(src => src.Reactions!.Count));
 
