@@ -75,9 +75,13 @@ namespace CanaApp.Application.Services.Community.Reactions
                 return Result.Failure(ReactionErrors.ReactionAlreadyExists);
             }
 
-            var reactionSpec = new ReactionSpecification(r => r.UserId == request.UserId && r.PostId == request.PostId && (!request.IsComment || request.CommentId == r.Id));
+            var reactionSpec = new ReactionSpecification(r =>
+                r.UserId == request.UserId &&
+                r.PostId == request.PostId &&
+                (request.IsComment ? r.CommentId == request.CommentId : r.CommentId == null));
 
-            if(await _unitOfWork.GetRepository<Reaction, int>().GetWithSpecAsync(reactionSpec) is { } react)
+            var react = await _unitOfWork.GetRepository<Reaction, int>().GetWithSpecAsync(reactionSpec);
+            if (react is not null)
             {
                  _unitOfWork.GetRepository<Reaction, int>().Delete(react);
             }
