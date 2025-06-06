@@ -60,7 +60,8 @@ namespace CanaApp.Application.Services.Community.Comments
                 comment.Time,
                 comment.UserId,
                 _fileService.GetProfileUrl(comment.User),
-                comment.User.FullName
+                comment.User.FullName,
+                comment.Reactions.Count
                 );
 
 
@@ -97,7 +98,8 @@ namespace CanaApp.Application.Services.Community.Comments
                 c.Time,
                 c.UserId,
                 _fileService.GetProfileUrl(c.User),
-                c.User.FullName
+                c.User.FullName,
+                c.Reactions.Count   
             ));
 
             return Result.Success(response);
@@ -139,7 +141,8 @@ namespace CanaApp.Application.Services.Community.Comments
                 comment.Time,
                 comment.UserId,
                 _fileService.GetProfileUrl(user),
-                comment.User.FullName
+                comment.User.FullName,
+                comment.Reactions.Count
                 );
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);
@@ -194,7 +197,8 @@ namespace CanaApp.Application.Services.Community.Comments
                 comment.Time,
                 comment.UserId,
                 _fileService.GetProfileUrl(comment.User),
-                comment.User.FullName
+                comment.User.FullName,
+                comment.Reactions.Count
                 );
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);

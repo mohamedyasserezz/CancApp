@@ -7,6 +7,7 @@
             DateTime Time,
             string UserId ,
             string UserImageUrl,
-            string Name
+            string Name,
+            int ReactionsNumber
     );
 }

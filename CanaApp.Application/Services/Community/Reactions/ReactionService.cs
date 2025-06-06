@@ -71,7 +71,7 @@ namespace CanaApp.Application.Services.Community.Reactions
 
             if (await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec) is null)
             {
-                return Result.Failure(ReactionErrors.ReactionAlreadyExists);
+                return Result.Failure(UserErrors.UserNotFound);
             }
 
             var reactionSpec = new ReactionSpecification(r =>
