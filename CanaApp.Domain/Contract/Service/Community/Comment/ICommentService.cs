@@ -10,5 +10,7 @@ namespace CanaApp.Domain.Contract.Service.Community.Comment
         public Task<Result> AddCommentAsync(CommentRequest request, CancellationToken cancellationToken = default);
         public Task<Result> UpdateCommentAsync(UpdateCommentRequest request, CancellationToken cancellationToken = default);
         public Task<Result> DeleteCommentAsync(int postId, int commentId, CancellationToken cancellationToken = default);
+
+        public Task<Result> ReportCommentAsync(int id);
     }
 }
