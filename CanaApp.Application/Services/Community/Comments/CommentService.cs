@@ -204,5 +204,23 @@ namespace CanaApp.Application.Services.Community.Comments
             await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);
             return Result.Success();
         }
+
+        public async Task<Result> ReportCommentAsync(int id)
+        {
+            var commentSpec = new CommentSpecification(c => c.Id == id);
+
+            var comment = await _unitOfWork.GetRepository<Comment, int>().GetWithSpecAsync(commentSpec);
+
+            if (comment is null)
+                return Result.Failure(CommentErrors.CommentNotFound);
+
+            comment.IsReported = true;
+
+            _unitOfWork.GetRepository<Comment, int>().Update(comment);
+
+            await _unitOfWork.CompleteAsync();
+
+            return Result.Success();
+        }
     }
 }
