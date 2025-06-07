@@ -51,10 +51,23 @@ namespace CanaApp.Application.Services.Authentication
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = false,
                     ValidateAudience = false,
+                    ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                return jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+                return jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                try
+                {
+                    var jwtToken = tokenHandler.ReadJwtToken(token);
+                    return jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+                }
+                catch
+                {
+                    return null;
+                }
             }
             catch
             {

@@ -84,7 +84,7 @@ namespace CanaApp.Application.Services.Files
 
             return $"{request.Scheme}://{request.Host}/images/profiles/{image}";
         }
-        public string GetImageUrl(string Image)
+        public string GetImageUrl(string subFolder,string Image)
         {
 
             var request = _httpContextAccessor.HttpContext?.Request;
@@ -92,7 +92,7 @@ namespace CanaApp.Application.Services.Files
             if (request is null)
                 return null!;
 
-            return $"{request.Scheme}://{request.Host}/images/profiles/{Image}";
+            return $"{request.Scheme}://{request.Host}/images/{subFolder}/{Image}";
         }
     }
 }

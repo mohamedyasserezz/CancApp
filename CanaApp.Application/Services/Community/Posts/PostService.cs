@@ -326,7 +326,8 @@ namespace CanaApp.Application.Services.Community.Posts
 
         public async Task<Result> ReportPostAsync(int postId, CancellationToken cancellationToken = default)
         {
-            var post = await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId);
+            var postSpec = new PostSpecification(p => p.Id == postId);
+            var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
 
             if (post is null)
             {
@@ -363,8 +364,6 @@ namespace CanaApp.Application.Services.Community.Posts
              );
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceivePostUpdate", postResponse);
-
-
 
             return Result.Success();
         }
