@@ -27,8 +27,6 @@ namespace CanaApp.Persistance.Data.Configurations
                 {
                     UserId = DefaultUsers.DoctorId,
                     IsConfirmedByAdmin = true,
-                    IsDisabled = false,
-                    NumberOfWarrings = 0,
                     IsCompletedProfileFailed = false,
                     
                 });

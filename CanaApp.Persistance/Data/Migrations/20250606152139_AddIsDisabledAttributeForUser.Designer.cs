@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606152139_AddIsDisabledAttributeForUser")]
+    partial class AddIsDisabledAttributeForUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,7 +221,7 @@ namespace CanaApp.Persistance.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool>("IsDisabled")
+                    b.Property<bool>("IsDisaired")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsForgetPasswordOtpConfirmed")
@@ -237,9 +240,6 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<int>("NumberOfWarrings")
-                        .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -286,13 +286,12 @@ namespace CanaApp.Persistance.Data.Migrations
                             Email = "admin@Canc-app.com",
                             EmailConfirmed = true,
                             FullName = "Mohamed Yasser",
-                            IsDisabled = false,
+                            IsDisaired = false,
                             IsForgetPasswordOtpConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_YASSER",
-                            NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEGqzomqmfl7edw73xHbCpGfO+OIX1s4Cz2+pPjuEqGLx4OR/qoCo/swpgyEMQp+Txg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF0nMqtlrJ93lO2+Zn4XMqFOq06xAppJHI2NkZobxgrVf5RRud3TMTknEA2UAqP+LA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "55BF92C9EF0249CDA210D85D1A851BC9",
                             TwoFactorEnabled = false,
@@ -308,13 +307,12 @@ namespace CanaApp.Persistance.Data.Migrations
                             Email = "Doctor@Canc-app.com",
                             EmailConfirmed = true,
                             FullName = "Zyad Mahmoud",
-                            IsDisabled = false,
+                            IsDisaired = false,
                             IsForgetPasswordOtpConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "DOCTOR@CANC-APP.COM",
                             NormalizedUserName = "ZYAD_MAHMOUD",
-                            NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDrVjpkDsvPPsP7Ro5YDzK2ZC0JyhVgB8lZWlWUKQBb9ww8gUGkn+jlB/eFPDPmS1w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKgMO1cd3c3wreDaoFprufUvqMVxEZcPdLcD5Y1T4F+SVyvOpCpgfvLIZ6sElE+E7A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "85a5af679fe14a24a17a7b9af212c4dc",
                             TwoFactorEnabled = false,
@@ -330,13 +328,12 @@ namespace CanaApp.Persistance.Data.Migrations
                             Email = "Patient@Canc-app.com",
                             EmailConfirmed = true,
                             FullName = "Mohamed Soliman",
-                            IsDisabled = false,
+                            IsDisaired = false,
                             IsForgetPasswordOtpConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "PATIENT@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_SOLIMAN",
-                            NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAELN4ZrDxUrJwOoRHtEoFuXIVpnI6rz9O/NhTzL/iXof9VMMYAFj1MfSgPoKPac8bww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFo55a6l7CvKcmEEgARTCHDmpvaGbw59oc0o2BXBqivOR7lM9D8HlwMRfJOqYxmKsw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "b9d50bbf5e87434fa03edc01413ca904",
                             TwoFactorEnabled = false,
@@ -359,8 +356,14 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.Property<bool>("IsConfirmedByAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MedicalSyndicatePhoto")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfWarrings")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId");
 
@@ -371,7 +374,9 @@ namespace CanaApp.Persistance.Data.Migrations
                         {
                             UserId = "8dbabc2f-4dd1-4ef6-acb4-7feb3fe5ed13",
                             IsCompletedProfileFailed = false,
-                            IsConfirmedByAdmin = true
+                            IsConfirmedByAdmin = true,
+                            IsDisabled = false,
+                            NumberOfWarrings = 0
                         });
                 });
 
@@ -380,6 +385,12 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfWarrings")
+                        .HasColumnType("int");
+
                     b.HasKey("UserId");
 
                     b.ToTable("Patients");
@@ -387,7 +398,9 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "18f2bb15-c5c3-4161-b3d5-ad8eab609da5"
+                            UserId = "18f2bb15-c5c3-4161-b3d5-ad8eab609da5",
+                            IsDisabled = false,
+                            NumberOfWarrings = 0
                         });
                 });
 
@@ -411,6 +424,12 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.Property<bool>("IsDeliveryEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfWarrings")
+                        .HasColumnType("int");
+
                     b.Property<int>("NumberOfWorkingHours")
                         .HasColumnType("int");
 
@@ -433,8 +452,14 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.Property<bool>("IsConfirmedByAdmin")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MedicalSyndicatePhoto")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfWarrings")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId");
 
@@ -445,6 +470,12 @@ namespace CanaApp.Persistance.Data.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NumberOfWarrings")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId");
 
@@ -795,13 +826,13 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -812,7 +843,7 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -823,18 +854,18 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Comment", null)
                         .WithMany("Reactions")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Post", null)
                         .WithMany("Reactions")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");

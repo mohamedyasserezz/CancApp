@@ -5,6 +5,9 @@ namespace CancApp.Shared.Common.Errors
 {
     public static class UserErrors
     {
+        public static readonly Error Unauthorized =
+            new("User.Unauthorized", "Only Admin can register", StatusCodes.Status401Unauthorized);
+
         public static readonly Error InvalidCredentials =
             new("User.InvalidCredentials", "Invalid email/password", StatusCodes.Status401Unauthorized);
 

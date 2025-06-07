@@ -4,6 +4,7 @@ using CanaApp.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CanaApp.Persistance.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250606180105_AddIsDisablToUser")]
+    partial class AddIsDisablToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -292,7 +295,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             NormalizedEmail = "ADMIN@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_YASSER",
                             NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEGqzomqmfl7edw73xHbCpGfO+OIX1s4Cz2+pPjuEqGLx4OR/qoCo/swpgyEMQp+Txg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO6UHNwjrHplYv/4AOKXaz4XLy8PHTUsGCyCBwoqPc2YgAYhYRjuc/aillUY1VkdeQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "55BF92C9EF0249CDA210D85D1A851BC9",
                             TwoFactorEnabled = false,
@@ -314,7 +317,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             NormalizedEmail = "DOCTOR@CANC-APP.COM",
                             NormalizedUserName = "ZYAD_MAHMOUD",
                             NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAEDrVjpkDsvPPsP7Ro5YDzK2ZC0JyhVgB8lZWlWUKQBb9ww8gUGkn+jlB/eFPDPmS1w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJiZ4KRQSNr6Ke+kq0/bNc2wNkQk2u0o/WFZtS7ZfjtVnjvw5j1o0fpG/XQL5uJhLw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "85a5af679fe14a24a17a7b9af212c4dc",
                             TwoFactorEnabled = false,
@@ -336,7 +339,7 @@ namespace CanaApp.Persistance.Data.Migrations
                             NormalizedEmail = "PATIENT@CANC-APP.COM",
                             NormalizedUserName = "MOHAMED_SOLIMAN",
                             NumberOfWarrings = 0,
-                            PasswordHash = "AQAAAAIAAYagAAAAELN4ZrDxUrJwOoRHtEoFuXIVpnI6rz9O/NhTzL/iXof9VMMYAFj1MfSgPoKPac8bww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAED4Mgi/Qlrvjg0Wk3gAmhqXGLKRqgRjlICPRygvxBUvlKw66mjMsPbI5uH17xXEkxg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "b9d50bbf5e87434fa03edc01413ca904",
                             TwoFactorEnabled = false,
@@ -795,13 +798,13 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -812,7 +815,7 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -823,18 +826,18 @@ namespace CanaApp.Persistance.Data.Migrations
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Comment", null)
                         .WithMany("Reactions")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("CanaApp.Domain.Entities.Comunity.Post", null)
                         .WithMany("Reactions")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("CanaApp.Domain.Entities.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");

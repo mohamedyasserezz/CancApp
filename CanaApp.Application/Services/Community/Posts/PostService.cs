@@ -6,6 +6,7 @@ using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification.Community.Posts;
+using CanaApp.Domain.Specification.Community.Reactions;
 using CancApp.Shared._Common.Consts;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
@@ -55,8 +56,9 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Time,
                 post.Content,
                 _fileService.GetProfileUrl(post.User),
-                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
+                post.Image is not null ? _fileService.GetImageUrl("posts", post.Image) : null!,
                 post.UserId,
+                post.User.FullName,
                 post.Comments.Count,
                 post.Reactions.Count,
                 post.Reactions.Select(r => new ReactionResponse(
@@ -93,8 +95,9 @@ namespace CanaApp.Application.Services.Community.Posts
                     p.Time,
                     p.Content,
                     _fileService.GetProfileUrl(p.User),
-                    p.Image is not null ? _fileService.GetImageUrl(p.Image) : null!,
+                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
                     p.UserId,
+                    p.User.FullName,
                     p.Comments.Count,
                     p.Reactions.Count,
                     p.Reactions.Select(r => new ReactionResponse(
@@ -159,8 +162,9 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Time,
                 post.Content,
                 _fileService.GetProfileUrl(post.User),
-                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
+                post.Image is not null ? _fileService.GetImageUrl("posts", post.Image) : null!,
                 post.UserId,
+                post.User.FullName,
                 post.Comments.Count,
                 post.Reactions.Count,
                 post.Reactions.Select(r => new ReactionResponse(
@@ -220,8 +224,9 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Time,
                 post.Content,
                 _fileService.GetProfileUrl(post.User),
-                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
+                post.Image is not null ? _fileService.GetImageUrl("posts", post.Image) : null!,
                 post.UserId,
+                post.User.FullName,
                 post.Comments.Count,
                 post.Reactions.Count,
                 post.Reactions.Select(r => new ReactionResponse(
@@ -248,6 +253,7 @@ namespace CanaApp.Application.Services.Community.Posts
         public async Task<Result> DeletePostAsync(int postId, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Deleting post with id: {id}", postId);
+
             var post = await _unitOfWork.GetRepository<Post, int>().GetByIdAsync(postId);
 
             if (post is null)
@@ -255,19 +261,37 @@ namespace CanaApp.Application.Services.Community.Posts
                 _logger.LogWarning("Post with id: {id} not found", postId);
                 return Result.Failure(PostErrors.PostNotFound);
             }
+            var reactionSpec = new ReactionSpecification(r => r.PostId == postId);
+
+            var reactions = await _unitOfWork.GetRepository<Reaction, int>()
+                        .GetAllWithSpecAsync(reactionSpec);
+            if (reactions.Any())
+            {
+                _logger.LogWarning("Deleting reactions on Post with id: {id}", postId);
+                foreach (var reaction in reactions)
+                {
+                    _logger.LogInformation("Deleting reaction with id: {id}", reaction.Id);
+                    _unitOfWork.GetRepository<Reaction, int>().Delete(reaction);
+                }
+            }
+                
 
              _unitOfWork.GetRepository<Post, int>().Delete(post);
 
-            await _unitOfWork.CompleteAsync();
+          
 
-            _logger.LogInformation("Post deleted with id: {id}", postId);
+             await _unitOfWork.CompleteAsync();
 
-            await _hubContext.Clients.Group("Community").SendAsync("ReceivePostDeleted", postId);
+                _logger.LogInformation("Post deleted with id: {id}", postId);
 
-            await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
+                await _hubContext.Clients.Group("Community").SendAsync("ReceivePostDeleted", postId);
 
-            await _hybridCache.RemoveAsync($"{_cachePrefix}");
-            return Result.Success();
+                await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
+
+                await _hybridCache.RemoveAsync($"{_cachePrefix}");
+                return Result.Success();
+            
+            
         }
 
         public async Task<Result<IEnumerable<PostResponse>>> GetReportedPosts(CancellationToken cancellationToken = default)
@@ -281,8 +305,9 @@ namespace CanaApp.Application.Services.Community.Posts
                     p.Time,
                     p.Content,
                     _fileService.GetProfileUrl(p.User),
-                    p.Image is not null ? _fileService.GetImageUrl(p.Image) : null!,
+                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
                     p.UserId,
+                    p.User.FullName,
                     p.Comments.Count,
                     p.Reactions.Count,
                     p.Reactions.Select(r => new ReactionResponse(
@@ -321,8 +346,9 @@ namespace CanaApp.Application.Services.Community.Posts
                 post.Time,
                 post.Content,
                 _fileService.GetProfileUrl(post.User),
-                post.Image is not null ? _fileService.GetImageUrl(post.Image) : null!,
+                post.Image is not null ? _fileService.GetImageUrl("posts", post.Image) : null!,
                 post.UserId,
+                post.User.FullName,
                 post.Comments.Count,
                 post.Reactions.Count,
                 post.Reactions.Select(r => new ReactionResponse(

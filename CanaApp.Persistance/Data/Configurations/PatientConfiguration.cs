@@ -24,8 +24,6 @@ namespace CanaApp.Persistance.Data.Configurations
                 new Patient
                 {
                     UserId = DefaultUsers.PatientId,
-                    IsDisabled = false,
-                    NumberOfWarrings = 0,
                 }
                 );
         }

@@ -8,11 +8,8 @@ namespace CanaApp.Domain.Entities.Models
         public string? ImageId { get; set; }
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;
-        public bool IsDisabled { get; set; }
         public bool IsCompletedProfileFailed { get; set; }
-        public int NumberOfWarrings { get; set; }
         public bool IsConfirmedByAdmin { get; set; }
-
 
     }
 }
