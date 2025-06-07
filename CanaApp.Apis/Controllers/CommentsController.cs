@@ -45,6 +45,13 @@ namespace CanaApp.Apis.Controllers
             var response = await _commentService.UpdateCommentAsync(commentRequest, cancellationToken);
             return response.IsSuccess ? Ok() : response.ToProblem();
         }
+        [HttpPut("report/{id}")]
+        public async Task<IActionResult> UpdateComment([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("reporting comment with id: {id}", id);
+            var response = await _commentService.ReportCommentAsync(id);
+            return response.IsSuccess ? Ok() : response.ToProblem();
+        }
         [HttpDelete("{postId:int}/{commentId:int}")]
         public async Task<IActionResult> DeleteComment([FromRoute] int postId,[FromRoute] int commentId, CancellationToken cancellationToken)
         {

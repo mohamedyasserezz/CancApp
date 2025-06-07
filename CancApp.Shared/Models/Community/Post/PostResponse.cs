@@ -9,6 +9,7 @@ namespace CancApp.Shared.Models.Community.Post
     string UserProgilePictureUrl,
     string ImageUrl,
     string UserId,
+    string Name,
     int CommentsCount,
     int ReactionsCount,
     IEnumerable<ReactionResponse> Reactions
