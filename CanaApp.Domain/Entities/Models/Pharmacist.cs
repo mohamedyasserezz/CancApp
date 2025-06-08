@@ -10,7 +10,10 @@ namespace CanaApp.Domain.Entities.Models
         public ApplicationUser ApplicationUser { get; set; } = default!;
         public string UserId { get; set; } = default!;
         public bool IsCompletedProfileFailed { get; set; }
-        public int NumberOfWorkingHours { get; set; }
+        public TimeOnly OpeningHour { get; set; }
+        public TimeOnly CloseHour { get; set; }
+        public float Longitude { get; set; }
+        public float Latitude { get; set; }
         public bool IsDeliveryEnabled { get; set; }
 
 

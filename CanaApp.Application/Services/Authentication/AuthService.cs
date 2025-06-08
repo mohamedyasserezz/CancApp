@@ -491,7 +491,10 @@ namespace CanaApp.Application.Services.Authentication
 
             pharmacist.ImagePharmacyLicense = await _fileService.SaveFileAsync(completeProfilePharmacy.ImagePharmacyLicense, "pharmacies");
 
-            pharmacist.NumberOfWorkingHours = completeProfilePharmacy.NumberOfWorkingHours;
+            pharmacist.OpeningHour = completeProfilePharmacy.OpenHour;
+            pharmacist.CloseHour = completeProfilePharmacy.ClouseHour;
+            pharmacist.Latitude = completeProfilePharmacy.Latitude;
+            pharmacist.Longitude = completeProfilePharmacy.Longitude;
 
             pharmacist.IsDeliveryEnabled = completeProfilePharmacy.IsDeliveryEnabled;
 

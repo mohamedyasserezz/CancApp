@@ -6,7 +6,10 @@ namespace CancApp.Shared.Models.Authentication.CompleteProfile
         string Email,
         IFormFile ImageId,
         IFormFile ImagePharmacyLicense,
-        int NumberOfWorkingHours,
+        TimeOnly OpenHour,
+        TimeOnly ClouseHour,
+        float Longitude,
+        float Latitude,
         bool IsDeliveryEnabled
         );
 }
