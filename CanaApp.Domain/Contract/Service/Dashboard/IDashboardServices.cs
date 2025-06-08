@@ -21,5 +21,6 @@ namespace CanaApp.Domain.Contract.Service.Dashboard
 
         Task<Result> EnableUserAsync(string userId);
         Task<Result<NumberOfUsersResponse>> GetUsersChart();
+
     }
 }

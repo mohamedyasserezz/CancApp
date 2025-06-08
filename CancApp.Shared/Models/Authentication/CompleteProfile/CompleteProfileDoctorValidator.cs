@@ -2,7 +2,7 @@
 
 namespace CancApp.Shared.Models.Authentication.CompleteProfile
 {
-    public class CompleteProfileDoctorValidator : AbstractValidator<CompleteProfileDoctor>
+    public class CompleteProfileDoctorValidator : AbstractValidator<CompleteProfileDoctorRequest>
     {
         public CompleteProfileDoctorValidator()
         {

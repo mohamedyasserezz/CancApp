@@ -2,7 +2,7 @@
 
 namespace CancApp.Shared.Models.Authentication.CompleteProfile
 {
-    public record CompleteProfilePharmacy(
+    public record CompleteProfilePharmacyRequest(
         string Email,
         IFormFile ImageId,
         IFormFile ImagePharmacyLicense,

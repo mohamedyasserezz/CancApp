@@ -2,7 +2,7 @@
 
 namespace CancApp.Shared.Models.Authentication.CompleteProfile
 {
-    public class CompleteProfilePharmacyValidator : AbstractValidator<CompleteProfilePharmacy>
+    public class CompleteProfilePharmacyValidator : AbstractValidator<CompleteProfilePharmacyRequest>
     {
         public CompleteProfilePharmacyValidator()
         {

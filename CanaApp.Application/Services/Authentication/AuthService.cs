@@ -479,7 +479,7 @@ namespace CanaApp.Application.Services.Authentication
 
             await Task.CompletedTask;
         }
-        public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default)
+        public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacyRequest completeProfilePharmacy, CancellationToken cancellationToken = default)
         {
             var pharmacistSpec = new PharmacistSpecification(x => x.ApplicationUser.Email == completeProfilePharmacy.Email);
             var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmacistSpec);
@@ -500,7 +500,7 @@ namespace CanaApp.Application.Services.Authentication
 
             return Result.Success();
         }
-        public async Task<Result> CompleteDoctorRegistration(CompleteProfileDoctor completeProfileDoctor, CancellationToken cancellationToken = default)
+        public async Task<Result> CompleteDoctorRegistration(CompleteProfileDoctorRequest completeProfileDoctor, CancellationToken cancellationToken = default)
         {
             var user = await _userManager.FindByEmailAsync(completeProfileDoctor.Email);
             if (user is null ||(user.UserType != UserType.Doctor && user.UserType != UserType.Psychiatrist))

@@ -19,8 +19,8 @@ namespace CanaApp.Domain.Contract.Service.Authentication
         Task<Result> SendResetPasswordOtpAsync(string email);
          Task<Result> ResetPasswordAsync(AssignNewPassword request);
         Task<Result> AssignOtpForPassword(ResetPasswordRequest reset);
-        Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacy completeProfilePharmacy, CancellationToken cancellationToken = default);
-        Task<Result> CompleteDoctorRegistration(CompleteProfileDoctor completeProfileDoctor, CancellationToken cancellationToken = default);
+        Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacyRequest completeProfilePharmacy, CancellationToken cancellationToken = default);
+        Task<Result> CompleteDoctorRegistration(CompleteProfileDoctorRequest completeProfileDoctor, CancellationToken cancellationToken = default);
 
     }
 }
