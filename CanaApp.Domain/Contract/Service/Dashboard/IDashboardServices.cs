@@ -1,5 +1,6 @@
 ﻿using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Dashboard;
 using System;
@@ -21,6 +22,7 @@ namespace CanaApp.Domain.Contract.Service.Dashboard
 
         Task<Result> EnableUserAsync(string userId);
         Task<Result<NumberOfUsersResponse>> GetUsersChart();
+        Task<Result<IEnumerable<CompleteProfileResponse>>> GetUnCompletedProfile();
 
     }
 }

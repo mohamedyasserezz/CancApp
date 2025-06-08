@@ -8,8 +8,10 @@ using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Community.Comments;
 using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Authentication;
+using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Dashboard;
 using Microsoft.AspNetCore.Identity;
@@ -104,6 +106,7 @@ namespace CanaApp.Application.Services.Dashboard
 
             if(user.UserType is UserType.Volunteer or UserType.Patient or UserType.Doctor or UserType.Psychiatrist)
             {
+                _logger.LogInformation("Disabling user with id: {id}", userId);
 
                 user.IsDisabled = true;
 
@@ -121,6 +124,7 @@ namespace CanaApp.Application.Services.Dashboard
 
         public async Task<Result<IEnumerable<CommentResponse>>> GetReportedCommentsAsync()
         {
+            _logger.LogInformation("Getting reported comments from DashboardService");
             var commentsSpec = new CommentSpecification(c => c.IsReported);
 
             var comments = await _unitOfWork.GetRepository<Comment, int>().GetAllWithSpecAsync(commentsSpec);
@@ -170,7 +174,7 @@ namespace CanaApp.Application.Services.Dashboard
 
             if (user.UserType is UserType.Volunteer or UserType.Patient or UserType.Doctor or UserType.Psychiatrist)
             {
-
+                _logger.LogInformation("Enabling user with id: {id}", userId);
                 user.IsDisabled = false;
 
                 _unitOfWork.GetRepository<ApplicationUser, string>().Update(user);
@@ -190,6 +194,8 @@ namespace CanaApp.Application.Services.Dashboard
 
         public async Task<Result<NumberOfUsersResponse>> GetUsersChart()
         {
+
+            _logger.LogInformation("Getting users number from DashboardService");
             var userSpec = new Specification<ApplicationUser, string>();
 
             var userCount = await _unitOfWork.GetRepository<ApplicationUser, string>().GetCountWithSpecAsync(userSpec);
@@ -213,6 +219,39 @@ namespace CanaApp.Application.Services.Dashboard
                 pharmacistCount,
                 volunteerCount,
                 psychiatristCount
+                );
+
+            return Result.Success(response);
+        }
+
+        public async Task<Result<IEnumerable<CompleteProfileResponse>>> GetUnCompletedProfile()
+        {
+            _logger.LogInformation("Getting uncompleted profiles from DashboardService");
+            var pharmacistSpec = new PharmacistSpecification(p => !p.IsConfirmedByAdmin && !p.IsCompletedProfileFailed);
+
+            var pharmacists = await _unitOfWork.GetRepository<Pharmacist, string>().GetAllWithSpecAsync(pharmacistSpec);
+
+            var doctorsSpec = new DoctorSpecification(d => !d.IsConfirmedByAdmin && !d.IsCompletedProfileFailed);
+            var doctors = await _unitOfWork.GetRepository<Doctor, string>().GetAllWithSpecAsync(doctorsSpec);
+
+            var psychiatristSpec = new PsychiatristSpecification(p => !p.IsConfirmedByAdmin && !p.IsCompletedProfileFailed);
+            var psychiatrists = await _unitOfWork.GetRepository<Psychiatrist, string>().GetAllWithSpecAsync(psychiatristSpec);
+
+            var response = pharmacists.Select(p => new CompleteProfileResponse(
+                _fileService.GetImageUrl("pharmacies", p.ImageId!),
+                _fileService.GetImageUrl("pharmacies", p.ImagePharmacyLicense!),
+                Users.Pharmacist
+                ))
+                .Union(doctors.Select(d => new CompleteProfileResponse(
+                    _fileService.GetImageUrl("doctors", d.ImageId!),
+                    _fileService.GetImageUrl("doctors", d.MedicalSyndicatePhoto!),
+                    Users.Doctor
+                    ))
+                .Union(psychiatrists.Select(p => new CompleteProfileResponse(
+                    _fileService.GetImageUrl("doctors", p.ImageId!),
+                    _fileService.GetImageUrl("doctors", p.MedicalSyndicatePhoto!),
+                    Users.Psychiatrist
+                    )))
                 );
 
             return Result.Success(response);

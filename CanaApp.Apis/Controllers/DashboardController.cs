@@ -26,7 +26,7 @@ namespace CanaApp.Apis.Controllers
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
         [HttpPut("disable")]
-        public async Task<IActionResult> Disable([FromBody]DashboardRequest request)
+        public async Task<IActionResult> Disable([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("Disable user with id: {id}", request.id);
 
@@ -70,6 +70,13 @@ namespace CanaApp.Apis.Controllers
 
             var result = await _dashboardServices.GetUsersChart();
 
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
+        [HttpGet("UnCompletedProfile")]
+        public async Task<IActionResult> GetUnCompletedProfile()
+        {
+            _logger.LogInformation("Getting uncompleted profiles");
+            var result = await _dashboardServices.GetUnCompletedProfile();
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
     }
