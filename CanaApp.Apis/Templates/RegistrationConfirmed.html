@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <title></title>
+    <style type="text/css" rel="stylesheet" media="all">
+        @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap");
+
+        body {
+            width: 100% !important;
+            height: 100%;
+            margin: 0;
+            -webkit-text-size-adjust: none;
+            font-family: 'Nunito Sans', Helvetica, Arial, sans-serif;
+            background-color: #F4F4F7;
+            color: #51545E;
+        }
+
+        a {
+            color: #3869D4;
+        }
+
+        .email-wrapper {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #F4F4F7;
+        }
+
+        .email-content {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-masthead {
+            padding: 25px 0;
+            text-align: center;
+        }
+
+        .email-masthead_name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #A8AAAF;
+            text-decoration: none;
+        }
+
+        .email-body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+        }
+
+        .email-body_inner {
+            width: 570px;
+            margin: 0 auto;
+            background-color: #FFFFFF;
+        }
+
+        .content-cell {
+            padding: 35px;
+        }
+
+        .f-fallback {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #333333;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        p {
+            margin-top: 0;
+            color: #51545E;
+            font-size: 16px;
+            line-height: 1.5em;
+        }
+
+        .email-footer {
+            width: 570px;
+            margin: 0 auto;
+            padding: 0;
+            text-align: center;
+        }
+
+        .sub {
+            color: #6B6E76;
+            font-size: 12px;
+            line-height: 1.5em;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body, .email-wrapper, .email-body, .email-body_inner {
+                background-color: #333333 !important;
+                color: #FFF !important;
+            }
+
+            h1, p, .email-masthead_name {
+                color: #FFF !important;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-body_inner, .email-footer {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <span class="preheader">
+        Your CancApp registration has been confirmed!
+    </span>
+    <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+            <td align="center">
+                <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                    <tr>
+                        <td class="email-masthead">
+                            <a href="https://example.com" class="f-fallback email-masthead_name">
+                                CancApp
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="email-body" width="570" cellpadding="0" cellspacing="0">
+                            <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                    <td class="content-cell">
+                                        <div class="f-fallback">
+                                            <h1>Welcome, {{name}}!</h1>
+                                            <p>
+                                                We’re excited to inform you that your CancApp account has been successfully confirmed by our admin team. You can now log in and start using your account to manage your pharmacy services.
+                                            </p>
+                                            <p>
+                                                Get started by logging in at <a href="https://example.com/login">our website</a>. If you have any questions, feel free to contact our support team.
+                                            </p>
+                                            <p>Thanks, <br />The CancApp Team</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+                                <tr>
+                                    <td class="content-cell" align="center">
+                                        <p class="f-fallback sub align-center">
+                                            CancApp
+                                            <br />1234 Street Rd. <br />Cairo, Egypt
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
