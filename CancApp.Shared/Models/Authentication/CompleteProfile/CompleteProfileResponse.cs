@@ -3,7 +3,8 @@
     public record CompleteProfileResponse(
         string ImageId,
         string MedicalProve,
-        string UserType
+        string UserType,
+        string UserId
         );
     
 }

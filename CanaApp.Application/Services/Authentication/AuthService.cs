@@ -497,8 +497,8 @@ namespace CanaApp.Application.Services.Authentication
             pharmacist.Longitude = completeProfilePharmacy.Longitude;
 
             pharmacist.IsDeliveryEnabled = completeProfilePharmacy.IsDeliveryEnabled;
-
-              _unitOfWork.GetRepository<Pharmacist, string>().Update(pharmacist);
+            pharmacist.IsCompletedProfileFailed = false;
+            _unitOfWork.GetRepository<Pharmacist, string>().Update(pharmacist);
             await _unitOfWork.CompleteAsync();
 
             return Result.Success();
@@ -518,6 +518,7 @@ namespace CanaApp.Application.Services.Authentication
                 if (doctor is null)
                     return Result.Failure(UserErrors.UserNotFound);
 
+                doctor.IsCompletedProfileFailed = false;
                 doctor.MedicalSyndicatePhoto = await _fileService.SaveFileAsync(completeProfileDoctor.MedicalSyndicatePhoto, "doctors");
 
                 doctor.ImageId = await _fileService.SaveFileAsync(completeProfileDoctor.ImageId, "doctors");
@@ -535,6 +536,7 @@ namespace CanaApp.Application.Services.Authentication
             if (psychiatrist is null)
                 return Result.Failure(UserErrors.UserNotFound);
 
+            psychiatrist.IsCompletedProfileFailed = false;
             psychiatrist.MedicalSyndicatePhoto = await _fileService.SaveFileAsync(completeProfileDoctor.MedicalSyndicatePhoto, "doctors");
             psychiatrist.ImageId = await _fileService.SaveFileAsync(completeProfileDoctor.ImageId, "doctors");
 
