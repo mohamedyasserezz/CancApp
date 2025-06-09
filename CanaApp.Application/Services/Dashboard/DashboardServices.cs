@@ -10,11 +10,14 @@ using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
+using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Models.Authentication;
 using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Dashboard;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using System.Security.Cryptography;
 
@@ -26,6 +29,7 @@ namespace CanaApp.Application.Services.Dashboard
         IFileService fileService,
         SignInManager<ApplicationUser> signInManager,
         IJwtProvider jwtProvider,
+        IEmailSender emailSender,
         ILogger<DashboardServices> logger
 
         ) : IDashboardServices
@@ -35,6 +39,7 @@ namespace CanaApp.Application.Services.Dashboard
         private readonly IFileService _fileService = fileService;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly IJwtProvider _jwtProvider = jwtProvider;
+        private readonly IEmailSender _emailSender = emailSender;
         private readonly ILogger<DashboardServices> _logger = logger;
 
 
@@ -240,21 +245,190 @@ namespace CanaApp.Application.Services.Dashboard
             var response = pharmacists.Select(p => new CompleteProfileResponse(
                 _fileService.GetImageUrl("pharmacies", p.ImageId!),
                 _fileService.GetImageUrl("pharmacies", p.ImagePharmacyLicense!),
-                Users.Pharmacist
+                Users.Pharmacist,
+                p.UserId
                 ))
                 .Union(doctors.Select(d => new CompleteProfileResponse(
                     _fileService.GetImageUrl("doctors", d.ImageId!),
                     _fileService.GetImageUrl("doctors", d.MedicalSyndicatePhoto!),
-                    Users.Doctor
+                    Users.Doctor,
+                    d.UserId
                     ))
                 .Union(psychiatrists.Select(p => new CompleteProfileResponse(
                     _fileService.GetImageUrl("doctors", p.ImageId!),
                     _fileService.GetImageUrl("doctors", p.MedicalSyndicatePhoto!),
-                    Users.Psychiatrist
+                    Users.Psychiatrist,
+                    p.UserId
                     )))
                 );
 
             return Result.Success(response);
+        }
+
+        public async Task<Result> ConfirmCompleteProfile(string userId)
+        {
+            _logger.LogInformation("Trying to confirm complete profile for user with id: {id}", userId);
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                _logger.LogInformation("User with id: {id} not found", userId);
+                return Result.Failure(UserErrors.UserNotFound);
+            }
+            if(user.UserType == UserType.Doctor)
+            {
+                var doctorSpec = new DoctorSpecification(d => d.UserId == userId);
+
+                var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(doctorSpec);
+
+                if (doctor is null)
+                {
+                    _logger.LogInformation("Doctor with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+                doctor.IsConfirmedByAdmin = true;
+                _unitOfWork.GetRepository<Doctor, string>().Update(doctor);
+                await _unitOfWork.CompleteAsync();
+            }
+            else if(user.UserType == UserType.Psychiatrist)
+            {
+                _logger.LogInformation("Confirming psychiatrist profile for user with id: {id}", userId);
+                var psychiatristSpec = new PsychiatristSpecification(p => p.UserId == userId);
+                var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(psychiatristSpec);
+
+                if (psychiatrist is null)
+                {
+                    _logger.LogInformation("Psychiatrist with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+
+                psychiatrist.IsConfirmedByAdmin = true;
+                _unitOfWork.GetRepository<Psychiatrist, string>().Update(psychiatrist);
+                await _unitOfWork.CompleteAsync();
+            }
+            else if(user.UserType == UserType.Pharmacist)
+            {
+                _logger.LogInformation("Confirming Pharmacist profile for user with id: {id}", userId);
+
+                var pharmcistSpec = new PharmacistSpecification(p => p.UserId == userId);
+                var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmcistSpec);
+
+                if (pharmacist is null)
+                {
+                    _logger.LogInformation("Pharmacist with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+
+                pharmacist.IsConfirmedByAdmin= true;
+                _unitOfWork.GetRepository<Pharmacist, string>().Update(pharmacist);
+                await _unitOfWork.CompleteAsync();
+            }
+            else
+            {
+                return Result.Failure(UserErrors.InvalidRoles);
+            }
+            await SendRegistrationConfirmedEmail(user);
+
+            return Result.Success();
+
+        }
+
+        public async Task<Result> FailCompleteProfile(string userId)
+        {
+            _logger.LogInformation("Trying to fail complete profile for user with id: {id}", userId);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                _logger.LogInformation("User with id: {id} not found", userId);
+                return Result.Failure(UserErrors.UserNotFound);
+            }
+
+            if(user.UserType == UserType.Psychiatrist)
+            {
+                _logger.LogInformation("Failling the registration for psychiatrist with id {userId}", userId);
+
+                var psychatristSpec = new PsychiatristSpecification(p => p.UserId == userId);
+
+                var psychiatrist = await _unitOfWork.GetRepository<Psychiatrist, string>().GetWithSpecAsync(psychatristSpec);
+
+                if (psychiatrist is null)
+                {
+                    _logger.LogInformation("Psychiatrist with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+                psychiatrist.IsCompletedProfileFailed = true;
+                _unitOfWork.GetRepository<Psychiatrist, string>().Update(psychiatrist);
+                await _unitOfWork.CompleteAsync();
+
+            }
+            else if (user.UserType == UserType.Doctor)
+            {
+                _logger.LogInformation("Falling Doctor profile for user with id: {id}", userId);
+                var doctorSpec = new DoctorSpecification(d => d.UserId == userId);
+
+                var doctor = await _unitOfWork.GetRepository<Doctor, string>().GetWithSpecAsync(doctorSpec);
+
+                if (doctor is null)
+                {
+                    _logger.LogInformation("Doctor with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+                doctor.IsCompletedProfileFailed = true;
+                _unitOfWork.GetRepository<Doctor, string>().Update(doctor);
+                await _unitOfWork.CompleteAsync();
+            }
+            else if (user.UserType == UserType.Pharmacist)
+            {
+                _logger.LogInformation("Falling Pharmacist profile for user with id: {id}", userId);
+
+                var pharmcistSpec = new PharmacistSpecification(p => p.UserId == userId);
+                var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmcistSpec);
+
+                if (pharmacist is null)
+                {
+                    _logger.LogInformation("Pharmacist with userId: {id} not found", userId);
+                    return Result.Failure(UserErrors.UserNotFound);
+                }
+
+                pharmacist.IsCompletedProfileFailed = true;
+                _unitOfWork.GetRepository<Pharmacist, string>().Update(pharmacist);
+                await _unitOfWork.CompleteAsync();
+            }
+            else
+            {
+                return Result.Failure(UserErrors.InvalidRoles);
+            }
+            await SendRegistrationRejectedEmail(user);
+
+            _logger.LogInformation("Registration failed for user with id: {id} successfully", userId);
+
+            return Result.Success();
+        }
+        private async Task SendRegistrationConfirmedEmail(ApplicationUser user)
+        {
+            var emailBody = EmailBodyBuilder.GenerateEmailBody("RegistrationConfirmed",
+                templateModel: new Dictionary<string, string>
+                {
+                { "{{name}}", user.FullName }
+                }
+            );
+
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "✅ CancApp: Registration Confirmed", emailBody));
+
+            await Task.CompletedTask;
+        }
+        private async Task SendRegistrationRejectedEmail(ApplicationUser user)
+        {
+            var emailBody = EmailBodyBuilder.GenerateEmailBody("RegistrationRejected",
+                templateModel: new Dictionary<string, string>
+                {
+                { "{{name}}", user.FullName }
+                }
+            );
+
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "❌ CancApp: Registration Not Approved", emailBody));
+
+            await Task.CompletedTask;
         }
     }
 }
