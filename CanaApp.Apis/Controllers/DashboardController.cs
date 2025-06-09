@@ -79,5 +79,19 @@ namespace CanaApp.Apis.Controllers
             var result = await _dashboardServices.GetUnCompletedProfile();
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+        [HttpPut("ConfirmCompleteProfile")]
+        public async Task<IActionResult> ConfirmCompleteProfile([FromBody] DashboardRequest request)
+        {
+            _logger.LogInformation("Confirming complete profile for user with id: {id}", request.id);
+            var result = await _dashboardServices.ConfirmCompleteProfile(request.id);
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+        [HttpPut("FailCompleteProfile")]
+        public async Task<IActionResult> FailCompleteProfile([FromBody] DashboardRequest request)
+        {
+            _logger.LogInformation("Failing complete profile for user with id: {id}", request.id);
+            var result = await _dashboardServices.FailCompleteProfile(request.id);
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
     }
 }
