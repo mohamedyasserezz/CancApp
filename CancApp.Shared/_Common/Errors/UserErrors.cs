@@ -44,5 +44,8 @@ namespace CancApp.Shared.Common.Errors
         public static readonly Error NotCompletedProfile =
             new("User.NotCompletedProfile", "User profile is not completed", StatusCodes.Status400BadRequest);
 
+        public static readonly Error InvalidPassword =
+        new Error("InvalidPassword", "The provided old password is incorrect.", StatusCodes.Status400BadRequest);
+
     }
 }

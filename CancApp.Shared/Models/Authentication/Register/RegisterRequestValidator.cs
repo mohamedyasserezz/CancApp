@@ -13,11 +13,7 @@ namespace CancApp.Shared.Models.Authentication.Register
     {
         public RegisterRequestValidator()
         {
-            RuleFor(X => X.FullName)
-                .NotEmpty()
-                .WithMessage("Plz Add a {PropertyName}")
-                .Length(3, 100)
-                .WithMessage("{PropertyName} length should be between 3 and 100");
+            
 
             RuleFor(X => X.FullName)
                 .NotEmpty()

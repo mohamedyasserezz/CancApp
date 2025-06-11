@@ -6,6 +6,7 @@ using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Community.Comments;
+using CanaApp.Domain.Specification.Community.Posts;
 using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Consts;
@@ -14,6 +15,8 @@ using CancApp.Shared.Common.Helpers;
 using CancApp.Shared.Models.Authentication;
 using CancApp.Shared.Models.Authentication.CompleteProfile;
 using CancApp.Shared.Models.Community.Comments;
+using CancApp.Shared.Models.Community.Post;
+using CancApp.Shared.Models.Community.Reactions;
 using CancApp.Shared.Models.Dashboard;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
@@ -80,7 +83,7 @@ namespace CanaApp.Application.Services.Dashboard
                     user.UserName!,
                     user.FullName,
                     user.Address!,
-                    user.Image,
+                    _fileService.GetProfileUrl(user),
                     token,
                     expiresIn,
                     refreshToken,
@@ -429,6 +432,64 @@ namespace CanaApp.Application.Services.Dashboard
             BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(user.Email!, "❌ CancApp: Registration Not Approved", emailBody));
 
             await Task.CompletedTask;
+        }
+
+        public async Task<Result<IEnumerable<PostResponse>>> GetReportedPosts(CancellationToken cancellationToken = default)
+        {
+            var postsSpec = new PostSpecification(p => p.IsReported == true);
+
+            var posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postsSpec);
+
+            var postsResponse = posts.Select(p => new PostResponse(
+                    p.Id,
+                    p.Time,
+                    p.Content,
+                    _fileService.GetProfileUrl(p.User),
+                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
+                    p.UserId,
+                    p.User.FullName,
+                    p.Comments.Count,
+                    p.Reactions.Count,
+                    p.Reactions.Select(r => new ReactionResponse(
+                       r.Time,
+                       r.PostId,
+                       r.CommentId,
+                       r.UserId,
+                       p.User.FullName,
+                       _fileService.GetProfileUrl(p.User),
+                       r.CommentId.HasValue ? true : false
+                        ))
+                    )).AsEnumerable();
+
+            return Result.Success(postsResponse);
+        }
+
+        public async Task<Result<IEnumerable<PostResponse>>> GetTopPosts(CancellationToken cancellationToken)
+        {
+            var PostSpecification = new PostSpecification(true, 5);
+            var topPost = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(PostSpecification);
+
+            return Result.Success(topPost
+                .Select(p => new PostResponse(
+                    p.Id,
+                    p.Time,
+                    p.Content,
+                    _fileService.GetProfileUrl(p.User),
+                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
+                    p.UserId,
+                    p.User.FullName,
+                    p.Comments.Count,
+                    p.Reactions.Count,
+                    p.Reactions.Select(r => new ReactionResponse(
+                       r.Time,
+                       r.PostId,
+                       r.CommentId,
+                       r.UserId,
+                       p.User.FullName,
+                       _fileService.GetProfileUrl(p.User),
+                       r.CommentId.HasValue ? true : false
+                    ))
+                )));
         }
     }
 }
