@@ -23,6 +23,10 @@ namespace CancApp.Shared.Models.Authentication.ChangePassword
                 .WithMessage("Plz Add a {PropertyName}")
                 .Matches(RegexPatterns.Password)
                 .WithMessage("Password should be atleast 8 digits and contains LowerCase, UpperCase, NonAlphanumeric");
+
+            RuleFor(x => x)
+            .Must(x => x.OldPassword != x.NewPassword)
+            .WithMessage("New password must be different from the old password.");
         }
     }
 }
