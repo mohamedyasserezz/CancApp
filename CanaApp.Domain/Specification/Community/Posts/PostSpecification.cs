@@ -15,6 +15,20 @@ namespace CanaApp.Domain.Specification.Community.Posts
         {
             AddOrderByDesc(p => p.Time);
             AddIncludes();
+                
+        }
+        public PostSpecification(bool IsTopPostsEnabled = false, int NumberOfPosts = 0)
+        {
+            AddIncludes();
+            if (IsTopPostsEnabled)
+            {
+                IsGettingTopQuery = true;
+                AddOrderBy(p => p.Comments.Count + p.Reactions.Count);
+            }
+            else
+                AddOrderByDesc(p => p.Time);
+            if (NumberOfPosts > 0)
+                Take = NumberOfPosts;
         }
 
         private protected override void AddIncludes()

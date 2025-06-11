@@ -13,6 +13,7 @@ namespace CanaApp.Domain.Specification
         public int Take { get; set; }
         public int Skip { get; set; }
         public bool IsPaginationEnabled { get; set; }
+        public bool IsGettingTopQuery { get; set; }
 
         public Specification()
         {

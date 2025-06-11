@@ -19,12 +19,15 @@ namespace CanaApp.Persistance.GenericRepository
 
             if (specifications.IsPaginationEnabled is true)
                 query = query.Skip(specifications.Skip).Take(specifications.Take);
-
+            if (specifications.IsGettingTopQuery)
+            {
+                query = query.Take(specifications.Take);
+            }
             if (specifications.Includes is not null)
             {
                 query = specifications.Includes.Aggregate(query, (CurrentQuery, IncludeExpression) => CurrentQuery.Include(IncludeExpression));
             }
-
+            
             return query;
         }
     }
