@@ -294,35 +294,7 @@ namespace CanaApp.Application.Services.Community.Posts
             
         }
 
-        public async Task<Result<IEnumerable<PostResponse>>> GetReportedPosts(CancellationToken cancellationToken = default)
-        {
-            var postsSpec = new PostSpecification(p => p.IsReported == true);
-
-            var posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postsSpec);
-
-            var postsResponse = posts.Select(p => new PostResponse(
-                    p.Id,
-                    p.Time,
-                    p.Content,
-                    _fileService.GetProfileUrl(p.User),
-                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
-                    p.UserId,
-                    p.User.FullName,
-                    p.Comments.Count,
-                    p.Reactions.Count,
-                    p.Reactions.Select(r => new ReactionResponse(
-                       r.Time,
-                       r.PostId,
-                       r.CommentId,
-                       r.UserId,
-                       p.User.FullName,
-                       _fileService.GetProfileUrl(p.User),
-                       r.CommentId.HasValue ? true : false
-                        ))
-                    ));
-
-            return Result.Success(postsResponse);
-        }
+        
 
         public async Task<Result> ReportPostAsync(int postId, CancellationToken cancellationToken = default)
         {

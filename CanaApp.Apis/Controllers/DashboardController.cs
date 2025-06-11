@@ -25,7 +25,7 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-        [HttpPut("disable")]
+        [HttpPost("disable")]
         public async Task<IActionResult> Disable([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("Disable user with id: {id}", request.id);
@@ -44,8 +44,23 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+        [HttpGet("reported-posts")]
+        public async Task<IActionResult> GetReportedPosts()
+        {
+            _logger.LogInformation("Getting reported posts");
+            var result = await _dashboardServices.GetReportedPosts();
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
 
-        [HttpPut("warning")]
+        [HttpGet("top-posts")]
+        public async Task<IActionResult> GetTopPosts(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Getting top posts");
+            var result = await _dashboardServices.GetTopPosts(cancellationToken);
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
+
+        [HttpPost("warning")]
         public async Task<IActionResult> AddWarning([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("Add warning to user with id: {id}", request.id);
@@ -54,7 +69,7 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
-        [HttpPut("enable")]
+        [HttpPost("enable")]
         public async Task<IActionResult> EnablieUser([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("enabling user with id: {id}", request.id);
@@ -79,14 +94,14 @@ namespace CanaApp.Apis.Controllers
             var result = await _dashboardServices.GetUnCompletedProfile();
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
-        [HttpPut("ConfirmCompleteProfile")]
+        [HttpPost("ConfirmCompleteProfile")]
         public async Task<IActionResult> ConfirmCompleteProfile([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("Confirming complete profile for user with id: {id}", request.id);
             var result = await _dashboardServices.ConfirmCompleteProfile(request.id);
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
-        [HttpPut("FailCompleteProfile")]
+        [HttpPost("FailCompleteProfile")]
         public async Task<IActionResult> FailCompleteProfile([FromBody] DashboardRequest request)
         {
             _logger.LogInformation("Failing complete profile for user with id: {id}", request.id);
