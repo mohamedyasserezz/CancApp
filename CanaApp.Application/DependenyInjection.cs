@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CanaApp.Application.Mapping;
+﻿using CanaApp.Application.Mapping;
 using CanaApp.Application.Mapping.Resolver;
 using CanaApp.Application.Services.Authentication;
 using CanaApp.Application.Services.Community.Comments;
@@ -8,6 +7,7 @@ using CanaApp.Application.Services.Community.Reactions;
 using CanaApp.Application.Services.Dashboard;
 using CanaApp.Application.Services.Email;
 using CanaApp.Application.Services.Files;
+using CanaApp.Application.Services.Records;
 using CanaApp.Application.Services.User;
 using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Contract.Service.Community.Comment;
@@ -15,6 +15,7 @@ using CanaApp.Domain.Contract.Service.Community.Post;
 using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Contract.Service.Dashboard;
 using CanaApp.Domain.Contract.Service.File;
+using CanaApp.Domain.Contract.Service.Record;
 using CanaApp.Domain.Contract.Service.User;
 using Hangfire;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -67,6 +68,7 @@ namespace CanaApp.Application
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IDashboardServices, DashboardServices>();
             services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IRecordServices, RecordServices>();
 
             #region Caching
             services.AddHybridCache();
