@@ -13,7 +13,7 @@ namespace CanaApp.Persistance.Data.Configurations
 
 
 
-            builder.HasOne(p => p.ApplicationUser)
+            builder.HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
                 .IsRequired()

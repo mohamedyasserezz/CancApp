@@ -2,6 +2,7 @@
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.User.ChangePassword;
 using CancApp.Shared.Models.User.EditProfile;
+using CancApp.Shared.Models.User.Pharmacy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -32,6 +33,16 @@ namespace CanaApp.Apis.Controllers
             var result = await _userServices.EditUserProfile(User.FindFirstValue(ClaimTypes.NameIdentifier)!, request);
 
             return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+
+        [HttpGet("pharmacists")]
+        public async Task<IActionResult> GetAllPharmacists(GetAllPharmacistRequest request)
+        {
+            _logger.LogInformation("get all pharmacists");
+
+            var result = await _userServices.GetAllPharmacist(request);
+
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
     }
 }

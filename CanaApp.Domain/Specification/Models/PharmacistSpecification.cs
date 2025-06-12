@@ -11,7 +11,7 @@ namespace CanaApp.Domain.Specification.Models
         }
         private protected override void AddIncludes()
         {
-            Includes.Add(x => x.ApplicationUser);
+            Includes.Add(x => x.User);
         }
     }
 

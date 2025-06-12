@@ -32,11 +32,15 @@ namespace CancApp.Shared.Models.Authentication.CompleteProfile
 
             RuleFor(x => x.Latitude)
                 .NotEmpty()
-                .WithMessage("Plz Add a {PropertyName}");
+                .WithMessage("Plz Add a {PropertyName}")
+                .InclusiveBetween(-90, 90)
+                .WithMessage("{PropertyName} must be between -90 and 90");
 
             RuleFor(x => x.Longitude)
                 .NotEmpty()
-                .WithMessage("Plz Add a {PropertyName}");
+                .WithMessage("Plz Add a {PropertyName}")
+                .InclusiveBetween(-180, 180)
+                .WithMessage("{PropertyName} must be between -180 and 180");
 
         }
         private bool BeValidHour(TimeOnly time)

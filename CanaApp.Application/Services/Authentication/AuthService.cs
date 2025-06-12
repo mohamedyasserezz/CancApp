@@ -265,7 +265,7 @@ namespace CanaApp.Application.Services.Authentication
                     var pharmacist = new Pharmacist
                     {
                         UserId = user.Id,
-                        ApplicationUser = user,
+                        User = user,
                         IsConfirmedByAdmin=false,
                     };
                     await _unitOfWork.GetRepository<Pharmacist, string>().AddAsync(pharmacist);
@@ -481,7 +481,7 @@ namespace CanaApp.Application.Services.Authentication
         }
         public  async Task<Result> CompletePharmacyRegistration(CompleteProfilePharmacyRequest completeProfilePharmacy, CancellationToken cancellationToken = default)
         {
-            var pharmacistSpec = new PharmacistSpecification(x => x.ApplicationUser.Email == completeProfilePharmacy.Email);
+            var pharmacistSpec = new PharmacistSpecification(x => x.User.Email == completeProfilePharmacy.Email);
             var pharmacist = await _unitOfWork.GetRepository<Pharmacist, string>().GetWithSpecAsync(pharmacistSpec);
 
             if (pharmacist is null)
