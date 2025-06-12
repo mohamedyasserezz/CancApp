@@ -21,13 +21,11 @@ namespace CanaApp.Persistance.Data.Configurations
                     t => (RecordType)System.Enum.Parse(typeof(RecordType), t)
                 );
 
-            builder.HasOne(r => r.Patient)
+            builder.HasOne(r => r.User)
                 .WithMany()
+                .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(r => r.Doctor)
-                .WithMany()
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
