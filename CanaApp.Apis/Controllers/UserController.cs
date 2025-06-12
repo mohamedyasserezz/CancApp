@@ -1,6 +1,7 @@
 ﻿using CanaApp.Domain.Contract.Service.User;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.User.ChangePassword;
+using CancApp.Shared.Models.User.EditProfile;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -20,6 +21,15 @@ namespace CanaApp.Apis.Controllers
         {
             _logger.LogInformation("Received request to change password for user: {UserId}", User.FindFirstValue(ClaimTypes.NameIdentifier));
             var result = await _userServices.ChangePassword(User.FindFirstValue(ClaimTypes.NameIdentifier)!, request);
+
+            return result.IsSuccess ? Ok() : result.ToProblem();
+        }
+
+        [HttpPut("EditUserProfile")]
+        public async Task<IActionResult> EditProfile([FromForm] EditProfileRequest request)
+        {
+            _logger.LogInformation($"Edit profile: {request}");
+            var result = await _userServices.EditUserProfile(User.FindFirstValue(ClaimTypes.NameIdentifier)!, request);
 
             return result.IsSuccess ? Ok() : result.ToProblem();
         }
