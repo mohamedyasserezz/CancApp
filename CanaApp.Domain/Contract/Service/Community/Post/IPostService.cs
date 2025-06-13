@@ -1,4 +1,4 @@
-﻿using CancApp.Shared._Common.Consts;
+﻿using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Community.Post;
 

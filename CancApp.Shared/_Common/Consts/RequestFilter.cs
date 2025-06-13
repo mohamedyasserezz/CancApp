@@ -1,4 +1,4 @@
-﻿namespace CancApp.Shared._Common.Consts
+﻿namespace CancApp.Shared.Common.Consts
 {
     public class RequestFilters
     {

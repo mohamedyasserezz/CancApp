@@ -1,5 +1,5 @@
 ﻿using CanaApp.Domain.Contract.Service.Community.Post;
-using CancApp.Shared._Common.Consts;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Models.Community.Post;
 using CancApp.Shared.Abstractions;
 using Microsoft.AspNetCore.Mvc;

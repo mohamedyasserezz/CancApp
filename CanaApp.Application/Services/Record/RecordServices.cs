@@ -3,7 +3,7 @@ using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Contract.Service.Record;
 using CanaApp.Domain.Entities.Records;
 using CanaApp.Domain.Specification.Records;
-using CancApp.Shared._Common.Errors;
+using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Record;
 using Microsoft.Extensions.Logging;

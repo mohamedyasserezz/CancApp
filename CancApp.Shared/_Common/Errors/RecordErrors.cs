@@ -1,7 +1,7 @@
 ﻿using CancApp.Shared.Abstractions;
 using Microsoft.AspNetCore.Http;
 
-namespace CancApp.Shared._Common.Errors
+namespace CancApp.Shared.Common.Errors
 {
     public static class RecordErrors
     {

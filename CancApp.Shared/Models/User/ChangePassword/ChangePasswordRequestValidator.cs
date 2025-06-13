@@ -1,4 +1,4 @@
-﻿using CancApp.Shared._Common.Consts;
+﻿using CancApp.Shared.Common.Consts;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
