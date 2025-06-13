@@ -10,6 +10,8 @@ namespace CancApp.Shared.Models.User.Pharmacy
         string Name,
         string Image,
         bool IsDeliveryEnabled,
+        float Latitude,
+        float Longitude,
         bool IsOpeningNow
         );
 }

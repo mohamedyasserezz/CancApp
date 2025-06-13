@@ -106,6 +106,8 @@ namespace CanaApp.Application.Services.User
                 p.User.FullName,
                 _fileService.GetProfileUrl(p.User),
                 p.IsDeliveryEnabled,
+                p.Latitude,
+                p.Longitude,
                 IsPharmacyOpenNow(p.OpeningHour, p.CloseHour)
             ));
 
