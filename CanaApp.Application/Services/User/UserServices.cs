@@ -57,12 +57,12 @@ namespace CanaApp.Application.Services.User
             return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
         }
 
-        public async Task<Result> EditUserProfile(string userId, EditProfileRequest request)
+        public async Task<Result<EditProfileResponse>> EditUserProfile(string userId, EditProfileRequest request)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
-                return Result.Failure(UserErrors.UserNotFound);
+                return Result.Failure<EditProfileResponse>(UserErrors.UserNotFound);
 
             if(request.Name is not null)
                 user.FullName = request.Name;
@@ -75,12 +75,18 @@ namespace CanaApp.Application.Services.User
 
             var result = await _userManager.UpdateAsync(user);
 
+            var response = new EditProfileResponse(
+                user.FullName,
+                _fileService.GetProfileUrl(user),
+                user.Address
+                );
+
             if (result.Succeeded) 
-                return Result.Success();
+                return Result.Success(response);
 
             var error = result.Errors.First();
 
-            return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+            return Result.Failure<EditProfileResponse>(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
 
 
         }
@@ -105,6 +111,7 @@ namespace CanaApp.Application.Services.User
             var response = sortedPharmacists.Select(p => new PharmacistResponse(
                 p.User.FullName,
                 _fileService.GetProfileUrl(p.User),
+                p.User.Address,
                 p.IsDeliveryEnabled,
                 p.Latitude,
                 p.Longitude,

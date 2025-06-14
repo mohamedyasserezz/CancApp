@@ -1,5 +1,8 @@
-﻿using CancApp.Shared.Abstractions;
+﻿using CanaApp.Domain.Entities.Records;
+using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Record;
+using CancApp.Shared.Models.RecordAccess;
+using System.Threading.Tasks;
 
 namespace CanaApp.Domain.Contract.Service.Record
 {

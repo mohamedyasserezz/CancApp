@@ -17,7 +17,7 @@ namespace CanaApp.Domain.Specification.Community.Posts
             AddIncludes();
                 
         }
-        public PostSpecification(bool IsTopPostsEnabled = false, int NumberOfPosts = 0)
+        public PostSpecification(bool IsTopPostsEnabled , int NumberOfPosts = 0)
         {
             AddIncludes();
             if (IsTopPostsEnabled)
@@ -30,7 +30,11 @@ namespace CanaApp.Domain.Specification.Community.Posts
             if (NumberOfPosts > 0)
                 Take = NumberOfPosts;
         }
-
+        public PostSpecification()
+        {
+            AddOrderByDesc(p => p.Time);
+            AddIncludes();
+        }
         private protected override void AddIncludes()
         {
             Includes.Add(p => p.Reactions!);

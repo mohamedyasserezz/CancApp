@@ -7,15 +7,21 @@ using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Models.Record;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+using CanaApp.Domain.Entities.Models;
+using CancApp.Shared.Common.Consts;
+using CancApp.Shared.Models.RecordAccess;
 
 namespace CanaApp.Application.Services.Records
 {
     class RecordServices(
+        UserManager<ApplicationUser> userManager,
         ILogger<RecordServices> logger,
         IUnitOfWork unitOfWork,
         IFileService fileService
         ) : IRecordServices
     {
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly ILogger<RecordServices> _logger = logger;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileService _fileService = fileService;
@@ -24,9 +30,19 @@ namespace CanaApp.Application.Services.Records
         {
             _logger.LogInformation("Getting all records for user with id {userId}", userId);
 
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return Result.Failure<IEnumerable<RecordResponse>>(UserErrors.UserNotFound);
+
+            if(user.UserType != UserType.Patient)
+                return Result.Failure<IEnumerable<RecordResponse>>(UserErrors.PatientsOnly);
+
             var recordSpec = new RecordSpecification(r => r.UserId == userId);
 
             var records = await _unitOfWork.GetRepository<Record, int>().GetAllWithSpecAsync(recordSpec);
+
+           
 
             var response = records.Select(r => new RecordResponse(
                 r.Id,
@@ -41,6 +57,15 @@ namespace CanaApp.Application.Services.Records
         public async Task<Result> CreateRecordAsync(RecordRequest request)
         {
             _logger.LogInformation("trying to create a new record");
+
+            var user = await _userManager.FindByIdAsync(request.UserId);
+
+            if (user is null)
+                return Result.Failure<IEnumerable<RecordResponse>>(UserErrors.UserNotFound);
+
+            if (user.UserType != UserType.Patient)
+                return Result.Failure<IEnumerable<RecordResponse>>(UserErrors.PatientsOnly);
+
             var record = new Record
             {
                 Date = request.Date,
@@ -62,6 +87,8 @@ namespace CanaApp.Application.Services.Records
 
         public async Task<Result> DeleteRecordAsync(int Id)
         {
+
+
             var recordSpec = new RecordSpecification(r => r.Id == Id);
 
             var record = await _unitOfWork.GetRepository<Record,int>().GetWithSpecAsync(recordSpec);
@@ -101,5 +128,7 @@ namespace CanaApp.Application.Services.Records
 
             return Result.Success();
         }
+
+        
     }
 }

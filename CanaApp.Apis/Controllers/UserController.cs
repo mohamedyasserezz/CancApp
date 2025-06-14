@@ -32,7 +32,7 @@ namespace CanaApp.Apis.Controllers
             _logger.LogInformation($"Edit profile: {request}");
             var result = await _userServices.EditUserProfile(User.FindFirstValue(ClaimTypes.NameIdentifier)!, request);
 
-            return result.IsSuccess ? Ok() : result.ToProblem();
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
 
         [HttpGet("pharmacists")]

@@ -31,10 +31,12 @@ namespace CanaApp.Persistance.Data
 
         // Record-related DbSets
         public DbSet<Record> Records { get; set; }
+        public DbSet<RecordAccess> RecordAccessRequests { get; set; }
 
         // Reminder-related DbSets
         public DbSet<MedsReminder> MedsReminders { get; set; }
         public DbSet<VisitReminder> VisitReminders { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

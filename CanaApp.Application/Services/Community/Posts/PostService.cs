@@ -7,7 +7,7 @@ using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification.Community.Posts;
 using CanaApp.Domain.Specification.Community.Reactions;
-using CancApp.Shared._Common.Consts;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Comments;
@@ -81,54 +81,64 @@ namespace CanaApp.Application.Services.Community.Posts
         {
             _logger.LogInformation("Getting posts with filters: {filters}", requestFilters);
 
-            var cacheKey = $"{_cachePrefix}";
+            // Include page number and size in the cache key!
+            var cacheKey = $"{_cachePrefix}_{requestFilters.PageNumber}_{requestFilters.PageSize}";
 
-            var posts = await _hybridCache.GetOrCreateAsync<IEnumerable<PostResponse>>(
+            var paginatedPosts = await _hybridCache.GetOrCreateAsync<PaginatedList<PostResponse>>(
                 cacheKey,
                 async cachEntry =>
-            {
-                var postSpec = new PostSpecification(requestFilters.PageNumber, requestFilters.PageSize);
-                var Posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
+                {
+                    var postSpec = new PostSpecification(requestFilters.PageNumber, requestFilters.PageSize);
+                    var Posts = await _unitOfWork.GetRepository<Post, int>().GetAllWithSpecAsync(postSpec);
 
-                var postsResponse = Posts.Select(p => new PostResponse(
-                    p.Id,
-                    p.Time,
-                    p.Content,
-                    _fileService.GetProfileUrl(p.User),
-                    p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
-                    p.UserId,
-                    p.User.FullName,
-                    p.Comments.Count,
-                    p.Reactions.Count,
-                    p.Reactions.Select(r => new ReactionResponse(
-                       r.Time,
-                       r.PostId,
-                       r.CommentId,
-                       r.UserId,
-                       p.User.FullName,
-                       _fileService.GetProfileUrl(p.User),
-                       r.CommentId.HasValue ? true : false
+                    var postsResponse = Posts.Select(p => new PostResponse(
+                        p.Id,
+                        p.Time,
+                        p.Content,
+                        _fileService.GetProfileUrl(p.User),
+                        p.Image is not null ? _fileService.GetImageUrl("posts", p.Image) : null!,
+                        p.UserId,
+                        p.User.FullName,
+                        p.Comments.Count,
+                        p.Reactions.Count,
+                        p.Reactions.Select(r => new ReactionResponse(
+                            r.Time,
+                            r.PostId,
+                            r.CommentId,
+                            r.UserId,
+                            p.User.FullName,
+                            _fileService.GetProfileUrl(p.User),
+                            r.CommentId.HasValue ? true : false
                         ))
                     ));
-                return postsResponse;
-            }, new HybridCacheEntryOptions
-            {
-                Expiration = TimeSpan.FromMinutes(5),     
-            }
+
+                    // You may need to get the total count for all posts (not just this page)
+                    // If Posts.Count() only returns the current page, replace with the total count from your repository if available
+                    var postSpeci = new PostSpecification();
+                    int totalCount = await _unitOfWork.GetRepository<Post, int>().GetCountWithSpecAsync(postSpeci);
+
+                    return new PaginatedList<PostResponse>(
+                        requestFilters.PageNumber,
+                        requestFilters.PageSize,
+                        totalCount,
+                        postsResponse
+                    );
+                },
+                new HybridCacheEntryOptions
+                {
+                    Expiration = TimeSpan.FromMinutes(5),
+                }
             );
 
-            if (posts is null)
+            if (paginatedPosts is null)
             {
                 _logger.LogWarning("Posts not found");
                 return Result.Failure<PaginatedList<PostResponse>>(PostErrors.PostNotFound);
             }
 
-            var paginatedPosts = new PaginatedList<PostResponse>(requestFilters.PageNumber, requestFilters.PageSize, posts.Count(), posts);
-
             _logger.LogInformation("Posts found with filters: {filters}", requestFilters);
 
             return Result.Success(paginatedPosts);
-
         }
         public async Task<Result> CreatePostAsync(PostRequest postRequest, CancellationToken cancellationToken = default)
         {
@@ -180,7 +190,7 @@ namespace CanaApp.Application.Services.Community.Posts
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceivePostUpdate", postResponse);
 
-            await _hybridCache.RemoveAsync($"{_cachePrefix}");
+            await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
             return Result.Success();
 
         }
@@ -244,8 +254,6 @@ namespace CanaApp.Application.Services.Community.Posts
 
             await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
 
-            await _hybridCache.RemoveAsync($"{_cachePrefix}");
-
             return Result.Success();
 
         }
@@ -286,10 +294,9 @@ namespace CanaApp.Application.Services.Community.Posts
 
                 await _hubContext.Clients.Group("Community").SendAsync("ReceivePostDeleted", postId);
 
-                await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
+            await _hybridCache.RemoveAsync($"{_cachePrefix}_*");
 
-                await _hybridCache.RemoveAsync($"{_cachePrefix}");
-                return Result.Success();
+            return Result.Success();
             
             
         }

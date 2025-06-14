@@ -8,7 +8,7 @@ namespace CanaApp.Domain.Contract.Service.User
     public interface IUserServices
     {
         Task<Result> ChangePassword (string userId, ChangePasswordRequest request);
-        Task<Result> EditUserProfile(string userId, EditProfileRequest request);
+        Task<Result<EditProfileResponse>> EditUserProfile(string userId, EditProfileRequest request);
 
         Task<Result<IEnumerable<PharmacistResponse>>> GetAllPharmacist(GetAllPharmacistRequest request);
 
