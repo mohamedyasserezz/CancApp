@@ -47,5 +47,8 @@ namespace CancApp.Shared.Common.Errors
         public static readonly Error InvalidPassword =
         new Error("InvalidPassword", "The provided old password is incorrect.", StatusCodes.Status400BadRequest);
 
+        public static readonly Error PatientsOnly =
+            new("User.PatientsOnly", "Only Patiets can see recordes and some doctors", StatusCodes.Status401Unauthorized);
+
     }
 }
