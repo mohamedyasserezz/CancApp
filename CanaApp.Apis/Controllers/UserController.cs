@@ -44,5 +44,14 @@ namespace CanaApp.Apis.Controllers
 
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+
+        [HttpGet("GetUsers")]
+        public async Task<IActionResult> GetUsers([FromBody] GetAllUsersRequest request)
+        {
+            _logger.LogInformation("Get all users with type {type}", request.UserType);
+            // Assuming you have a method in IUserServices to get all users
+            var result = await _userServices.GetAllUsers(request);
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
     }
 }
