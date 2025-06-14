@@ -12,5 +12,7 @@ namespace CanaApp.Domain.Contract.Service.User
 
         Task<Result<IEnumerable<PharmacistResponse>>> GetAllPharmacist(GetAllPharmacistRequest request);
 
+        Task<Result<IEnumerable<UserResponse>>> GetAllUsers(GetAllUsersRequest request);
+
     }
 }

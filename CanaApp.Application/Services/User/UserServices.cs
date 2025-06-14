@@ -2,6 +2,7 @@
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Contract.Service.User;
 using CanaApp.Domain.Entities.Models;
+using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
@@ -155,6 +156,25 @@ namespace CanaApp.Application.Services.User
                 // Overnight case: e.g., 22:00 to 06:00
                 return currentTime >= openingHour || currentTime < closingHour;
             }
+        }
+
+        public async Task<Result<IEnumerable<UserResponse>>> GetAllUsers(GetAllUsersRequest request)
+        {
+
+            var userType = (UserType)Enum.Parse(typeof(UserType), request.UserType);
+            var userSpec = new Specification<ApplicationUser, string>(u => u.UserType == userType);
+
+            var users = await _unitOfWork.GetRepository<ApplicationUser, string>().GetAllWithSpecAsync(userSpec);
+
+            var response = users.Select(u => new UserResponse(
+                u.Id,
+                u.FullName,
+                _fileService.GetProfileUrl(u),
+                u.Address,
+                u.UserType.ToString()
+            ));
+
+            return Result.Success(response);
         }
     }
 }
