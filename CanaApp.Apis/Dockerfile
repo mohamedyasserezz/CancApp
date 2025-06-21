@@ -7,12 +7,15 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["CanaApp.Apis/CanaApp.Apis.csproj", "CanaApp.Apis/"]
+COPY ["CanaApp.Application/CanaApp.Application.csproj", "CanaApp.Application/"]
+COPY ["CanaApp.Domain/CanaApp.Domain.csproj", "CanaApp.Domain/"]
+COPY ["CanaApp.Persistance/CanaApp.Persistance.csproj", "CanaApp.Persistance/"]
+COPY ["CancApp.Shared/CancApp.Shared.csproj", "CancApp.Shared/"]
 RUN dotnet restore "./CanaApp.Apis/CanaApp.Apis.csproj"
 COPY . .
 WORKDIR "/src/CanaApp.Apis"

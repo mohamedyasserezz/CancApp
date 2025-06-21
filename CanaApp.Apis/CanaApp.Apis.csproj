@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Config\canc-app-firebase-adminsdk-i67fr-b8ee1e02be.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Config\canc-app-firebase-adminsdk-i67fr-b8ee1e02be.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
