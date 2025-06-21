@@ -48,7 +48,8 @@ namespace CanaApp.Application.Services.Records
                 r.Id,
                 r.RecordType.ToString(),
                 r.UserId,
-                _fileService.GetImageUrl("record",r.File!),
+                r.File is null ? null : _fileService.GetImageUrl(r.File, "records"),
+                r.Note,
                 r.Date
                 ));
 

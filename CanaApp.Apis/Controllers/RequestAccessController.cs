@@ -49,5 +49,21 @@ namespace CanaApp.Apis.Controllers
             var result = await _recordAccessServices.CanDoctorViewPatientRecordsAsync(request, doctorId);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
         }
+
+        [HttpGet("accepted-patients")]
+        public async Task<IActionResult> GetAcceptedPatients()
+        {
+            var doctorId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            _logger.LogInformation("API: Get all patients accepted by doctor {DoctorId}.", doctorId);
+            var result = await _recordAccessServices.GetAllPatientsAccepted(doctorId);
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
+        [HttpGet("records-for-patient")]
+        public async Task<IActionResult> GetRecordsForPatient([FromBody] RecordAccessRequest request)
+        {
+            _logger.LogInformation("API: Get all records for patient {PatientId}.", request.PatientId);
+            var result = await _recordAccessServices.GetAllRecordsForPatientAsync(request);
+            return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
     }
 }
