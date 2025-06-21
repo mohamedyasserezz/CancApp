@@ -1,5 +1,7 @@
 ﻿using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Domain.Contract.Service.Notification;
 using CanaApp.Persistance.Data;
+using CanaApp.Persistance.Services;
 using CanaApp.Persistance.UninOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -22,6 +24,9 @@ namespace CanaApp.Persistance
 
 
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+
+            services.AddSingleton<FirebaseService>();
+            services.AddSingleton<INotificationServices, FirebaseService>();
 
 
             return services;
