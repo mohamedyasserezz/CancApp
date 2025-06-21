@@ -34,6 +34,11 @@ namespace CanaApp.Persistance.Data.Configurations
                 .WithOwner()
                 .HasForeignKey("UserId");
 
+            builder.OwnsMany(u => u.FcmTokens)
+                .ToTable("FcmTokens")
+                .WithOwner()
+                .HasForeignKey(u => u.UserId);
+
             var passwordHasher = new PasswordHasher<ApplicationUser>();
 
             builder.HasData([

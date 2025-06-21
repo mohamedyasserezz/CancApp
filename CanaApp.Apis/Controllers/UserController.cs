@@ -1,5 +1,7 @@
-﻿using CanaApp.Domain.Contract.Service.User;
+﻿using CanaApp.Domain.Contract.Service.Notification;
+using CanaApp.Domain.Contract.Service.User;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Models.Notification;
 using CancApp.Shared.Models.User.ChangePassword;
 using CancApp.Shared.Models.User.EditProfile;
 using CancApp.Shared.Models.User.Pharmacy;
@@ -52,6 +54,14 @@ namespace CanaApp.Apis.Controllers
             // Assuming you have a method in IUserServices to get all users
             var result = await _userServices.GetAllUsers(request);
             return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+        }
+        [HttpPost("save-token")]
+        public async Task<IActionResult> RegisterToken([FromBody] TokenRequest dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogInformation("API: Register FCM token for user {UserId}", userId);
+            var result = await _userServices.SaveTokenAsync(userId, dto.Token);
+            return result.IsSuccess ? Ok() : result.ToProblem();
         }
     }
 }
