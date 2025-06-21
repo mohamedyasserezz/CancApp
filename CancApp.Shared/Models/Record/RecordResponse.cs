@@ -5,6 +5,7 @@
         string RecordType,
         string UserId,
         string? File,
+        string Note,
         DateTime Date
         );
 }

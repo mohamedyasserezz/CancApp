@@ -39,7 +39,7 @@ namespace CancApp.Shared.Common.Errors
         new("User.UserNotFound", Description: "User is not found", StatusCodes.Status404NotFound);
 
         public static readonly Error InvalidRoles =
-            new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status400BadRequest);
+            new("Role.InvalidRoles", "Invalid roles", StatusCodes.Status401Unauthorized);
 
         public static readonly Error NotCompletedProfile =
             new("User.NotCompletedProfile", "User profile is not completed", StatusCodes.Status400BadRequest);
