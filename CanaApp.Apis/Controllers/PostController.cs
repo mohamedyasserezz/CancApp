@@ -16,7 +16,7 @@ namespace CanaApp.Apis.Controllers
         private readonly ILogger<PostController> _logger = logger;
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts([FromRoute] RequestFilters filters, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPosts([FromQuery] RequestFilters filters, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching posts in page Number: {pageNumber} when page Size: {pageSize}", filters.PageNumber, filters.PageSize);
             var response = await postService.GetPostsAsync(filters, cancellationToken);
