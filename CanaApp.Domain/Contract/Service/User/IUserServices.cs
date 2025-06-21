@@ -1,4 +1,5 @@
 ﻿using CancApp.Shared.Abstractions;
+using CancApp.Shared.Models.Notification;
 using CancApp.Shared.Models.User.ChangePassword;
 using CancApp.Shared.Models.User.EditProfile;
 using CancApp.Shared.Models.User.Pharmacy;
@@ -13,6 +14,8 @@ namespace CanaApp.Domain.Contract.Service.User
         Task<Result<IEnumerable<PharmacistResponse>>> GetAllPharmacist(GetAllPharmacistRequest request);
 
         Task<Result<IEnumerable<UserResponse>>> GetAllUsers(GetAllUsersRequest request);
+
+        Task<Result> SaveTokenAsync(string userId, string token);
 
     }
 }

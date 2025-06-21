@@ -12,5 +12,6 @@ namespace CanaApp.Domain.Entities.Models
         public int NumberOfWarrings { get; set; }
         public bool IsForgetPasswordOtpConfirmed { get; set; }
         public List<RefreshToken> RefreshTokens { get; set; } = [];
+        public List<FcmToken> FcmTokens { get; set; } = [];
     }
 }

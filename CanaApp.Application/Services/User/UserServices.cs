@@ -6,6 +6,7 @@ using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
+using CancApp.Shared.Models.Notification;
 using CancApp.Shared.Models.User.ChangePassword;
 using CancApp.Shared.Models.User.EditProfile;
 using CancApp.Shared.Models.User.Pharmacy;
@@ -175,6 +176,30 @@ namespace CanaApp.Application.Services.User
             ));
 
             return Result.Success(response);
+        }
+
+        public async Task<Result> SaveTokenAsync(string userId, string token)
+        {
+            _logger.LogInformation("Registering FCM token for user {UserId}", userId);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                _logger.LogWarning("User {UserId} not found.", userId);
+                return Result.Failure(UserErrors.UserNotFound);
+            }
+
+            // Remove old tokens if duplicate
+            user.FcmTokens.RemoveAll(t => t.Token == token);
+
+            // Add new token
+            user.FcmTokens.Add(new FcmToken { Token = token });
+
+            _unitOfWork.GetRepository<ApplicationUser, string>().Update(user);
+            await _unitOfWork.CompleteAsync();
+
+            _logger.LogInformation("FCM token registered for user {UserId}", userId);
+            return Result.Success();
         }
     }
 }
