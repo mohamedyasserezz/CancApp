@@ -2,11 +2,13 @@
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Reaction;
 using CanaApp.Domain.Contract.Service.File;
+using CanaApp.Domain.Contract.Service.Notification;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Community.Posts;
 using CanaApp.Domain.Specification.Community.Reactions;
+using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Reactions;
@@ -19,12 +21,14 @@ namespace CanaApp.Application.Services.Community.Reactions
         IUnitOfWork unitOfWork,
         IFileService fileService,
         IHubContext<CommunityHub> hubContext,
+        INotificationServices notificationServices,
         ILogger<ReactionService> logger
         ) : IReactionService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileService _fileService = fileService;
         private readonly IHubContext<CommunityHub> _hubContext = hubContext;
+        private readonly INotificationServices _notificationServices = notificationServices;
         private readonly ILogger<ReactionService> _logger = logger;
 
         public async Task<Result<IEnumerable<ReactionResponse>>> GetReactionsAsync(int postId, int? commentId, CancellationToken cancellationToken = default)
@@ -67,9 +71,9 @@ namespace CanaApp.Application.Services.Community.Reactions
                 return Result.Failure(PostErrors.PostNotFound);
             }
 
-            var userSpec = new Specification<ApplicationUser, string>(u => u.Id == request.UserId);
+            var userSpec = new ApplicationUserSpecification(u => u.Id == request.UserId);
 
-            if (await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec) is null)
+            if (await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userSpec) is not { } user)
             {
                 return Result.Failure(UserErrors.UserNotFound);
             }
@@ -116,6 +120,52 @@ namespace CanaApp.Application.Services.Community.Reactions
                 );
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceiveReactionUpdate", reactionResponse);
+
+            // --- FCM Notification Logic ---
+            // If reaction is on a post, notify post owner (if not the reactor)
+            if (!request.IsComment)
+            {
+                var postSpec = new PostSpecification(p => p.Id == request.PostId);
+                var post = await _unitOfWork.GetRepository<Post, int>().GetWithSpecAsync(postSpec);
+                if (post != null && post.UserId != request.UserId)
+                {
+                    var userOwnerSpec = new ApplicationUserSpecification(u => u.Id == post.UserId);
+                    var postOwner = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(userOwnerSpec);
+                    if (postOwner != null && postOwner.FcmTokens != null && postOwner.FcmTokens.Count > 0)
+                    {
+                        var tokens = postOwner.FcmTokens.Select(t => t.Token).Distinct();
+                        var title = "New Reaction on Your Post";
+                        var body = $"{user.FullName} reacted to your post.";
+                        foreach (var token in tokens)
+                        {
+                            await _notificationServices.SendNotificationAsync(token, title, body);
+                            _logger.LogInformation("Sent post reaction notification to user {UserId} (token: {Token})", postOwner.Id, token);
+                        }
+                    }
+                }
+            }
+            // If reaction is on a comment, notify comment owner (if not the reactor)
+            else if (request.IsComment && request.CommentId.HasValue)
+            {
+                var comment = await _unitOfWork.GetRepository<Comment, int>().GetByIdAsync(request.CommentId.Value, cancellationToken);
+                if (comment != null && comment.UserId != request.UserId)
+                {
+                    var commentOwnerSpec = new ApplicationUserSpecification(u => u.Id == comment.UserId);
+                    var commentOwner = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(commentOwnerSpec);
+                    if (commentOwner != null && commentOwner.FcmTokens != null && commentOwner.FcmTokens.Count > 0)
+                    {
+                        var tokens = commentOwner.FcmTokens.Select(t => t.Token).Distinct();
+                        var title = "New Reaction on Your Comment";
+                        var body = $"{user.FullName} reacted to your comment.";
+                        foreach (var token in tokens)
+                        {
+                            await _notificationServices.SendNotificationAsync(token, title, body);
+                            _logger.LogInformation("Sent comment reaction notification to user {UserId} (token: {Token})", commentOwner.Id, token);
+                        }
+                    }
+                }
+            }
+
 
             return Result.Success();
         }
