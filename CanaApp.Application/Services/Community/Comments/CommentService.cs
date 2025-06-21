@@ -1,13 +1,14 @@
-﻿using AutoMapper;
-using CanaApp.Application.Hups;
+﻿using CanaApp.Application.Hups;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Comment;
 using CanaApp.Domain.Contract.Service.File;
+using CanaApp.Domain.Contract.Service.Notification;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification;
 using CanaApp.Domain.Specification.Community.Comments;
 using CanaApp.Domain.Specification.Community.Posts;
+using CanaApp.Domain.Specification.Models;
 using CancApp.Shared.Abstractions;
 using CancApp.Shared.Common.Errors;
 using CancApp.Shared.Models.Community.Comments;
@@ -19,12 +20,14 @@ namespace CanaApp.Application.Services.Community.Comments
         IUnitOfWork unitOfWork,
         IFileService fileService,
         IHubContext<CommunityHub> hubContext,
+        INotificationServices notificationServices,
         ILogger<CommentService> logger
         ) : ICommentService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileService _fileService = fileService;
         private readonly IHubContext<CommunityHub> _hubContext = hubContext;
+        private readonly INotificationServices _notificationServices = notificationServices;
         private readonly ILogger<CommentService> _logger = logger;
 
 
@@ -146,6 +149,25 @@ namespace CanaApp.Application.Services.Community.Comments
                 );
 
             await _hubContext.Clients.Group("Community").SendAsync("ReceiveCommentUpdate", commentResponse);
+
+            // --- FCM Notification Logic ---
+            // Only notify the post owner if the commenter is not the owner
+            if (post.UserId != request.UserId)
+            {
+                var postOwnerSpec = new ApplicationUserSpecification(u => u.Id == post.UserId);
+                var postOwner = await _unitOfWork.GetRepository<ApplicationUser, string>().GetWithSpecAsync(postOwnerSpec);
+                if (postOwner != null && postOwner.FcmTokens != null && postOwner.FcmTokens.Count > 0)
+                {
+                    var tokens = postOwner.FcmTokens.Select(t => t.Token).Distinct();
+                    var title = "New Comment on Your Post";
+                    var body = $"{user.FullName} commented: \"{comment.Content}\"";
+                    foreach (var token in tokens)
+                    {
+                        await _notificationServices.SendNotificationAsync(token, title, body);
+                        _logger.LogInformation("Sent comment notification to user {UserId} (token: {Token})", postOwner.Id, token);
+                    }
+                }
+            }
 
             return Result.Success();
         }
