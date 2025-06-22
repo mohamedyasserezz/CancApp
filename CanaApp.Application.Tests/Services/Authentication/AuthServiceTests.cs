@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CanaApp.Application.Tests.Services.Authentication
 {
@@ -24,6 +25,18 @@ namespace CanaApp.Application.Tests.Services.Authentication
         private readonly ILogger<AuthService> _logger;
 
         private readonly AuthService _authService;
+
+        // Helper methods for consistent test data
+        private ApplicationUser CreateTestUser(string email, string userId = null)
+        {
+            return new ApplicationUser 
+            { 
+                Id = userId ?? Guid.NewGuid().ToString(), 
+                Email = email, 
+                UserName = email, 
+                FullName = "Test User" 
+            };
+        }
 
         public AuthServiceTests()
         {
@@ -41,7 +54,9 @@ namespace CanaApp.Application.Tests.Services.Authentication
             _fileService = A.Fake<IFileService>();
             _httpContextAccessor = A.Fake<IHttpContextAccessor>();
             _emailSender = A.Fake<IEmailSender>();
-            _logger = A.Fake<ILogger<AuthService>>();
+            
+            // Use real logger instead of fake - logging is infrastructure, not business logic
+            _logger = NullLogger<AuthService>.Instance;
 
             // Create the service to be tested
             _authService = new AuthService(
@@ -61,8 +76,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             // Arrange
             var email = "test@example.com";
             var password = "Password123!";
-            var userId = "a1b2c3d4-e5f6-7890-1234-567890abcdef"; 
-            var user = new ApplicationUser { Id = userId, Email = email, UserName = email };
+            var user = CreateTestUser(email);
 
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult<ApplicationUser?>(user));
 
@@ -87,7 +101,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             // Arrange
             var email = "test@example.com";
             var password = "WrongPassword!";
-            var user = new ApplicationUser { Id = "a1b2c3d4-e5f6-7890-1234-567890abcdef", Email = email, UserName = email };
+            var user = CreateTestUser(email);
 
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult<ApplicationUser?>(user));
 
@@ -127,7 +141,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             // Arrange
             var email = "lockedout@example.com";
             var password = "anypassword";
-            var user = new ApplicationUser { Id = "a1b2c3d4-e5f6-7890-1234-567890abcdef", Email = email, UserName = email };
+            var user = CreateTestUser(email);
 
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult<ApplicationUser?>(user));
 
@@ -142,7 +156,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             result.IsFailure.Should().BeTrue();
             result.Error.Should().Be(CancApp.Shared.Common.Errors.UserErrors.LockedUser);
         }
-        
+
         [Fact]
         public async Task GetTokenAsync_WhenUserIsDisabled_ReturnsFailureResult()
         {
@@ -150,14 +164,9 @@ namespace CanaApp.Application.Tests.Services.Authentication
             var email = "disabled@example.com";
             var password = "anypassword";
             // Simulate a user who is marked as disabled
-            var user = new ApplicationUser 
-            { 
-                Id = "a1b2c3d4-e5f6-7890-1234-567890abcdef", 
-                Email = email, 
-                UserName = email,
-                IsDisabled = true,
-                UserType = CancApp.Shared.Common.Enums.UserType.Patient // UserType is required for the check
-            };
+            var user = CreateTestUser(email);
+            user.IsDisabled = true;
+            user.UserType = UserType.Patient;
 
             A.CallTo(() => _userManager.FindByEmailAsync(email)).Returns(Task.FromResult<ApplicationUser?>(user));
 
@@ -168,5 +177,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             result.IsFailure.Should().BeTrue();
             result.Error.Should().Be(CancApp.Shared.Common.Errors.UserErrors.DisabledUser);
         }
+
+    
     }
 } 

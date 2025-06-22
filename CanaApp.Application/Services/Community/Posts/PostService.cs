@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CanaApp.Application.Hups;
+﻿using CanaApp.Application.Hups;
 using CanaApp.Domain.Contract.Infrastructure;
 using CanaApp.Domain.Contract.Service.Community.Post;
 using CanaApp.Domain.Contract.Service.File;
@@ -7,10 +6,9 @@ using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Specification.Community.Posts;
 using CanaApp.Domain.Specification.Community.Reactions;
-using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Abstractions;
+using CancApp.Shared.Common.Consts;
 using CancApp.Shared.Common.Errors;
-using CancApp.Shared.Models.Community.Comments;
 using CancApp.Shared.Models.Community.Post;
 using CancApp.Shared.Models.Community.Reactions;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CanaApp.Application.Services.Community.Posts
 {
-    class PostService(
+    public class PostService(
         UserManager<ApplicationUser> userManager,
         IUnitOfWork unitOfWork,
         HybridCache hybridCache,
