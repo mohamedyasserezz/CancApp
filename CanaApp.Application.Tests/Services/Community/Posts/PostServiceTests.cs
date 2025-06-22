@@ -2,6 +2,7 @@ using CanaApp.Application.Hups;
 using CanaApp.Application.Services.Community.Posts;
 using CanaApp.Domain.Contract;
 using CanaApp.Domain.Contract.Infrastructure;
+using CanaApp.Domain.Contract.Service.Community.Post;
 using CanaApp.Domain.Contract.Service.File;
 using CanaApp.Domain.Entities.Comunity;
 using CanaApp.Domain.Entities.Models;
@@ -26,7 +27,7 @@ namespace CanaApp.Application.Tests.Services.Community.Posts
         private readonly ILogger<PostService> _logger;
         private readonly IHubContext<CommunityHub> _hubContext;
         private readonly IFileService _fileService;
-        private readonly PostService _postService;
+        private readonly IPostService _postService;
 
         // Fakes for nested dependencies
         private readonly IGenricRepository<Post, int> _fakePostRepository;
@@ -59,7 +60,7 @@ namespace CanaApp.Application.Tests.Services.Community.Posts
             A.CallTo(() => _hubContext.Clients).Returns(_fakeHubClients);
             A.CallTo(() => _fakeHubClients.Group(A<string>._)).Returns(_fakeClientProxy);
 
-            // Service under test
+            // Service under test with real implementation and faked dependencies
             _postService = new PostService(_userManager, _unitOfWork, _hybridCache, _logger, _hubContext, _fileService);
         }
 

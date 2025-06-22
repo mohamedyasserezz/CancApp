@@ -26,7 +26,7 @@ using System.Security.Cryptography;
 
 namespace CanaApp.Application.Services.Dashboard
 {
-    class DashboardServices(
+    public class DashboardServices(
         UserManager<ApplicationUser> userManager,
         IUnitOfWork unitOfWork,
         IFileService fileService,

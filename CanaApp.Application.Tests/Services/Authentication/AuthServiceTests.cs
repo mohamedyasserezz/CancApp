@@ -24,7 +24,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AuthService> _logger;
 
-        private readonly AuthService _authService;
+        private readonly IAuthService _authService;
 
         // Helper methods for consistent test data
         private ApplicationUser CreateTestUser(string email, string userId = null)
@@ -58,7 +58,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
             // Use real logger instead of fake - logging is infrastructure, not business logic
             _logger = NullLogger<AuthService>.Instance;
 
-            // Create the service to be tested
+            // Create the service to be tested with real implementation and faked dependencies
             _authService = new AuthService(
                 _userManager,
                 _signInManager,
