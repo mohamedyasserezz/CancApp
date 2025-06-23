@@ -58,7 +58,7 @@ namespace CanaApp.Application.Tests.Services.Dashboard
         private readonly IGenricRepository<Psychiatrist, string> _fakePsychiatristRepository;
 
         // Helper methods for consistent test data
-        private ApplicationUser CreateTestUser(string email, UserType userType = UserType.Admin, string userId = null)
+        private ApplicationUser CreateTestUser(string email, UserType userType = UserType.Admin, string userId = null!)
         {
             return new ApplicationUser 
             { 

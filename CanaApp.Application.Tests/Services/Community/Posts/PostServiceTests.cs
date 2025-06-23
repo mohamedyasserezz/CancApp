@@ -38,7 +38,7 @@ namespace CanaApp.Application.Tests.Services.Community.Posts
         public PostServiceTests()
         {
             // Primary dependencies
-            _userManager = A.Fake<UserManager<ApplicationUser>>(o => o.WithArgumentsForConstructor(() => new UserManager<ApplicationUser>(A.Fake<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null)));
+            _userManager = A.Fake<UserManager<ApplicationUser>>(o => o.WithArgumentsForConstructor(() => new UserManager<ApplicationUser>(A.Fake<IUserStore<ApplicationUser>>(), null!, null!, null!, null!, null!, null!, null!, null!)));
             _unitOfWork = A.Fake<IUnitOfWork>();
             _hybridCache = A.Fake<HybridCache>();
             
@@ -68,7 +68,7 @@ namespace CanaApp.Application.Tests.Services.Community.Posts
             new ApplicationUser { Id = userId, FullName = "Test User" };
         
         private Post CreateFakePost(ApplicationUser user, int postId = 1) => 
-            new Post { Id = postId, UserId = user?.Id ?? "a1b2c3d4-e5f6-7890-1234-567890abcdef", User = user, Content = "Test Content", Reactions = new List<Reaction>(), Comments = new List<Comment>() };
+            new Post { Id = postId, UserId = user?.Id ?? "a1b2c3d4-e5f6-7890-1234-567890abcdef", User = user!, Content = "Test Content", Reactions = new List<Reaction>(), Comments = new List<Comment>() };
 
         // --- GetPostAsync Tests ---
 

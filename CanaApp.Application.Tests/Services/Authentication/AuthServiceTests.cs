@@ -27,7 +27,7 @@ namespace CanaApp.Application.Tests.Services.Authentication
         private readonly IAuthService _authService;
 
         // Helper methods for consistent test data
-        private ApplicationUser CreateTestUser(string email, string userId = null)
+        private ApplicationUser CreateTestUser(string email, string userId = null!)
         {
             return new ApplicationUser 
             { 
