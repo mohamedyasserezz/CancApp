@@ -7,7 +7,7 @@ This document provides instructions for dockerizing and deploying the CanaApp AP
 The project consists of:
 - **Backend**: .NET 9.0 API with multiple projects (Domain, Application, Persistence, etc.)
 - **Database**: SQL Server
-- **Cache**: Redis
+- **Caching**: Hybrid Cache (in-memory)
 
 ## Prerequisites
 
@@ -83,12 +83,10 @@ REDIS_PASSWORD=redis123
 ### Development Services
 - **API**: .NET API on ports 8080/8081
 - **SQL Server**: Database on port 1433
-- **Redis**: Cache on port 6379
 
 ### Production Services
 - **API**: .NET API on ports 8080/8081
 - **SQL Server**: Database on port 1433
-- **Redis**: Cache on port 6379
 
 ## Commands
 
@@ -145,12 +143,10 @@ docker-compose logs api
 ### Development
 - **API**: http://localhost:8080
 - **Database**: localhost:1433
-- **Redis**: localhost:6379
 
 ### Production
 - **API**: http://localhost:8080
 - **Database**: localhost:1433
-- **Redis**: localhost:6379
 
 ## Database Setup
 
@@ -179,7 +175,7 @@ Your API will be available at:
 
 ### Common Issues
 
-1. **Port conflicts**: Ensure ports 1433, 6379, 8080, 8081 are available
+1. **Port conflicts**: Ensure ports 1433, 8080, 8081 are available
 2. **Memory issues**: Increase Docker memory limit to at least 4GB
 3. **Database connection**: Wait for SQL Server to fully start (check logs)
 4. **Build failures**: Clear Docker cache with `docker system prune -a`
@@ -209,7 +205,6 @@ docker-compose logs
 # View specific service logs
 docker-compose logs api
 docker-compose logs sqlserver
-docker-compose logs redis
 
 # Follow logs in real-time
 docker-compose logs -f
@@ -226,7 +221,7 @@ docker-compose logs -f
 ## Performance Optimization
 
 1. **Resource limits**: Adjust memory/CPU limits in docker-compose.prod.yml
-2. **Caching**: Redis is configured for caching
+2. **Caching**: Hybrid Cache provides in-memory caching
 3. **Database optimization**: Consider connection pooling
 
 ## Monitoring
@@ -235,7 +230,6 @@ docker-compose logs -f
 All services include health checks:
 - API: Built into .NET Core
 - Database: SQL query check
-- Redis: Ping command
 
 ### Logging
 - Application logs: `./logs` directory
@@ -256,7 +250,6 @@ docker cp $(docker-compose ps -q sqlserver):/var/opt/mssql/backup.bak ./backup.b
 ```bash
 # Backup volumes
 docker run --rm -v cancapp_sqlserver_data:/data -v $(pwd):/backup alpine tar czf /backup/sqlserver_backup.tar.gz -C /data .
-docker run --rm -v cancapp_redis_data:/data -v $(pwd):/backup alpine tar czf /backup/redis_backup.tar.gz -C /data .
 ```
 
 ## Support
@@ -265,4 +258,4 @@ For issues related to:
 - **Docker setup**: Check this README and Docker documentation
 - **Application**: Check application logs and documentation
 - **Database**: Check SQL Server logs and connection strings
-- **Performance**: Monitor resource usage and adjust limits 
+- **Performance**: Monitor resource usage and adjust limits

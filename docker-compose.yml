@@ -8,6 +8,7 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=${DB_PASSWORD:-YourStrong@Passw0rd}
       - MSSQL_PID=Express
+      - MSSQL_MEMORY_LIMIT_MB=2048
     ports:
       - "1433:1433"
     volumes:
@@ -20,45 +21,38 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-  # Redis for caching and Hangfire
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - cancapp-network
-    restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
 
   # Main API Application
   api:
     build:
       context: .
       dockerfile: CanaApp.Apis/Dockerfile
+      target: final
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080;https://+:8081
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CancApp;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};Encrypt=False;TrustServerCertificate=True
-      - ConnectionStrings__HangfireConnection=Server=sqlserver;Database=CANCAppJobs;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};Encrypt=False;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CancApp;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True
+      - ConnectionStrings__HangfireConnection=Server=sqlserver;Database=CANCAppJobs;User Id=sa;Password=${DB_PASSWORD:-YourStrong@Passw0rd};Encrypt=False;TrustServerCertificate=True;MultipleActiveResultSets=True
       - Jwt__Key=${JWT_KEY:-YourSuperSecretJwtKeyHereMakeItLongAndSecure}
       - MailSettings__Password=${MAIL_PASSWORD}
       - HangfireSettings__UserName=${HANGFIRE_USER:-admin}
       - HangfireSettings__Password=${HANGFIRE_PASSWORD:-admin123}
-      - Redis__ConnectionString=redis:6379,password=${REDIS_PASSWORD:-redis123}
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
     depends_on:
-      - sqlserver
-      - redis
+      sqlserver:
+        condition: service_healthy
     networks:
       - cancapp-network
     restart: unless-stopped
@@ -72,11 +66,20 @@ services:
         reservations:
           memory: 512M
           cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   sqlserver_data:
-    driver: local
-  redis_data:
     driver: local
 
 networks:
