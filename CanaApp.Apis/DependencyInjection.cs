@@ -1,4 +1,5 @@
-﻿using CanaApp.Application.Services.Authentication;
+﻿using CanaApp.Application.Health;
+using CanaApp.Application.Services.Authentication;
 using CanaApp.Domain.Contract.Service.Authentication;
 using CanaApp.Domain.Entities.Models;
 using CanaApp.Domain.Entities.Roles;
@@ -83,6 +84,16 @@ namespace CanaApp.Apis
 
             #region SignalR
             services.AddSignalR();
+            #endregion
+
+            #region HealthCheck
+            services.AddHealthChecks()
+                    .AddSqlServer(configuration.GetConnectionString("DefaultConnection")!, name: "database")
+                    .AddHangfire(options =>
+                    {
+                        options.MinimumAvailableServers = 1;
+                    })
+                    .AddCheck<MailProviderHealthCheck>("mail provider"); 
             #endregion
 
             return services;

@@ -5,6 +5,8 @@ using CanaApp.Persistance;
 using CancApp.Shared;
 using Hangfire;
 using HangfireBasicAuthenticationFilter;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,5 +62,10 @@ app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHub<CommunityHub>("/communityHub"); // Map SignalR hub
+
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+});
 
 app.Run();
